@@ -63,6 +63,7 @@ class EventsController {
         _.each(this.$scope.events, (item, i) => {
           if (item._id == id) {
             this.$scope.events[i].drafted = true;
+            this.$scope.events[i].status = 'cancelled';
           }
         });
         this.socket.syncUpdates('offer', this.$scope.offers);
