@@ -1,0 +1,63 @@
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <table class="table table-hover table-condensed">
+            <thead>
+              <tr>
+                <th ng-if="vm.user.role == 'user'">Status</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>People</th>
+                <th ng-if="vm.user.role == 'caterer'">Location</th>
+                <th colspan="3">Description</th>
+              </tr>
+            </thead>
+            <tr ng-repeat="event in events" ng-class="{drafted: event.drafted}">
+              <td ng-if="vm.user.role == 'user'">
+                <!--<span class="label label-warning" ng-if="vm.user.role == 'caterer' && event.isUpdated">Updated!</span>-->
+                <span class="label label-info" ng-if="vm.user.role == 'user'">{{event.status}}</span></td>
+              <td>{{event.date | date: "longDate"}}</td>
+              <td>{{event.time | date: "shortTime"}}</td>
+              <td>{{event.name}}</td>
+              <td>{{event.pricePerPerson}}</td>
+              <td>{{event.people}}</td>
+              <td ng-if="vm.user.role == 'caterer'">{{event.location}}</td>
+              <td>{{event.description}}</td>
+              <td>
+                <div ng-if="vm.user.role == 'user'">
+                  <a class="btn btn-xs btn-default" href="/events/{{event._id}}">Edit</a>
+                  <!--<a class="btn btn-xs btn-warning" ui-sref="offers" ng-click="vm.setActiveEvent(event)" >Offers ({{event.offersNumber}})</a>-->
+                  <a class="btn btn-xs btn-warning" ng-click="vm.setActiveEvent(event)" uib-popover-html="event.offersInfo" popover-trigger="mouseenter" popover-placement="right">Offers ({{event.offersNumber}})</a>
+                </div>
+                <div ng-if="vm.user.role == 'caterer'">
+                  <a class="btn btn-xs btn-default" href="{{event.offerUrl}}" ng-click="vm.setActiveEvent(event)" uib-popover-html="event.offerInfo" popover-trigger="mouseenter" popover-placement="right">{{event.newOrOld}} Offer</a>
+                  <a class="btn btn-xs btn-danger" ng-if="event.offersNumber === 0" ng-click="vm.decline(event._id)">Decline Event</a>
+                </div>
+              </td>
+              <td>
+                <div ng-if="vm.user.role == 'user'">
+                  <a class="btn btn-xs btn-danger" ng-click="vm.cancel(event._id)">Cancel</a>
+                  <a class="btn btn-xs btn-default" ng-if="vm.user.role == 'user'" ng-click="vm.delete(event)" title="Delete event"><i class="fa fa-times"></i></a>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" ng-if="vm.user.role == 'user'">
+    <div class="col-sm-12">
+      <offerslist></offerslist>
+      <!--<button class="btn btn-inverse" ng-if="vm.Auth.isUser() || !vm.Auth.isLoggedIn()" ng-click="vm.createEventShow()">Create new event</button>-->
+      <!--<hr>-->
+      <!--<div ng-controller="OffersController">-->
+
+      <!--</div>-->
+    </div>
+  </div>
+</div>

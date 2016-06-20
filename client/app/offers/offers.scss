@@ -1,0 +1,19 @@
+.offers-pills {
+  padding-left: 340px;
+  margin-top: 20px;
+
+  .nav-pills {
+    width: 300px;
+    margin-left: -340px;
+    float: left;
+  }
+
+  .tab-content {
+    float: left;
+    width: 100%;
+
+    h2 {
+      margin-top: 5px;
+    }
+  }
+}

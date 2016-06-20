@@ -1,0 +1,186 @@
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <h1>New event</h1>
+      <form class="form-fluid" name="form" novalidate>
+        <div class="row">
+          <div class="col-sm-5">
+            <div class="form-group" ng-class="{'has-error': (form.name.$touched && form.name.$error.required || form.$submitted && form.name.$untouched) }">
+              <label>Event Name</label>
+              <input type="text" name="name" class="form-control" ng-model="fm.name" required>
+              <div ng-show="form.$submitted || form.name.$touched">
+                <div ng-show="form.name.$error.required">Please enter name of event</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-7">
+            <div class="form-group">
+              <label>Description</label>
+              <input type="text" name="description" class="form-control" ng-model="fm.description">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="form-group" ng-class="{'has-error': (form.date.$touched && form.date.$error.required  || form.$submitted && form.date.$untouched)}">
+              <label>Date</label>
+              <p class="input-group">
+                <input type="text" class="form-control" uib-datepicker-popup="MMMM d, y" ng-model="fm.date" is-open="popup1.opened" datepicker-options="dateOptions" required close-text="Close"/>
+                <span class="input-group-btn">
+                  <button type="button" class="btn btn-default" ng-click="open1()" style="height: 34px;"><i class="fa fa-calendar"></i></button>
+                </span>
+              </p>
+              <div ng-show="form.$submitted || form.date.$touched">
+                <div ng-show="form.date.$error.required">Please enter date</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-2">
+            <div class="form-group" ng-class="{'has-error': (form.time.$touched && form.time.$error.required || form.$submitted && form.time.$untouched)}">
+              <uib-timepicker ng-model="fm.time" hour-step="1" minute-step="1" show-meridian="true"></uib-timepicker>
+              <div ng-show="form.$submitted || form.time.$touched">
+                <div ng-show="form.time.$error.required">Please enter date</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group" ng-class="{'has-error': (form.people.$touched && form.people.$error.required || form.$submitted && form.people.$untouched)}">
+              <label>People</label>
+              <input type="number" name="people" class="form-control" required ng-model="fm.people">
+              <div ng-show="form.$submitted || form.people.$touched">
+                <div ng-show="form.people.$error.required">Please enter number of people</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label>Vegetarian Meals</label>
+              <input type="number" name="vegetarianMeals" class="form-control" ng-model="fm.vegetarianMeals">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-10">
+            <div class="form-group" ng-class="{'has-error': (form.$submitted || form.pricePerPerson.$touched) && form.pricePerPerson.$error.required}">
+              <label>Price per person</label>
+              <rzslider rz-slider-model="fm.pricePerPerson" rz-slider-options="{floor: 0.5, ceil: 200, showSelectionBar: true, step: 0.5, precision: 1}" ></rzslider>
+              <div ng-show="form.$submitted || form.pricePerPerson.$touched">
+                <div ng-show="form.pricePerPerson.$error.required">Please enter price per person</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-2">
+            <div class="form-group" ng-class="{'has-error': (form.$submitted || form.pricePerPerson.$touched) && form.pricePerPerson.$error.required}">
+              <label>Price per person</label>
+              <div class="input-group">
+                <span class="input-group-addon">$</span>
+                <input type="text" name="pricePerPerson" class="form-control" required ng-model="fm.pricePerPerson">
+              </div>
+              <div ng-show="form.$submitted || form.pricePerPerson.$touched">
+                <div ng-show="form.pricePerPerson.$error.required">Please enter price per person</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group" ng-class="{'has-error': (form.location.$touched && form.location.$error.required || form.$submitted && form.location.$untouched)}">
+              <label>Location</label>
+              <input type="text" name="location" class="form-control" required ng-model="fm.location" />
+              <div ng-show="form.$submitted || form.location.$touched">
+                <div ng-show="form.location.$error.required">Please enter location</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Delivery Instructions</label>
+              <input type="text" name="deliveryInstructions" class="form-control" ng-model="fm.deliveryInstructions" />
+            </div>
+            <div class="form-group">
+              <label>Special Request</label>
+              <input type="text" name="specialRequest" class="form-control" ng-model="fm.specialRequest">
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <label>Included in price</label>
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="checkbox" ng-repeat="iip in includedInPrice">
+                  <label>
+                    <input type="checkbox" checklist-model="fm.includedInPrice" checklist-value="iip._id" checked="iip.checked"> {{iip.name}}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-8">
+            <label>Select Food Types</label>
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-sm-5">
+                    <div class="ft-panel-fixed-height">
+                      <div class="checkbox" ng-repeat="type in foodTypes">
+                        <label>
+                          <input type="checkbox" checklist-model="fm.foodTypes" checklist-value="type._id" checked="type.checked" ng-click="vm.toggleFT()"> {{type.name}}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-7">
+                    <div class="select-all-header">
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" name="foodTypesAll" ng-model="foodTypesAll" ng-click="vm.toggleAll()"> Select All Restaurants
+                        </label>
+                      </div>
+                    </div>
+                    <div class="select-rest-block">
+                      <div class="checkbox" ng-repeat="caterer in caterers" ng-if="caterer.showByFT">
+                        <label>
+                          <input type="checkbox" checklist-model="fm.selectedCaterers" ng-change="vm.watchForEdit(caterer._id)" checklist-value="caterer._id" > {{caterer.name}}
+                          <span ng-repeat="ft in foodTypes" class="label label-default m-3" ng-if="vm.checkFT(ft._id, caterer)">{{ft.name}}</span>
+                        </label>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4" ng-show="selectionOccured">
+            <label>Selected Restaurants</label>
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="ft-panel-fixed-height">
+                  <div class="selectedRest" ng-repeat="caterer in caterers" ng-if="caterer.showByEdit">
+                    <button class="btn btn-default btn-xs" ng-click="vm.watchForEdit(caterer._id)"><i class="fa fa-times"></i></button> <strong>{{caterer.name}}</strong> <span ng-repeat="ft in foodTypes" class="label label-default m-3" ng-if="vm.checkFT(ft._id, caterer)">{{ft.name}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group has-error">
+          <p class="help-block" ng-show="form.name.$error.required && vm.submitted">
+            Please enter the name of new Event.
+          </p>
+          <p class="help-block">{{ vm.errors.other }}</p>
+        </div>
+        <div ng-if="vm.saved" class="alert alert-success">Event is successfully saved</div>
+        <div ng-if="vm.sent" class="alert alert-success">Event is successfully sent to restaurants</div>
+        <div>
+          <button class="btn btn-default" type="submit" ng-click="vm.saveDraft(form)">
+            Save Draft
+          </button>
+          <button class="btn btn-primary" ng-click="vm.sendRequest(form)">
+            Send Request
+          </button>
+        </div>
+        <div></div>
+      </form>
+    </div>
+  </div>
+</div>

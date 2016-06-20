@@ -1,0 +1,77 @@
+tr.drafted {
+  background: #eee;
+  color: #aaa;
+
+  .btn {
+    display: none;
+  }
+}
+
+.uib-timepicker {
+  .uib-decrement {
+    .btn.btn-link {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+  .uib-increment {
+    .btn.btn-link {
+      padding-top: 3px;
+      padding-bottom: 0;
+    }
+  }
+
+  .showMeridian {
+    .btn {
+      margin-left: 5px;
+    }
+  }
+}
+
+.uib-daypicker {
+  margin-right: 3px;
+  th:first-of-type {
+    padding-left: 3px;
+    padding-right: 3px;
+  }
+}
+
+.select-all-header {
+  background: #efefef;
+  padding: 3px 15px;
+  border-radius: 3px 3px 0 0;
+  box-shadow: 0 2px 10px #dedede inset;
+}
+
+.select-rest-block {
+  height: 200px;
+  overflow: auto;
+  border: 1px solid #ccc;
+  border-radius: 0 0 3px 3px;
+  box-shadow: 0 -2px 10px #dedede inset;
+  padding: 3px 15px;
+}
+
+.m-3 {
+  margin-right: 3px;
+}
+
+.ft-panel-fixed-height {
+  height: 247px;
+  overflow: auto;
+}
+
+.has-error {
+  color: #a94442;
+
+  input {
+    border-color: #a94442;
+  }
+}
+
+.popover-divider {
+   margin: 5px 0;
+  &:last-of-type {
+    display: none;
+  }
+}
