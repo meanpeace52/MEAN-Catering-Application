@@ -118,7 +118,6 @@ class EventsController {
           });
         });
         this.$scope.events[i].offersNumber = offersNumber;
-        console.log('1');
         this.socket.syncUpdates('offer', this.$scope.events);
       });
     });
@@ -141,7 +140,6 @@ class EventsController {
   }
 
   setActiveEvent(event) {
-    console.log('set', event._id);
     this.$scope.eventActive = event._id;
     this.$rootScope.eventActive = event._id;
     this.$cookies.put('eventActive', event._id);

@@ -162,15 +162,14 @@ class EventsNewController {
 
   sendRequest(form) {
     let eventModel = this.$scope.fm,
-      url = '/api/events/new';
+      url = (this.saved ? '/api/events/' + this.$scope.fm._id : '/api/events/new');
 
     eventModel.showToCaterers = true;
     eventModel.sentTo = eventModel.selectedCaterers;
     eventModel.status = 'sent';
     eventModel.userId = this.user._id;
-    if (this.$scope.fm.status = 'sent') eventModel.isUpdated = true;
 
-    console.log(form);
+    if (this.$scope.fm.status = 'sent') eventModel.isUpdated = true;
 
     if (eventModel && form.$valid) {
       this.$http.post(url, eventModel)
@@ -194,8 +193,7 @@ class EventsNewController {
       this.$http.post('/api/events/new', eventModel)
         .then(response => {
           this.saved = true;
-          this.$scope.fm = {};
-          //this.$state.go('events');
+          this.$scope.fm._id = response.data._id;
         })
         .catch(err => {
           this.errors.other = err.message;
