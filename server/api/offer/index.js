@@ -8,6 +8,7 @@ var router = express.Router();
 router.get('/', controller.index);
 router.get('/:id', controller.show);
 router.post('/', controller.index);
+router.post('/cancelAll', controller.cancelAll);
 router.post('/new', controller.create);
 router.put('/:id', controller.update);
 router.post('/:id/confirm', controller.update);

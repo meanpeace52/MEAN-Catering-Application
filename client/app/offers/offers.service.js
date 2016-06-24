@@ -11,6 +11,14 @@ angular.module('cateringApp')
             return err.message;
         });
       },
+      decline(id) {
+        $http.post('/api/offers/' + id + '/decline', {status: 'declined'}).then(response => {
+          return response.data;
+        })
+        .catch(err => {
+          return err.message;
+        });
+      },
       getFilteredOffers(params) {
         return $http.post('/api/offers/filtered', params).then(response => {
           return response.data;

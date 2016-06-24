@@ -1,7 +1,11 @@
 'use strict';
 
 class EventsController {
-  constructor($http, $scope, $rootScope, socket, Auth, $state, $cookies, $sce) {
+  constructor($http, $scope, $rootScope, socket, Auth, $state, $cookies, $sce, OffersService, $interval, NgTableParams) {
+
+    var root = this,
+      sync = $interval(eventPoller, (1000 * 60 * 2));
+
     this.errors = {};
     this.submitted = false;
     this.saved = false;
@@ -15,13 +19,27 @@ class EventsController {
     this.$sce = $sce;
     this.$cookies = $cookies;
     this.socket = socket;
+    this.OffersService = OffersService;
+    this.NgTableParams = NgTableParams;
 
     this.getCurrentUser = Auth.getCurrentUser;
     this.isLoggedIn = Auth.isLoggedIn;
     this.user = this.getCurrentUser();
-
-    this.$scope.events = this.getEventsList();
     this.$scope.eventActive = null;
+    root.$scope.events = [];
+
+
+    function eventPoller() {
+      root.$scope.events = root.getEventsList();
+    }
+
+    this.tableParams = new NgTableParams({
+      filter: { name: "T" }
+    }, {
+      dataset: root.$scope.events
+    });
+
+    eventPoller();
 
     this.statuses = {
       draft: {
@@ -41,6 +59,7 @@ class EventsController {
     $scope.$on('$destroy', function () {
       socket.unsyncUpdates('event');
       socket.unsyncUpdates('offer');
+      $interval.cancel(sync);
     });
 
   }
@@ -81,6 +100,9 @@ class EventsController {
         });
         this.socket.syncUpdates('offer', this.$scope.offers);
       });
+      this.$http.post('/api/offers/cancelAll', {eventId: id, catererId: this.user._id}).then(response => {
+       //all offers are cancelled
+      });
     }
   }
 
@@ -93,11 +115,10 @@ class EventsController {
       this.$http.post('/api/offers', {eventId: event._id, catererId: this.user._id}).then(response => {
         let offerUrl = (response.data.length ? '/offers/' + response.data[0]._id : '/offers/new'),
             status = (response.data.length ? response.data[0].status : null),
-            newOrOld = (response.data.length ? 'Edit' : 'New');
+            offersNumber = response.data.length;
         this.$scope.events[i].offerUrl = offerUrl;
-        this.$scope.events[i].newOrOld = newOrOld;
-        this.$scope.events[i].offerInfo = this.$sce.trustAsHtml('<span class="label label-info">' + status + '</span>');
-        //check rejected
+        this.$scope.events[i].offerStatus = status;
+        this.$scope.events[i].offersNumber = offersNumber;
         this.socket.syncUpdates('offer', this.$scope.events);
       });
     });
@@ -145,6 +166,11 @@ class EventsController {
     this.$rootScope.eventActive = event._id;
     this.$cookies.put('eventActive', event._id);
     this.$rootScope.$broadcast('eventActive', event._id);
+    _.each(this.$scope.events, (item, i) => {
+      if (item._id ==  event._id) {
+        this.$scope.events[i].active = true;
+      }
+    });
   }
 }
 

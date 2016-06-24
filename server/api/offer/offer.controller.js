@@ -124,6 +124,16 @@ export function update(req, res) {
     .catch(handleError(res));
 }
 
+export function cancelAll(req, res) {
+  console.log('req.body', req.body);
+  return Offer.update(req.body, { status: 'cancelled' }, { multi: true }).exec()
+    .then((res) => {
+      console.log('res', res);
+      respondWithResult(res);
+    })
+    .catch(handleError(res));
+}
+
 // Deletes a Thing from the DB
 export function destroy(req, res) {
   return Offer.findById(req.params.id).exec()

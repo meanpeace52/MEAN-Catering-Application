@@ -15,12 +15,15 @@ class OffersController {
     this.EventsService = EventsService;
     this.incService = IncludedInPriceService;
 
+    this.$scope.includedInPrice = this.incService.getIncludedInPrice().then((data)=> {
+      this.$scope.includedInPrice = data;
+    });
+
     $scope.$on('$destroy', function () {
       socket.unsyncUpdates('offer');
     });
 
     $rootScope.$on('eventActive', (eventId) => {
-      console.log('get event');
       this.init(eventId);
     });
 
@@ -50,13 +53,10 @@ class OffersController {
   }
 
   init(eventId) {
-    console.log('we here');
     this.eventId = this.$scope.eventId =  this.$rootScope.eventActive || this.$cookies.get('eventActive');
-    this.event = this.EventsService.getEventById(this.eventId);
-    this.$scope.includedInPrice = this.incService.getIncludedInPrice().then((data)=> {
-      this.$scope.includedInPrice = _.map(data, (item, i) => {
-        return item;
-      });
+    this.event = this.EventsService.getEventById(this.eventId).then((data) => {
+      this.event = this.$scope.event = data;
+      this.$scope.event.includedInPrice = this.convertIncludedInPrice(this.$scope.event.includedInPrice);
       this.$scope.offers = this.getOffersList();
     });
   }
@@ -73,18 +73,23 @@ class OffersController {
     })
   }
 
+  convertIncludedInPrice(array) {
+    let cnt = [];
+    _.each(this.$scope.includedInPrice, (item, j) => {
+      if (_.indexOf(array, item._id) > -1) {
+        cnt.push(item);
+      }
+    });
+    return cnt;
+  }
+
   prepareOffers() {
     _.each(this.$scope.offers, (offer, i) => {
-      let cnt = [];
-      _.each(this.$scope.includedInPrice, (item, j) => {
-        if (_.indexOf(this.$scope.offers[i].includedInPrice, item._id) > -1) {
-          cnt.push(item);
-        }
-      });
-      this.$scope.offers[i].includedInPrice = cnt;
+
+      this.$scope.offers[i].includedInPrice = this.convertIncludedInPrice(this.$scope.offers[i].includedInPrice);
 
       this.$http.get('/api/users/' + offer.catererId).then(response => {
-        this.$scope.offers[i].catererName = response.data.name;
+        this.$scope.offers[i].caterer = response.data;
       })
       .catch(err => {
         this.errors = err.message;
