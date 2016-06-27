@@ -26,35 +26,27 @@ class EventsController {
     this.isLoggedIn = Auth.isLoggedIn;
     this.user = this.getCurrentUser();
     this.$scope.eventActive = null;
-    root.$scope.events = [];
+   /*this.$scope.events = this.$http.post('/api/events', {userId: this.user._id}).then(response => {
+      this.$scope.events = response.data;
+      console.log('fff', response.data);
+    });
+    console.log('rrr', this.$scope.events);
 
+    this.tableParams = new NgTableParams({}, { getData: function(params){
+      return $http.post('/api/events', {userId: root.user._id}).then((response) => {
+        params.total(response.data.length);
+        console.log('params', params, response.data, root.user._id);
+        root.$scope.events = response.data;
+        return root.$scope.events;
+      });
+    }}); */
 
     function eventPoller() {
       root.$scope.events = root.getEventsList();
+      //this.tableParams.reload();
     }
-
-    this.tableParams = new NgTableParams({
-      filter: { name: "T" }
-    }, {
-      dataset: root.$scope.events
-    });
 
     eventPoller();
-
-    this.statuses = {
-      draft: {
-        statusClass: 'default'
-      },
-      sent: {
-        statusClass: 'info'
-      },
-      cancelled: {
-        statusClass: 'disabled'
-      },
-      completed: {
-        statusClass: 'success'
-      }
-    }
 
     $scope.$on('$destroy', function () {
       socket.unsyncUpdates('event');
@@ -119,6 +111,11 @@ class EventsController {
         this.$scope.events[i].offerUrl = offerUrl;
         this.$scope.events[i].offerStatus = status;
         this.$scope.events[i].offersNumber = offersNumber;
+        this.tableParams = new this.NgTableParams({
+          filter: { name: "T" }
+        }, {
+          dataset: this.$scope.events
+        });
         this.socket.syncUpdates('offer', this.$scope.events);
       });
     });
@@ -140,6 +137,11 @@ class EventsController {
           });
         });
         this.$scope.events[i].offersNumber = offersNumber;
+
+        this.tableParams = new this.NgTableParams({}, {
+          dataset: this.$scope.events
+        });
+        console.log('fff', this.tableParams);
         this.socket.syncUpdates('offer', this.$scope.events);
       });
     });
@@ -149,6 +151,7 @@ class EventsController {
     if (this.user.role == 'user') {
       this.$http.post('/api/events', {userId: this.user._id}).then(response => {
         this.$scope.events = response.data;
+        console.log('fff', response.data);
         this.prepareUserEvents();
         this.socket.syncUpdates('event', this.$scope.events);
       });

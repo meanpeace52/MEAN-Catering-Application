@@ -3,15 +3,48 @@
     <div class="col-sm-12">
       <div class="panel panel-default">
         <div class="panel-body">
-          <table class="table table-hover table-condensed table-events" ng-table="vm.tableParams">
+          <table class="table table-hover table-condensed table-events">
+            <!--<tr ng-repeat="event in $data" ng-class="{drafted: event.drafted, active: event.active}" ng-click="vm.setActiveEvent(event)">-->
+              <!--<td ng-if="vm.user.role == 'user'">-->
+              <!--&lt;!&ndash;<span class="label label-warning" ng-if="vm.user.role == 'caterer' && event.isUpdated">Updated!</span>&ndash;&gt;-->
+              <!--<span class="label label-info" ng-if="vm.user.role == 'user'">{{event.status}}</span></td>-->
+              <!--<td data-title="'Date'">{{event.date | date: "longDate"}}</td>-->
+              <!--<td data-title="'Time'">{{event.time | date: "shortTime"}}</td>-->
+              <!--<td data-title="'Name'" filter="{name: 'text'}">{{event.name}}</td>-->
+              <!--<td data-title="'Price'">{{event.pricePerPerson}}</td>-->
+              <!--<td data-title="'People'">{{event.people}}</td>-->
+              <!--<td data-title="'Location'" ng-if="vm.user.role == 'caterer'">{{event.location}}</td>-->
+              <!--<td data-title="'Description'">{{event.description}}</td>-->
+              <!--<td data-title="'Offer Status'" ng-if="vm.user.role == 'caterer'">-->
+              <!--<span class="label label-info" ng-if="event.offerStatus" >{{event.offerStatus}}</span>-->
+              <!--</td>-->
+              <!--<td>-->
+              <!--<div ng-if="vm.user.role == 'user'">-->
+              <!--<a class="btn btn-xs btn-default" href="/events/{{event._id}}">Edit Event</a>-->
+              <!--&lt;!&ndash;<a class="btn btn-xs btn-warning" ui-sref="offers" ng-click="vm.setActiveEvent(event)" >Offers ({{event.offersNumber}})</a>&ndash;&gt;-->
+              <!--<a class="btn btn-xs btn-warning" uib-popover-html="event.offersInfo" popover-trigger="mouseenter" popover-placement="right">Offers ({{event.offersNumber}})</a>-->
+              <!--</div>-->
+              <!--<div ng-if="vm.user.role == 'caterer'">-->
+              <!--<a class="btn btn-xs btn-default" ng-if="event.offerStatus" href="{{event.offerUrl}}">Edit Offer</a>-->
+              <!--<a class="btn btn-xs btn-default" ng-if="!event.offerStatus" href="{{event.offerUrl}}">Create Offer</a>-->
+              <!--</div>-->
+              <!--</td>-->
+              <!--<td>-->
+              <!--<a class="btn btn-xs btn-danger" ng-click="vm.decline(event._id)" ng-if="vm.user.role == 'caterer'">Decline Event</a>-->
+              <!--<div ng-if="vm.user.role == 'user'">-->
+              <!--<a class="btn btn-xs btn-danger" ng-click="vm.cancel(event._id)">Cancel</a>-->
+              <!--<a class="btn btn-xs btn-default" ng-click="vm.delete(event)" title="Delete event"><i class="fa fa-times"></i></a>-->
+              <!--</div>-->
+              <!--</td>-->
+            <!--</tr>-->
             <thead>
               <tr>
-                <th ng-if="vm.user.role == 'user'">Status</th>
-                <th>Date</th>
+                <th ng-if="vm.user.role == 'user'" data-title="'Status'" filter="{status: 'text'}">Status</th>
+                <th data-title="'Date'" filter="{date: 'text'}">Date</th>
                 <th>Time</th>
-                <th>Name</th>
-                <th>Price</th>
-                <th>People</th>
+                <th data-title="'Name'" filter="{name: 'text'}">Name</th>
+                <th data-title="'Price'" filter="{price: 'text'}">Price</th>
+                <th data-title="'People'" filter="{people: 'number'}">People</th>
                 <th ng-if="vm.user.role == 'caterer'">Location</th>
                 <th>Description</th>
                 <th ng-if="vm.user.role == 'caterer'">Offer</th>

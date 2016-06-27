@@ -46,6 +46,7 @@ class OffersEditController {
     if (this.user.role = 'caterer') {
       this.$http.post('/api/offers/' + id + '/confirm', {status: 'confirmed'}).then(response => {
         //set visual state
+        this.confirmed = true;
         this.$scope.fm.status = 'confirmed';
         this.socket.syncUpdates('offer', this.$scope.offers);
       });
@@ -55,6 +56,7 @@ class OffersEditController {
     if (this.user.role = 'caterer') {
       this.$http.post('/api/offers/' + id + '/cancel', {status: 'cancelled', isUpdated: true}).then(response => {
         //set visual state
+        this.cancelled = true;
         this.$scope.fm.status = 'cancelled';
         this.socket.syncUpdates('offer', this.$scope.offers);
       });

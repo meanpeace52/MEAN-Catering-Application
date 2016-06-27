@@ -87,6 +87,8 @@
           <button class="btn btn-success" ng-if="fm.status == 'accepted'" ng-click="vm.confirm(fm._id)">Confirm</button>
           <button class="btn btn-danger" ng-click="vm.cancel(fm._id)">Cancel Offer</button>
         </div>
+        <div ng-if="vm.cancelled" class="alert alert-warning">Offer is cancelled.</div>
+        <div ng-if="vm.confirmed" class="alert alert-success">Offer is confirmed.</div>
         <hr />
       </div>
       <form novalidate class="form-fluid" name="form">
@@ -139,22 +141,16 @@
           </p>
           <p class="help-block">{{ vm.errors.other }}</p>
         </div>
-        <div ng-if="vm.saved" class="alert alert-success">Offer is successfully saved. <span ng-if="fm.status == 'sent'">Be aware that event information sent to customer will not be updated till you send it.</span></div>
+        <div ng-if="vm.saved" class="alert alert-success">Offer is successfully saved.</div>
         <div ng-if="vm.sent" class="alert alert-success">Offer is successfully sent to Customer.</div>
-        <div ng-if="fm.status == 'confirmed' || fm.status == 'accepted'">
-          <button class="btn btn-default disabled" type="submit">
-            Save Changes
-          </button>
+        <div ng-if="fm.status == 'confirmed' || fm.status == 'accepted' || fm.status == 'cancelled'">
           <button class="btn btn-primary disabled" type="submit">
             Send Request
           </button>
         </div>
-        <div ng-if="fm.status !== 'confirmed' && fm.status !== 'accepted'">
-          <button class="btn btn-default" type="submit" ng-click="vm.saveDraft(form)">
-            Save Changes
-          </button>
+        <div ng-if="fm.status !== 'confirmed' && fm.status !== 'accepted' && fm.status !== 'cancelled'">
           <button class="btn btn-primary" type="submit" ng-click="vm.sendRequest(form)">
-            Send Request
+            Save Changes
           </button>
         </div>
         <div></div>
