@@ -38,7 +38,7 @@ class EventsController {
             if (event.status == "cancelled") {
               $scope.events[i].drafted = true;
             }
-            if ($scope.role == 'caterer') {
+            if ($scope.user.role == 'caterer') {
               if (_.indexOf(event.rejectedBy, $scope.user._id) >= 0) {
                 $scope.events[i].drafted = true;
               }
