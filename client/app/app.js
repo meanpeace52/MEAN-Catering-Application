@@ -2,7 +2,7 @@
 
 angular.module('cateringApp', ['cateringApp.auth', 'cateringApp.admin', 'cateringApp.constants',
     'ngCookies', 'ngResource', 'ngSanitize', 'btford.socket-io', 'ui.router', 'ui.bootstrap',
-    'validation.match', "checklist-model", "rzModule", "angularFileUpload", "ngTable"
+    'validation.match', "checklist-model", "rzModule", "angularFileUpload", "ngTable", 'smart-table'
   ])
   .config(function($urlRouterProvider, $locationProvider) {
     $urlRouterProvider.otherwise('/');

@@ -78,4 +78,11 @@ tr.drafted {
 
 .table-events th {
   text-align: left !important;
+  cursor: pointer;
+}
+.st-sort-ascent:before {
+  content: '\25B2';
+}
+.st-sort-descent:before {
+  content: '\25BC';
 }

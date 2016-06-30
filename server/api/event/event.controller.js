@@ -11,6 +11,9 @@
 
 import _ from 'lodash';
 import Event from './event.model';
+import Offer from '../offer/offer.model';
+import User from '../user/user.model';
+var Promise = require('bluebird');
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -77,10 +80,48 @@ export function index(req, res) {
     .catch(handleError(res));
 }
 
-//filteredList
-//getState
-//isUpdated
-//isSentTo
+export function dataset(req, res) {
+  let query = {},
+    isCaterer = (req.body.userId ? false : true);
+  if (!isCaterer) {
+    query = {userId: req.body.userId}
+  } else {
+    query = {showToCaterers: req.body.showToCaterers, selectedCaterers: {$elemMatch: {$eq: req.body.sentTo } } }
+  }
+
+  return Event.find(query).exec().then((events) => {
+    let eventPromises = [], offerPromises = [];
+
+  events.forEach((event, i) => {
+    events[i] = events[i].toObject();
+    let offerQuery = (isCaterer ? {eventId: event._id, catererId: req.body.catererId} : {eventId: event._id});
+    eventPromises.push(Offer.find(offerQuery).exec().then((offers) => {
+      events[i].offers = offers;
+      if (!isCaterer && offers.length) {
+        if (offers.length) {
+          offers.forEach((offer, j) => {
+            offers[j] = offers[j].toObject();
+            offerPromises.push(User.findById(offer.catererId).exec().then((catererResult) => {
+              events[i].offers[j].catererName = catererResult.companyName || catererResult.name;
+              //console.log(events[i], events[i].offers[j].catererName);
+              return offers[j];
+            }));
+          });
+        }
+      }
+      return events[i];
+    }));
+  });
+
+  return Promise.all(eventPromises.concat(offerPromises)).then(() => {
+    //
+      console.log('events', events);
+      return events;
+   }).then(respondWithResult(res))
+    .catch(handleError(res));
+
+ });
+}
 
 // Gets a list of Events
 export function filteredList(req, res) {
