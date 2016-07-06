@@ -19,6 +19,7 @@ export default function(app) {
   app.use('/api/offers', require('./api/offer'));
   app.use('/api/users', require('./api/user'));
   app.use('/api/foodTypes', require('./api/foodType'));
+  app.use('/api/templates', require('./api/template'));
   app.use('/api/includedInPrice', require('./api/includedInPrice'));
 
   app.use('/auth', require('./auth').default);

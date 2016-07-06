@@ -1,10 +1,32 @@
-tr.drafted {
-  background: #eee;
+.table.table-events tbody tr td {
+  border-bottom: 1px solid #ddd;
+
+  .btn.delete-event {
+    display: inline-block;
+    float: right;
+  }
+}
+
+.table.table-events tbody tr.drafted td {
+  background: #eee !important;
   color: #aaa;
 
   .btn {
     display: none;
   }
+
+  .btn.delete-event {
+    display: inline-block;
+    float: right;
+  }
+}
+
+.table-events tr.active, .table-events tr.active td {
+  background: #FCE6A2 !important;
+}
+
+.table-events tr.hidden {
+  display: none !important;
 }
 
 .uib-timepicker {
@@ -85,4 +107,8 @@ tr.drafted {
 }
 .st-sort-descent:before {
   content: '\25BC';
+}
+
+.pagination {
+  margin: 20px 0 0 0;
 }

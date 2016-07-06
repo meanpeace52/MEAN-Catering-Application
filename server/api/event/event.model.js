@@ -21,7 +21,7 @@ var EventSchema = new mongoose.Schema({
   selectedCaterers: Object,
   sentTo: Array,
   rejectedBy: Array,
-  acceptedBy: String,
+  confirmedBy: String,
   isUpdated: Boolean
 });
 

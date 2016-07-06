@@ -82,9 +82,8 @@
 
             <ul>
               <li ng-repeat="item in FileUploader.queue">
-                <img src="/uploads/{{item.file.name}}" />
-                Name: <span ng-bind="item.file.name"></span><br/>
-                <button class="btn btn-default" ng-click="item.upload()">Upload</button>
+                <!--<img src="/uploads/{{item.file.name}}" />-->
+                Name: <span ng-bind="item.file.name"></span> <button class="btn btn-default" ng-click="item.upload()">Upload</button>
               </li>
             </ul>
           </div>
@@ -141,8 +140,12 @@
             Save changes
           </button>
         </div>
-
       </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <templatesprofile></templatesprofile>
     </div>
   </div>
   <hr>

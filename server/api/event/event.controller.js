@@ -115,7 +115,7 @@ export function dataset(req, res) {
 
   return Promise.all(eventPromises.concat(offerPromises)).then(() => {
     //
-      console.log('events', events);
+      //console.log('events', events);
       return events;
    }).then(respondWithResult(res))
     .catch(handleError(res));

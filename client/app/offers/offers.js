@@ -9,13 +9,13 @@ angular.module('cateringApp')
       controllerAs: 'vm',
       authenticate: 'user'
     })
-    .state('newOffer', {
-      url: '/offers/new',
-      templateUrl: 'app/offers/new.html',
-      controller: 'OffersNewController',
-      controllerAs: 'vm',
-      authenticate: 'caterer'
-    })
+      .state('newOffer', {
+        url: '/offers/new',
+        templateUrl: 'app/offers/new.html',
+        controller: 'OffersNewController',
+        controllerAs: 'vm',
+        authenticate: 'caterer'
+      })
       .state('editOffer', {
         url: '/offers/:id',
         templateUrl: 'app/offers/edit.html',

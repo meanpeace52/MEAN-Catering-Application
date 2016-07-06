@@ -27,28 +27,7 @@ class OffersController {
       this.init(eventId);
     });
 
-  this.isReadyForPayment = false;
-
-    this.statuses = {
-      draft: {
-        statusClass: 'default'
-      },
-      sent: {
-        statusClass: 'info'
-      },
-      cancelled: {
-        statusClass: 'disabled'
-      },
-      accepted: {
-        statusClass: 'warning'
-      },
-      confirmed: {
-        statusClass: 'success'
-      },
-      payed: {
-        statusClass: 'success money'
-      }
-    }
+    this.isReadyForPayment = false;
 
   }
 
@@ -84,9 +63,17 @@ class OffersController {
   }
 
   prepareOffers() {
+    let acceptedIndex = -1;
     _.each(this.$scope.offers, (offer, i) => {
-
+      if (offer.status == 'accepted' || offer.status == 'confirmed') acceptedIndex = i;
+      if (offer.status == 'cancelled') this.$scope.offers[i].drafted = true;
+      if (offer.counter) {
+        this.$scope.offers[i].priceWithCounter = offer.pricePerPerson - (offer.pricePerPerson * offer.counter / 100);
+      } else {
+        this.$scope.offers[i].priceWithCounter = offer.pricePerPerson;
+      }
       this.$scope.offers[i].includedInPrice = this.convertIncludedInPrice(this.$scope.offers[i].includedInPrice);
+
 
       this.$http.get('/api/users/' + offer.catererId).then(response => {
         this.$scope.offers[i].caterer = response.data;
@@ -95,6 +82,11 @@ class OffersController {
         this.errors = err.message;
       });
     });
+    if (acceptedIndex > -1) {
+      _.each(this.$scope.offers, (offer, i) => {
+        if (i !== acceptedIndex) this.$scope.offers[i].drafted = true;
+      });
+    }
   }
 
   decline(id) {
@@ -103,6 +95,7 @@ class OffersController {
         //set visual state
         _.each(this.$scope.offers, (item, i) => {
           if (item._id == id) {
+            this.$scope.offers[i].drafted = true;
             this.$scope.offers[i].status = 'declined';
           }
         });
@@ -113,10 +106,12 @@ class OffersController {
 
   accept(id) {  // by customer
     if (this.user.role = 'user') {
-      this.$http.post('/api/offers/' + id + '/accept', {status: 'accepted'}).then(response => {
+      this.$http.post('/api/offers/' + id + '/accept', {status: 'accepted', eventId: this.eventId }).then(response => {
         //set visual state
         _.each(this.$scope.offers, (item, i) => {
+          this.$scope.offers[i].drafted = true;
           if (item._id == id) {
+            this.$scope.offers[i].drafted = false;
             this.$scope.offers[i].status = 'accepted';
           }
         });

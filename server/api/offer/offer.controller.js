@@ -11,6 +11,7 @@
 
 import _ from 'lodash';
 import Offer from './offer.model';
+import Event from '../event/event.model';
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -19,6 +20,22 @@ function respondWithResult(res, statusCode) {
       res.status(statusCode).json(entity);
     }
   };
+}
+
+function saveEventUpdates(updates) {
+  return function(entity) {
+    console.log('event', entity);
+    for (let key in updates) {
+      entity[key] = updates[key];
+      delete updates[key];
+    }
+    var updated = _.mergeWith(entity, updates);
+
+    return updated.save()
+        .then(updated => {
+        return updated;
+  });
+};
 }
 
 function saveUpdates(updates) {
@@ -117,6 +134,15 @@ export function update(req, res) {
   if (req.body._id) {
     delete req.body._id;
   }
+
+  if (req.body.eventId && (req.body.status == 'accepted' || req.body.status == 'confirmed')) {
+    let updates = {status: req.body.status};
+    if (updates.status = 'confirmed') {
+      updates.confirmedBy = req.body.userId;
+    }
+    Event.findById(req.body.eventId).exec()
+      .then(saveEventUpdates(updates));
+  }
   return Offer.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(saveUpdates(req.body))
@@ -125,10 +151,8 @@ export function update(req, res) {
 }
 
 export function cancelAll(req, res) {
-  console.log('req.body', req.body);
   return Offer.update(req.body, { status: 'cancelled' }, { multi: true }).exec()
     .then((res) => {
-      console.log('res', res);
       respondWithResult(res);
     })
     .catch(handleError(res));

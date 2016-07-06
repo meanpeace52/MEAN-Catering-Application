@@ -14,9 +14,14 @@ class CatererProfileController {
     this.user = this.getCurrentUser();
     this.ftService = FoodTypesService;
 
-    console.log(this.user, FileUploader)
+    ///console.log('token', CSRF_TOKEN)
+    var csrf_token = null; //document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-    this.$scope.FileUploader = new FileUploader();
+    this.$scope.FileUploader = new FileUploader({
+      headers: {
+        'X-CSRF-TOKEN': csrf_token
+      }
+    });
 
     this.$scope.faOptions = {
       removeAfterUpload: true,

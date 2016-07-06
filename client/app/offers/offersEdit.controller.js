@@ -2,7 +2,6 @@
 
 class OffersEditController {
   constructor($http, $scope, $rootScope, socket, Auth, $state, $cookies, OffersService, EventsService, IncludedInPriceService) {
-    this.user = {};
     this.errors = {};
     this.submitted = false;
     this.saved = false;
@@ -13,6 +12,9 @@ class OffersEditController {
     this.$scope = $scope;
     this.$http = $http;
     this.socket = socket;
+
+    this.getCurrentUser = Auth.getCurrentUser;
+    this.user = this.getCurrentUser();
 
     this.incService = IncludedInPriceService;
 
@@ -44,7 +46,7 @@ class OffersEditController {
 
   confirm(id) {  //by caterer
     if (this.user.role = 'caterer') {
-      this.$http.post('/api/offers/' + id + '/confirm', {status: 'confirmed'}).then(response => {
+      this.$http.post('/api/offers/' + id + '/confirm', {status: 'confirmed', eventId: this.eventId, userId: this.user._id }).then(response => {
         //set visual state
         this.confirmed = true;
         this.$scope.fm.status = 'confirmed';

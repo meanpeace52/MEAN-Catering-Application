@@ -105,7 +105,10 @@
           <div class="col-sm-3">
             <div class="form-group">
               <label>Counter</label>
-              <input type="text" name="counter" class="form-control" ng-model="fm.counter">
+              <div class="input-group">
+                <input type="number" name="counter" class="form-control" ng-model="fm.counter">
+                <span class="input-group-addon">%</span>
+              </div>
             </div>
           </div>
           <div class="col-sm-3">
@@ -116,13 +119,14 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-6">
+          <div class="col-sm-9">
             <div class="form-group">
               <label>Offer description</label>
-              <textarea name="offerDescription" class="form-control" ng-model="fm.offerDescription"></textarea>
+              <!--<textarea name="offerDescription" class="form-control" ng-model="fm.offerDescription"></textarea>-->
+              <templates></templates>
             </div>
           </div>
-          <div class="col-sm-6">
+          <div class="col-sm-3">
             <label>Included in price</label>
             <div class="panel panel-default">
               <div class="panel-body">
