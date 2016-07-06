@@ -20,5 +20,18 @@ module.exports = {
           process.env.OPENSHIFT_MONGODB_DB_URL +
           process.env.OPENSHIFT_APP_NAME ||
           'mongodb://localhost/catering'
+  },
+  
+  payments: {
+    DWOLLA: {
+      KEY: process.env.DWOLLA_KEY,
+      SECRET: process.env.DWOLLA_SECRET,
+      ACCOUNT_ID: process.env.DWOLLA_ACCOUNT_ID,
+      ACCESS_TOKEN: process.env.DWOLLA_ACCESS_TOKEN
+    },
+    STRIPE: {
+      SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+      PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY
+    }
   }
 };

@@ -48,6 +48,7 @@
     <script src="bower_components/es5-shim/es5-shim.js"></script>
     <script src="bower_components/json3/lib/json3.min.js"></script>
     <![endif]-->
+    <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
     <!-- build:js({client,node_modules}) app/vendor.js -->
       <!-- bower:js -->
       <script src="bower_components/jquery/dist/jquery.js"></script>
@@ -65,6 +66,7 @@
       <script src="bower_components/angular-file-upload/dist/angular-file-upload.min.js"></script>
       <script src="bower_components/ng-table/dist/ng-table.min.js"></script>
       <script src="bower_components/angular-smart-table/dist/smart-table.js"></script>
+      <script src="bower_components/angular-payments/lib/angular-payments.js"></script>
       <!-- endbower -->
       <script src="socket.io-client/socket.io.js"></script>
     <!-- endbuild -->
@@ -92,13 +94,14 @@
       <script src="app/includedInPrice/includedInPrice.service.js"></script>
       <script src="app/main/main.controller.js"></script>
       <script src="app/main/main.js"></script>
-      <script src="app/offers/offer.controller.js"></script>
       <script src="app/offers/offers.controller.js"></script>
       <script src="app/offers/offers.directive.js"></script>
       <script src="app/offers/offers.js"></script>
       <script src="app/offers/offers.service.js"></script>
       <script src="app/offers/offersEdit.controller.js"></script>
       <script src="app/offers/offersNew.controller.js"></script>
+      <script src="app/payments/checkout.controller.js"></script>
+      <script src="app/payments/payments.js"></script>
       <script src="app/templates/templates.controller.js"></script>
       <script src="app/templates/templates.directive.js"></script>
       <script src="app/templates/templates.js"></script>
