@@ -21,6 +21,7 @@ export default function(app) {
   app.use('/api/foodTypes', require('./api/foodType'));
   app.use('/api/templates', require('./api/template'));
   app.use('/api/includedInPrice', require('./api/includedInPrice'));
+  app.use('/api/payments', require('./api/payments'));
 
   app.use('/auth', require('./auth').default);
 
@@ -51,8 +52,5 @@ export default function(app) {
     .get((req, res) => {
       res.sendFile(path.resolve(app.get('appPath') + '/index.html'));
   });
-
-
-
 
 }
