@@ -8,11 +8,23 @@ import errors from './components/errors';
 import path from 'path';
 
 var bodyParser = require("body-parser");
-var multer = require("multer");
-var lusca = require('lusca');
+//var multer = require("multer");
+//var upload = multer({ dest: '/uploads/' }).single("logo");
+//var lusca = require('lusca');
 
 export default function(app) {
+
+  app.use(bodyParser.json({limit: '50mb'}));
+  app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
   // Insert routes below
+  //app.use("/api/upload", function(req, res) {
+  //  console.log('upload1', req.body, req.file, req._file);
+  //  upload(req, res, function (err) {
+  //    res.send(req.file);
+  //    console.log('upload', req.file);
+  //    res.send(req.file);
+  //  });
+  //});
 
   app.use('/api/things', require('./api/thing'));
   app.use('/api/events', require('./api/event'));
@@ -25,23 +37,12 @@ export default function(app) {
 
   app.use('/auth', require('./auth').default);
 
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: true }));
-
-  var opts = { csrf: { angular: true } }; // options for lusca
-
-  app.use(lusca(opts)); // lusca registered AFTER cookieParser
-
   app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
   });
 
-  app.post("/upload", multer({dest: "./uploads/"}).array("uploads[]", 12), function(req, res) {
-    console.log(req);
-    res.send(req.files);
-  });
 
   // All undefined asset or api routes should return a 404
   app.route('/:url(api|auth|components|app)/*')

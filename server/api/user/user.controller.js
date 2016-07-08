@@ -5,6 +5,7 @@ import passport from 'passport';
 import config from '../../config/environment';
 import jwt from 'jsonwebtoken';
 import _ from 'lodash';
+var fs = require('fs');
 //import * as mailer from '../mailer';
 
 //console.log('mailer', mailer);
@@ -107,7 +108,6 @@ export function update(req, res) {
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
-
 /**
  * Get a single user
  */

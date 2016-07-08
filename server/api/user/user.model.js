@@ -33,7 +33,8 @@ var UserSchema = new Schema({
   veganOffers: Boolean,
   provider: String,
   salt: String,
-  logo: Buffer
+  logo: String
+  //logo: { data: Buffer, contentType: String }
 });
 
 /**

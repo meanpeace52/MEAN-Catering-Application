@@ -78,12 +78,19 @@
             </div>
           </div>
           <div class="col-sm-4">
-            <input type="file" nv-file-select uploader="FileUploader" options="faOptions"/>
+            <div class="img-thumbnail" ng-draw="{file: vm.user.logo, width: 300, userId: vm.user._id}">
+            </div>
+            <br />
+            <br />
+            <div class="form-group">
+              <!--<input type="file" class="form-control" name="logo" nv-file-select uploader="FileUploader" options="faOptions" ng-model="vm.user.logo"/>-->
+              <input type="file" name="logo" ng-model="vm.user.logo" nv-file-select uploader="uploader" options="faOptions"/>
+            </div>
 
-            <ul>
-              <li ng-repeat="item in FileUploader.queue">
-                <!--<img src="/uploads/{{item.file.name}}" />-->
-                Name: <span ng-bind="item.file.name"></span> <button class="btn btn-default" ng-click="item.upload()">Upload</button>
+            <ul ng-if="uploadButtonShow">
+              <li ng-repeat="item in uploader.queue">
+                <span ng-bind="item.file.name"></span> <button class="btn btn-default" ng-disable="!uploadButtonReady" ng-click="vm.saveImage()">Upload</button><br />
+                <!--<div ng-show="uploader.isHTML5" class="img-thumbnail" ng-thumb="{ file: item._file, height: 100 }"></div>-->
               </li>
             </ul>
           </div>
@@ -136,7 +143,7 @@
         <!--</div>-->
 
         <div>
-          <button class="btn btn-primary btn-lg btn-register" ng-click="vm.save()" type="submit">
+          <button class="btn btn-primary btn-lg btn-register" ng-click="vm.save(form)" type="submit">
             Save changes
           </button>
         </div>

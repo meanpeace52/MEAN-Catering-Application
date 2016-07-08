@@ -1,34 +1,60 @@
 'use strict';
 
 class CatererProfileController {
-  constructor(Auth, $state, $http, FoodTypesService, $scope, FileUploader) {
+  constructor(Auth, $cookies, $state, $http, FoodTypesService, $scope, FileUploader, $rootScope) {
     this.errors = {};
     this.submitted = false;
 
     this.Auth = Auth;
     this.$state = $state;
     this.$scope = $scope;
+    this.$rootScope = $rootScope;
     this.$http = $http;
+    this.$cookies = $cookies;
     this.getCurrentUser = Auth.getCurrentUser;
     this.isLoggedIn = Auth.isLoggedIn;
     this.user = this.getCurrentUser();
     this.ftService = FoodTypesService;
 
-    ///console.log('token', CSRF_TOKEN)
-    var csrf_token = null; //document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    let csrf_token = $cookies.get('XSRF-TOKEN'),
+        root = this,
+        reader = new FileReader();
 
-    this.$scope.FileUploader = new FileUploader({
+    $scope.uploadButtonReady = false;
+    $scope.uploadButtonShow = false;
+
+    reader.onload = function(event) {
+      root.user.logo = reader.result;
+      $scope.uploadButtonReady = true;
+    }
+
+    var uploader = this.$scope.uploader = new FileUploader({
+      queueLimit: 1,
+      autoUpload: false,
+      url: '/api/upload',
       headers: {
         'X-CSRF-TOKEN': csrf_token
+      },
+      formData: {
+        userId: this.user._id
+      },
+      removeAfterUpload: true,
+      onAfterAddingFile: function(item) {
+        reader.readAsDataURL(item._file);
+        $scope.uploadButtonShow = true;
+        //item.upload();
       }
     });
 
-    this.$scope.faOptions = {
-      removeAfterUpload: true,
-      url: '/upload',
-      queueLimit: 1,
-      autoUpload: false
-    }
+    // FILTERS
+
+    uploader.filters.push({
+      name: 'imageFilter',
+      fn: function(item /*{File|FileLikeObject}*/, options) {
+        var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
+        return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
+      }
+    });
 
     this.$scope.foodTypes = this.ftService.getFoodTypes().then((data)=> {
       this.$scope.foodTypes = data;
@@ -64,11 +90,25 @@ class CatererProfileController {
     }
   }
 
+  saveImage() {
+    let url = '/api/users/' + this.user._id;
+    this.$http.post(url, {logo: this.user.logo})
+      .then(response => {
+      this.$scope.uploadButtonShow = false;
+      this.$rootScope.$broadcast('imageLoaded');
+    })
+    .catch(err => {
+        this.errors.other = err.message;
+    });
+  }
+
   save() {
     let userModel = this.user,
       url = '/api/users/' + this.user._id;
 
-    console.log(userModel);
+    if (userModel.logo) {
+      delete userModel.logo;
+    }
 
     if (userModel) {
       this.$http.post(url, userModel)

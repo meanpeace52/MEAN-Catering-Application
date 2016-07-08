@@ -48,6 +48,7 @@
                 <hr />
                 <p><b>Caterer:</b> {{offer.caterer.name}}</p>
                 <p ng-if="offer.caterer.website"><b>Website:</b> {{offer.caterer.website}}</p>
+                <div ng-if="offer.caterer.logo" class="img-thumbnail" width="300" ng-draw="{file: offer.caterer.logo, width: 300}">
               </div>
             </div>
           </div>

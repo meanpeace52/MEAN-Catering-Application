@@ -77,6 +77,7 @@ class OffersController {
 
       this.$http.get('/api/users/' + offer.catererId).then(response => {
         this.$scope.offers[i].caterer = response.data;
+        this.$rootScope.$broadcast('imageLoaded');
       })
       .catch(err => {
         this.errors = err.message;

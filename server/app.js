@@ -10,6 +10,7 @@ import async from 'async';
 mongoose.Promise = require('bluebird');
 import config from './config/environment';
 import http from 'http';
+var bodyParser = require("body-parser");
 
 // Connect to MongoDB
 mongoose.connect(config.mongo.uri, config.mongo.options);
@@ -24,20 +25,9 @@ if (config.seedDB) { require('./config/seed'); }
 // Setup server
 var app = express();
 
-//admin2345c
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
-/*var auth = require('http-auth');
-var basic = auth.basic({
-  realm: "Simon Area.",
-  file: __dirname + "/../../users.htpasswd"
-});
-
-app.use('/', auth.connect(basic));
-
-//app.get('/', function(req, res){
-//  res.redirect('/main');
-//});
- */
 var server = http.createServer(app);
 var socketio = require('socket.io')(server, {
   serveClient: config.env !== 'production',
