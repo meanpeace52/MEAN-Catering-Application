@@ -12,6 +12,7 @@ router.post('/cancelAll', controller.cancelAll);
 router.post('/new', controller.create);
 router.put('/:id', controller.update);
 router.post('/:id/confirm', controller.update);
+router.post('/:id', controller.update);
 router.post('/:id/accept', controller.update);
 router.post('/:id/cancel', controller.update);
 router.post('/:id/decline', controller.update);

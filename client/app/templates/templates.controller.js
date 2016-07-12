@@ -1,11 +1,13 @@
 'use strict';
 
 class TemplatesController {
-  constructor($http, $scope, $rootScope, socket, Auth) {
+  constructor($http, $scope, $rootScope, socket, Auth, $timeout) {
     this.$scope = $scope;
+    this.saved = false;
     this.$rootScope = $rootScope;
     this.$http = $http;
     this.socket = socket;
+    this.$timeout = $timeout;
 
     this.isLoggedIn = Auth.isLoggedIn;
     this.getCurrentUser = Auth.getCurrentUser;
@@ -17,6 +19,15 @@ class TemplatesController {
 
     $scope.$watch('tfm.name', () => {
       this.check();
+    });
+
+    $scope.$watch('fm.offerDescription', () => {
+       if ($scope.fm && $scope.fm.offerDescription)  $scope.tfm.description = $scope.fm.offerDescription;
+    });
+
+    $scope.$on('$destroy', function () {
+      socket.unsyncUpdates('event');
+      socket.unsyncUpdates('offer');
     });
 
     $scope.$on('$destroy', function () {
@@ -49,13 +60,18 @@ class TemplatesController {
   }
 
   createTpl(tpl) {
-    let query = tpl;
+    let query = tpl,
+      root = this;
     query.userId = this.user._id;
 
     if (query._id) delete query._id;
 
     this.$http.post('/api/templates/new', query).then(response => {
       this.$scope.templates = this.getTemplatesList();
+      this.saved = true;
+      this.$timeout(function() {
+        root.saved = false;
+      }, 2000);
       this.socket.syncUpdates('tpl', this.$scope.templates);
     });
   }
@@ -88,7 +104,7 @@ class TemplatesController {
   }
 
   getTemplatesList() {
-    this.$http.post('/api/templates', { userId: this.userId }).then(response => {
+    this.$http.post('/api/templates', { userId: this.user._id }).then(response => {
       this.$scope.templates = response.data;
       this.socket.syncUpdates('tpl', this.$scope.templates);
     });

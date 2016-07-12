@@ -9,13 +9,37 @@
       this.socket = socket;
       this.awesomeThings = [];
 
+      $scope.slides = [
+        {
+          image: '/assets/images/0.jpg',
+          text: 'Best restaurants near',
+          id: '0'
+        },{
+          image: '/assets/images/1.jpg',
+          text: 'Best restaurants near',
+          id: '1'
+        },{
+          image: '/assets/images/2.jpg',
+          text: 'Best restaurants near',
+          id: '2'
+        },{
+          image: '/assets/images/3.jpg',
+          text: 'Best restaurants near',
+          id: '3'
+        }
+        //,{
+        //  image: '/assets/images/4.jpg',
+        //  text: 'Best restaurants near',
+        //  id: '4'
+        //}
+      ]
+
       $scope.$on('$destroy', function() {
         socket.unsyncUpdates('thing');
       });
     }
 
     $onInit() {
-      console.log('we here');
       this.$http.get('/api/things')
         .then(response => {
           this.awesomeThings = response.data;

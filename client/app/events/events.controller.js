@@ -3,9 +3,7 @@
 class EventsController {
   constructor($http, $scope, $rootScope, socket, Auth, $state, $cookies, $sce, OffersService, $interval, $filter) {
 
-    var root = this,
-      sync = $interval(root.pipe, (1000 * 60 * 2));
-
+    var root = this;
     this.errors = {};
     this.submitted = false;
     this.saved = false;
@@ -28,7 +26,7 @@ class EventsController {
     this.$scope.displayed = [];
 
     this.pipe = function(tableState) {
-      $scope.tableState = tableState || $scope.tableState;
+      $scope.tableState = (angular.isObject(tableState) && tableState ? tableState : $scope.tableState);
       let query = ($scope.user.role == 'caterer' ? {showToCaterers: true, sentTo: $scope.user._id, catererId: $scope.user._id} :  {userId: $scope.user._id});
       $http.post('/api/events/dataset', query).then(response => {
         $scope.events = response.data;
@@ -38,17 +36,19 @@ class EventsController {
             $scope.events[i].drafted = true;
           }
           if ($scope.user.role == 'caterer') {
-            if (_.indexOf(event.rejectedBy, $scope.user._id) >= 0) {
-              $scope.events[i].drafted = true;
+            if (event.status == 'confirmed' && event.confirmedBy !== $scope.user._id) {
+              _.pull($scope.events, $scope.events[i]);
+            } else {
+              if (_.indexOf(event.rejectedBy, $scope.user._id) >= 0) {
+                $scope.events[i].drafted = true;
+              }
+              let offerUrl = (event.offers.length ? '/offers/' + event.offers[0]._id : '/offers/new'),
+                status = (event.offers.length ? event.offers[0].status : null);
+
+              $scope.events[i].offerUrl = offerUrl;
+              $scope.events[i].offerStatus = status;
+              $scope.events[i].offersNumber = offersNumber;
             }
-            let offerUrl = (event.offers.length ? '/offers/' + event.offers[0]._id : '/offers/new'),
-              status = (event.offers.length ? event.offers[0].status : null);
-
-            if (status == 'confirmed' && event.confirmedBy !== $scope.user._id) $scope.events[i].hide = true;
-
-            $scope.events[i].offerUrl = offerUrl;
-            $scope.events[i].offerStatus = status;
-            $scope.events[i].offersNumber = offersNumber;
           } else {
             let offersInfo = '';
             _.each(event.offers, (offer, j) => {
@@ -73,6 +73,8 @@ class EventsController {
           if ($rootScope.eventActive) $rootScope.$broadcast('eventActive', $rootScope.eventActive);
       });
     }
+
+    var sync = $interval(root.pipe, (1000 * 60 * 2));
 
     $scope.$on('$destroy', function () {
       socket.unsyncUpdates('event');
@@ -179,16 +181,18 @@ class EventsController {
   }
 
   setActiveEvent(event) {
-    this.$scope.eventActive = event._id;
-    this.$rootScope.eventActive = event._id;
-    this.$cookies.put('eventActive', event._id);
-    this.$rootScope.$broadcast('eventActive', event._id);
-    _.each(this.$scope.events, (item, i) => {
-      this.$scope.events[i].active = false;
-      if (item._id ==  event._id) {
-        this.$scope.events[i].active = true;
-      }
-    });
+    if (this.user.role === 'user') {
+      this.$scope.eventActive = event._id;
+      this.$rootScope.eventActive = event._id;
+      this.$cookies.put('eventActive', event._id);
+      this.$rootScope.$broadcast('eventActive', event._id);
+      _.each(this.$scope.events, (item, i) => {
+        this.$scope.events[i].active = false;
+        if (item._id ==  event._id) {
+          this.$scope.events[i].active = true;
+        }
+      });
+    }
   }
 }
 

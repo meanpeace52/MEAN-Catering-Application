@@ -36,7 +36,7 @@ class SignupController {
       this.Auth.createUser(request)
         .then(() => {
         // Account created, redirect to home
-        if (request.role = 'caterer') {
+        if (request.role === 'caterer') {
           this.$state.go('caterer-profile');
         } else {
           this.$state.go('main');

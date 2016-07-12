@@ -1,12 +1,13 @@
 'use strict';
 
 class CatererProfileController {
-  constructor(Auth, $cookies, $state, $http, FoodTypesService, $scope, FileUploader, $rootScope) {
+  constructor(Auth, $cookies, $state, $http, FoodTypesService, $scope, FileUploader, $rootScope, $timeout) {
     this.errors = {};
     this.submitted = false;
 
     this.Auth = Auth;
     this.$state = $state;
+    this.$timeout = $timeout;
     this.$scope = $scope;
     this.$rootScope = $rootScope;
     this.$http = $http;
@@ -113,7 +114,11 @@ class CatererProfileController {
     if (userModel) {
       this.$http.post(url, userModel)
         .then(response => {
+        let root = this;
         this.saved = true;
+        this.$timeout(function() {
+          root.saved = false;
+        }, 2000);
       //this.$state.go('events');
     })
     .catch(err => {

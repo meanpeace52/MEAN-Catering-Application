@@ -2,22 +2,26 @@
   <div class="row">
     <div class="col-sm-3">
       <div class="from-group">
+        <p>Select description</p>
         <select class="form-control" name="templateSelected" ng-options="tpl.name for tpl in templates track by tpl._id" ng-change="tc.populateTpl()" ng-model="templateSelected"></select>
       </div>
     </div>
     <div class="col-sm-6">
       <div class="from-group">
-        <textarea class="form-control" ng-model="tfm.description" ng-blur="tc.populateToOffer()"></textarea>
+        <p>Or enter new one</p>
+        <textarea class="form-control" placeholder="Description" ng-model="tfm.description" ng-blur="tc.populateToOffer()"></textarea>
       </div>
     </div>
     <div class="col-sm-3">
+      <p>And save as new</p>
       <div class="from-group">
-        <input type="text" class="form-control" ng-model="tfm.name" ng-blur="tc.check()" />
+        <input type="text" placeholder="Template Name" class="form-control" ng-model="tfm.name" ng-blur="tc.check()" />
       </div>
       <br />
       <div class="from-group">
         <button style="width: 100%" class="btn btn-default" ng-disabled="checkForExistance" ng-click="tc.createTpl(tfm)" uib-tooltip="Please select a name for your template">Save As Template</button>
         <small class="muted" ng-if="checkForExistance">Please select a name for your template</small>
+        <div ng-show="tc.saved" class="alert alert-success animate-show" style="margin-top: 5px; padding: 5px;">Template is saved.</div>
       </div>
     </div>
   </div>

@@ -87,6 +87,11 @@
             <div class="form-group" ng-class="{'has-error': (form.location.$touched && form.location.$error.required || form.$submitted && form.location.$untouched)}">
               <label>Location</label>
               <input type="text" name="location" class="form-control" required ng-model="fm.location" />
+
+              <!--<br />-->
+              <!--<ui-gmap-google-map center='map.center' zoom='map.zoom'></ui-gmap-google-map>-->
+              <!--<br />-->
+
               <div ng-show="form.$submitted || form.location.$touched">
                 <div ng-show="form.location.$error.required">Please enter location</div>
               </div>

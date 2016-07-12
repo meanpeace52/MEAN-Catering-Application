@@ -11,7 +11,7 @@
               <div class="col-sm-6">
                 <div class="form-group">
                   <label>Company Name</label>
-                  <input type="text" name="name" class="form-control" ng-model="vm.user.name" />
+                  <input type="text" name="companyName" class="form-control" ng-model="vm.user.companyName" />
                 </div>
               </div>
               <div class="col-sm-6">
@@ -62,6 +62,8 @@
                 <div class="form-group">
                   <label>Location</label>
                   <input type="text" name="location" class="form-control" ng-model="vm.user.location"/>
+                  <!--<br />-->
+                  <!--<ui-gmap-google-map center='map.center' zoom='map.zoom'></ui-gmap-google-map>-->
                 </div>
               </div>
               <div class="col-sm-3">
@@ -107,13 +109,13 @@
                   <span class="label label-info" ng-if="!type.approved">not approved</span>
                 </label>
               </div>
-              <label>Add custom foodtype. <span class="muted">Note, that it needs to be approved by admin</span></label>
-              <div class="input-group" style="width: 250px;">
-                <input class="form-control" type="text" ng-model="ft.newFoodType" />
-                <span class="input-group-btn">
-                  <a class="btn btn-default" ng-click="vm.addFoodType()"><span class="fa fa-plus"></span></a>
-                </span>
-              </div>
+              <!--<label>Add custom foodtype. <span class="muted">Note, that it needs to be approved by admin</span></label>-->
+              <!--<div class="input-group" style="width: 250px;">-->
+                <!--<input class="form-control" type="text" ng-model="ft.newFoodType" />-->
+                <!--<span class="input-group-btn">-->
+                  <!--<a class="btn btn-default" ng-click="vm.addFoodType()"><span class="fa fa-plus"></span></a>-->
+                <!--</span>-->
+              <!--</div>-->
             </div>
           </div>
           <div class="col-sm-6">
@@ -141,7 +143,7 @@
         <!--{{ vm.errors.confirmemail }}-->
         <!--</p>-->
         <!--</div>-->
-
+        <div ng-if="vm.saved" class="alert alert-success">Changes are saved.</div>
         <div>
           <button class="btn btn-primary btn-lg btn-register" ng-click="vm.save(form)" type="submit">
             Save changes

@@ -1,11 +1,28 @@
 <header class="hero-unit" id="banner">
   <div class="container">
     <h1>Order food from restaurants around</h1>
-    <p class="input-group">
-      <input type="text" class="form-control" placeholder="Type address">
-      <span class="input-group-btn">
-        <button type="submit" class="btn btn-primary">Search</button>
-      </span>
-    </p>
+    <div class="search-cnt">
+      <p class="input-group input-group-lg">
+        <input type="text" class="form-control" placeholder="Type address">
+        <span class="input-group-btn">
+          <button type="submit" class="btn btn-primary">Search</button>
+        </span>
+      </p>
+    </div>
   </div>
 </header>
+<div class="container">
+  <div class="carousel-cnt">
+    <uib-carousel interval="3000">
+      <uib-slide ng-repeat="slide in slides track by slide.id">
+        <img ng-src="{{slide.image}}" style="margin:auto;">
+        <div class="carousel-caption">
+          <h4>{{slide.text}}</h4>
+          <p>Slide {{slide.id}}</p>
+        </div>
+      </uib-slide>
+    </uib-carousel>
+  </div>
+</div>
+
+

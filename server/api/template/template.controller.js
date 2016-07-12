@@ -61,7 +61,7 @@ function handleError(res, statusCode) {
 
 // Gets a list of Templates
 export function index(req, res) {
-  return Template.find().exec()
+  return Template.find({userId: req.body.userId}).exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
 }

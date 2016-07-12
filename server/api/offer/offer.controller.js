@@ -22,14 +22,13 @@ function respondWithResult(res, statusCode) {
   };
 }
 
-function saveEventUpdates(updates) {
+function saveEventUpdates(eventUpdates) {
   return function(entity) {
-    console.log('event', entity);
-    for (let key in updates) {
-      entity[key] = updates[key];
-      delete updates[key];
+    for (let key in eventUpdates) {
+      entity[key] = eventUpdates[key];
+      delete eventUpdates[key];
     }
-    var updated = _.mergeWith(entity, updates);
+    var updated = _.mergeWith(entity, eventUpdates);
 
     return updated.save()
         .then(updated => {
@@ -136,12 +135,14 @@ export function update(req, res) {
   }
 
   if (req.body.eventId && (req.body.status == 'accepted' || req.body.status == 'confirmed')) {
-    let updates = {status: req.body.status};
-    if (updates.status = 'confirmed') {
-      updates.confirmedBy = req.body.userId;
+
+    let eventUpdates = {status: req.body.status};
+    if (eventUpdates.status == 'confirmed') {
+      eventUpdates.confirmedBy = req.body.userId;
     }
+
     Event.findById(req.body.eventId).exec()
-      .then(saveEventUpdates(updates));
+      .then(saveEventUpdates(eventUpdates));
   }
   return Offer.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
