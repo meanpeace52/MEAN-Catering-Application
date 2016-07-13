@@ -25,39 +25,46 @@ class EventsController {
     this.$scope.events = [];
     this.$scope.displayed = [];
 
+    let query = ($scope.user.role == 'caterer' ? {showToCaterers: true, catererId: $scope.user._id, foodTypes: $scope.user.foodTypes} :  {userId: $scope.user._id});
+
     this.pipe = function(tableState) {
       $scope.tableState = (angular.isObject(tableState) && tableState ? tableState : $scope.tableState);
-      let query = ($scope.user.role == 'caterer' ? {showToCaterers: true, sentTo: $scope.user._id, catererId: $scope.user._id} :  {userId: $scope.user._id});
-      $http.post('/api/events/dataset', query).then(response => {
-        $scope.events = response.data;
-        _.each($scope.events, (event, i) => {
-          let offersNumber = event.offers.length;
-          if (event.status == "cancelled") {
-            $scope.events[i].drafted = true;
-          }
-          if ($scope.user.role == 'caterer') {
-            if (event.status == 'confirmed' && event.confirmedBy !== $scope.user._id) {
-              _.pull($scope.events, $scope.events[i]);
-            } else {
-              if (_.indexOf(event.rejectedBy, $scope.user._id) >= 0) {
-                $scope.events[i].drafted = true;
-              }
-              let offerUrl = (event.offers.length ? '/offers/' + event.offers[0]._id : '/offers/new'),
-                status = (event.offers.length ? event.offers[0].status : null);
 
-              $scope.events[i].offerUrl = offerUrl;
-              $scope.events[i].offerStatus = status;
-              $scope.events[i].offersNumber = offersNumber;
-            }
+      $http.post('/api/events/dataset', query).then(response => {
+        let events = response.data;
+        //console.log('events', events);
+        _.each(events, (event, i) => {
+          if (event.status == "cancelled" ||
+              ($scope.user.role == 'caterer' && _.indexOf(event.rejectedBy, $scope.user._id) >= 0) ||
+              ($scope.user.role == 'caterer' && event.status == 'confirmed' && event.confirmedBy !== $scope.user._id)) {
+            events[i].drafted = true;
+          }
+
+          //console.log('event', event);
+          let offersNumber = event.offers ? event.offers.length : 0;
+
+          if ($scope.user.role == 'caterer') {
+            let offerUrl = (event.offers && event.offers.length ? '/offers/' + event.offers[0]._id : '/offers/new'),
+              status = (event.offers && event.offers.length ? event.offers[0].status : null);
+
+            events[i].offerUrl = offerUrl;
+            events[i].offerStatus = status;
+            events[i].offersNumber = offersNumber;
           } else {
             let offersInfo = '';
             _.each(event.offers, (offer, j) => {
               let status = offer.status;
-                offersInfo += '<div>' + offer.catererName + ' <span class="label label-info">' + status + '</span></div><hr class="popover-divider" />';
-              $scope.events[i].offersInfo = $sce.trustAsHtml(offersInfo);
+              offersInfo += '<div>' + offer.catererName + ' <span class="label label-info">' + status + '</span></div><hr class="popover-divider" />';
+              events[i].offersInfo = $sce.trustAsHtml(offersInfo);
             });
-            $scope.events[i].offersNumber = offersNumber;
+            events[i].offersNumber = offersNumber;
           }
+        });
+
+        //$scope.events = events;
+
+        $scope.events = _.filter(events, (o) => {
+          return !o.drafted;
         });
 
         let filtered = $scope.tableState.search.predicateObject ? $filter('filter')($scope.events, $scope.tableState.search.predicateObject) : $scope.events,
@@ -74,7 +81,11 @@ class EventsController {
       });
     }
 
-    var sync = $interval(root.pipe, (1000 * 60 * 2));
+    var sync = $interval(root.pipe, (1000 * 60));
+
+    $scope.$on('eventUpdated', () => {
+      root.pipe();
+    });
 
     $scope.$on('$destroy', function () {
       socket.unsyncUpdates('event');
@@ -181,11 +192,11 @@ class EventsController {
   }
 
   setActiveEvent(event) {
+    this.$scope.eventActive = event._id;
+    this.$rootScope.eventActive = event._id;
+    this.$cookies.put('eventActive', event._id);
+    this.$rootScope.$broadcast('eventActive', event._id);
     if (this.user.role === 'user') {
-      this.$scope.eventActive = event._id;
-      this.$rootScope.eventActive = event._id;
-      this.$cookies.put('eventActive', event._id);
-      this.$rootScope.$broadcast('eventActive', event._id);
       _.each(this.$scope.events, (item, i) => {
         this.$scope.events[i].active = false;
         if (item._id ==  event._id) {

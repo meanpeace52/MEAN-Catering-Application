@@ -123,6 +123,7 @@ export function show(req, res) {
 
 // Creates a new Thing in the DB
 export function create(req, res) {
+  console.log('create', req.body);
   return Offer.create(req.body)
     .then(respondWithResult(res, 201))
     .catch(handleError(res));

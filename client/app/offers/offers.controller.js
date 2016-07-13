@@ -40,17 +40,17 @@ class OffersController {
     });
   }
 
-  delete(offer) {
-    let url = '/api/offers/' + offer._id;
-
-    this.$http.delete(url, offer)
-      .then(response => {
-      this.getOffersList();
-    })
-    .catch(err => {
-        this.errors.other = err.message;
-    })
-  }
+  //delete(offer) {
+  //  let url = '/api/offers/' + offer._id;
+  //
+  //  this.$http.delete(url, offer)
+  //    .then(response => {
+  //    this.getOffersList();
+  //  })
+  //  .catch(err => {
+  //      this.errors.other = err.message;
+  //  })
+  //}
 
   convertIncludedInPrice(array) {
     let cnt = [];
@@ -73,7 +73,6 @@ class OffersController {
         this.$scope.offers[i].priceWithCounter = offer.pricePerPerson;
       }
       this.$scope.offers[i].includedInPrice = this.convertIncludedInPrice(this.$scope.offers[i].includedInPrice);
-
 
       this.$http.get('/api/users/' + offer.catererId).then(response => {
         this.$scope.offers[i].caterer = response.data;
@@ -114,6 +113,7 @@ class OffersController {
           if (item._id == id) {
             this.$scope.offers[i].drafted = false;
             this.$scope.offers[i].status = 'accepted';
+            this.$rootScope.$broadcast('eventUpdated');
           }
         });
         this.socket.syncUpdates('offer', this.$scope.offers);

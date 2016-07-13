@@ -54,7 +54,7 @@ class OffersNewController {
       this.$http.post('/api/offers/new', offerModel).then(response => {
         this.sent = true;
         this.$state.go('events');
-        this.$scope.fm = {};
+        //this.$scope.fm = {};
       })
       .catch(err => {
           this.errors.other = err.message;
@@ -70,7 +70,7 @@ class OffersNewController {
         this.$http.post('/api/offers/new', offerModel).then(response => {
           this.saved = true;
           this.$state.go('events');
-          this.$scope.fm = {};
+          //this.$scope.fm = {};
       })
       .catch(err => {
           this.errors.other = err.message;
