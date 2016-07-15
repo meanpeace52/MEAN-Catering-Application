@@ -3,9 +3,9 @@ let Promise = require('bluebird');
 
 let stripe = require('stripe')(config.payments.STRIPE.SECRET_KEY);
 
-class PaymentController {
+class StripeController {
 
-  tokens(req, res) {
+  getToken(req, res) {
     return Promise.resolve({
       checkoutToken: config.payments.STRIPE.PUBLIC_KEY
     }).then(respondWithResult(res))
@@ -35,4 +35,4 @@ function handleError(res, statusCode) {
   };
 }
 
-module.exports = new PaymentController();
+module.exports = new StripeController();

@@ -9,5 +9,17 @@ angular.module('cateringApp')
         controller: 'CheckoutController',
         controllerAs: 'vm',
         authenticate: true
+      })
+      .state('bank', {
+        url: '/payments/bank',
+        templateUrl: 'app/payments/bank.html',
+        controller: 'BankController',
+        controllerAs: 'vm',
+        authenticate: true,
+        resolve: {
+          authCode: function($location) {
+            return $location.search().code;
+          }
+        }
       });
   });
