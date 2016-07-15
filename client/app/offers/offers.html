@@ -8,7 +8,7 @@
   <div class="row">
     <div class="offers-pills">
       <uib-tabset active="activePill" vertical="true" type="pills">
-        <uib-tab ng-repeat="offer in offers" heading="{{offer.caterer.name}}">
+        <uib-tab ng-repeat="offer in offers" heading="{{offer.caterer.companyName}}">
           <h3><small>Offer from</small> <b>{{offer.caterer.name}}</b>, <small>price:</small> <b><mark>${{offer.priceWithCounter}}</mark></b> <span class="label label-info">{{offer.status}}</span> <span class="label label-warning" ng-if="offer.isUpdated">Heads Up! Event is updated!</span></h3>
           <div ng-if="offer.status == 'sent' && !offer.drafted">
             <hr>
@@ -46,7 +46,7 @@
                 </div>
                 </p>
                 <hr />
-                <p><b>Caterer:</b> {{offer.caterer.name}}</p>
+                <p><b>Caterer:</b> {{offer.caterer.companyName}}</p>
                 <p ng-if="offer.caterer.website"><b>Website:</b> {{offer.caterer.website}}</p>
                 <div ng-if="offer.caterer.logo" class="img-thumbnail" width="300" ng-draw="{file: offer.caterer.logo, width: 300}">
               </div>

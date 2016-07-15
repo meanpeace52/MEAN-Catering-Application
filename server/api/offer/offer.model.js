@@ -11,8 +11,8 @@ var OfferSchema = new mongoose.Schema({
   includedInPrice: Array,
   eventId: String,
   catererId: String,
-  status: String,
-  isUpdated: Boolean
+  catererName: String,
+  status: String
 });
 
 export default mongoose.model('Offer', OfferSchema);

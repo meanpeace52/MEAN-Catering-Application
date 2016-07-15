@@ -49,6 +49,7 @@ class OffersNewController {
   sendRequest() {
     let offerModel = this.$scope.fm;
     offerModel.catererId = this.user._id;
+    offerModel.catererName = this.user.companyName || this.user.name;
     offerModel.status = 'sent';
     if (offerModel) {
       this.$http.post('/api/offers/new', offerModel).then(response => {
@@ -65,6 +66,7 @@ class OffersNewController {
   saveDraft() {
     let offerModel = this.$scope.fm;
     offerModel.catererId = this.user._id;
+    offerModel.catererName = this.user.companyName || this.user.name;
     offerModel.status = 'draft';
     if (offerModel) {
         this.$http.post('/api/offers/new', offerModel).then(response => {

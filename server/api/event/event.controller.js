@@ -14,6 +14,7 @@ import Event from './event.model';
 import Offer from '../offer/offer.model';
 import User from '../user/user.model';
 var Promise = require('bluebird');
+var  mailer = require('../mailer/mailer');
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -31,7 +32,7 @@ function saveUpdates(updates) {
       delete updates[key];
     }
     var updated = _.mergeWith(entity, updates);
-
+    if (updated.showToCaterers) mailer.notifyEvent(updated, 'updated');
     return updated.save()
       .then(updated => {
         return updated;
@@ -102,38 +103,25 @@ export function dataset(req, res) {
   }
 
   return Event.find(query).exec().then((events) => {
-    let eventPromises = [], offerPromises = [];
+    let eventPromises = [];
 
   events.forEach((event, i) => {
     events[i] = events[i].toObject();
-    if (isCaterer && event.selectedCaterers.length && _.indexOf(event.selectedCaterers, req.body.catererId) == -1) {
+    if (isCaterer && event.selectedCaterers.length && _.indexOf(event.selectedCaterers, req.body.catererId) == -1)
+    {
       _.pull(events, event);
     } else {
       let offerQuery = (isCaterer ? {eventId: '' + event._id, catererId: req.body.catererId} : {eventId: '' + event._id});
-      //console.log(offerQuery);
+
       eventPromises.push(Offer.find(offerQuery).exec().then((offers) => {
         events[i].offers = offers;
-        if (!isCaterer && offers.length) {
-          if (offers.length) {
-            offers.forEach((offer, j) => {
-              offers[j] = offers[j].toObject();
-              offerPromises.push(User.findById(offer.catererId).exec().then((catererResult) => {
-                events[i].offers[j].catererName = catererResult.companyName || catererResult.name;
-                //console.log(events[i], events[i].offers[j].catererName);
-                return offers[j];
-              }));
-            });
-          }
-        }
         return events[i];
       }));
     }
 
   });
 
-  return Promise.all(eventPromises.concat(offerPromises)).then(() => {
-    //
-      //console.log('events', events);
+  return Promise.all(eventPromises).then(() => {
       return events;
    }).then(respondWithResult(res))
     .catch(handleError(res));
@@ -181,6 +169,10 @@ export function show(req, res) {
 // Creates a new Thing in the DB
 export function create(req, res) {
   return Event.create(req.body)
+    .then((res) => {
+      if (req.body.showToCaterers) mailer.notifyEvent(req.body, 'created');
+      return res;
+    })
     .then(respondWithResult(res, 201))
     .catch(handleError(res));
 }

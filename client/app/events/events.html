@@ -97,10 +97,13 @@
                   </div>
                 </td>
               </tr>
+              <tr ng-if="vm.user.role == 'caterer' && events.length == 0">
+                <td colspan="10" style="padding: 50px; text-align: center; font-size: 20px; color: #ccc;">No Jobs Listed</td>
+              </tr>
             </tbody>
             <tfoot>
               <tr>
-                <td st-pagination="" st-items-by-page="5" colspan="4">
+                <td st-pagination="" st-items-by-page="10" colspan="4">
                 </td>
               </tr>
             </tfoot>

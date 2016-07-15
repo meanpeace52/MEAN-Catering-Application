@@ -1,71 +1,112 @@
 <div class="container">
   <p>The delete user and user index api routes are restricted to users with the 'admin' role.</p>
-  <ul class="list-group user-list">
-    <li class="list-group-item" ng-repeat="user in admin.users">
-	    <div class="user-info">
-	        <strong>{{user.name}}</strong><br>
-	        <span class="text-muted">{{user.email}}</span>
-	    </div>
-        <a ng-click="admin.delete(user)" class="trash"><span class="fa fa-trash fa-2x"></span></a>
-    </li>
-  </ul>
-  <p>Edit food types</p>
-  <ul class="list-group user-list">
-    <li class="list-group-item" ng-repeat="type in admin.foodTypes">
-      <div class="row">
-        <div class="col-sm-1">
-          <span class="label label-info" ng-if="type.approved">approved</span>
-          <span class="label label-warning" ng-if="!type.approved">not approved</span>
-        </div>
-        <div class="col-sm-6">
-          <div class="input-group">
-            <input type="text" class="form-control" placeholder="Type new name" value="{{type.name}}" />
-            <span class="input-group-btn">
-              <a ng-click="admin.approveFoodType(type)" class="btn btn-default" ng-if="!type.approved">Approve</a>
-              <a ng-click="admin.editFoodType(type)" class="btn btn-default">Send changes</a>
-              <a ng-click="admin.deleteFoodType(type)" class="btn btn-danger"><span class="fa fa-trash"></span></a>
-            </span>
+
+  <uib-tabset active="active">
+    <uib-tab index="0" heading="User management">
+      <ul class="list-group user-list">
+        <li class="list-group-item" ng-repeat="user in admin.users">
+          <div class="user-info">
+            <strong>{{user.name}}</strong><br>
+            <span class="text-muted">{{user.email}}</span>
           </div>
-        </div>
-      </div>
-    </li>
-    <li>
-      <div class="col-sm-1">
-      </div>
-      <div class="col-sm-6">
-        <div class="input-group">
-          <input class="form-control" type="text" ng-model="ft.newFoodType" />
-          <span class="input-group-btn">
-            <a class="btn btn-default" ng-click="admin.addFoodType()"><span class="fa fa-plus"></span></a>
-          </span>
-        </div>
-      </div>
-    </li>
-  </ul>
-  <p>Edit Included In Price</p>
-  <ul class="list-group user-list">
-    <li class="list-group-item" ng-repeat="iip in admin.includedInPrice">
-      <div class="row">
-        <div class="col-sm-7">
-          <div class="input-group">
-            <input type="text" class="form-control" placeholder="Type new name" value="{{iip.name}}" />
-            <span class="input-group-btn">
-              <a ng-click="admin.editIncludedInPrice(iip)" class="btn btn-default">Send changes</a>
-              <a ng-click="admin.deleteIncludedInPrice(iip)" class="btn btn-danger"><span class="fa fa-trash"></span></a>
-            </span>
+          <a ng-click="admin.delete(user)" class="trash"><span class="fa fa-trash fa-2x"></span></a>
+        </li>
+      </ul>
+    </uib-tab>
+    <uib-tab index="1" heading="Food types">
+      <ul class="list-group user-list">
+        <li class="list-group-item" ng-repeat="type in admin.foodTypes">
+          <div class="row">
+            <div class="col-sm-1">
+              <span class="label label-info" ng-if="type.approved">approved</span>
+              <span class="label label-warning" ng-if="!type.approved">not approved</span>
+            </div>
+            <div class="col-sm-6">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Type new name" value="{{type.name}}" />
+                <span class="input-group-btn">
+                  <a ng-click="admin.approveFoodType(type)" class="btn btn-default" ng-if="!type.approved">Approve</a>
+                  <a ng-click="admin.editFoodType(type)" class="btn btn-default">Send changes</a>
+                  <a ng-click="admin.deleteFoodType(type)" class="btn btn-danger"><span class="fa fa-trash"></span></a>
+                </span>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </li>
-    <li>
-      <div class="col-sm-7">
-        <div class="input-group">
-          <input class="form-control" type="text" ng-model="ut.newUt" />
-          <span class="input-group-btn">
-            <a class="btn btn-default" ng-click="admin.addIncludedInPrice()"><span class="fa fa-plus"></span></a>
-          </span>
-        </div>
-      </div>
-    </li>
-  </ul>
+        </li>
+        <li>
+          <div class="col-sm-1">
+          </div>
+          <div class="col-sm-6">
+            <br>
+            <br>
+            <div class="input-group">
+              <input class="form-control" type="text" ng-model="ft.newFoodType" />
+              <span class="input-group-btn">
+                <a class="btn btn-default" ng-click="admin.addFoodType()"><span class="fa fa-plus"></span></a>
+              </span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </uib-tab>
+    <uib-tab index="2" heading="Included in price">
+      <ul class="list-group user-list">
+        <li class="list-group-item" ng-repeat="iip in admin.includedInPrice">
+          <div class="row">
+            <div class="col-sm-7">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Type new name" value="{{iip.name}}" />
+                <span class="input-group-btn">
+                  <a ng-click="admin.editIncludedInPrice(iip)" class="btn btn-default">Send changes</a>
+                  <a ng-click="admin.deleteIncludedInPrice(iip)" class="btn btn-danger"><span class="fa fa-trash"></span></a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="col-sm-7">
+            <br>
+            <br>
+            <div class="input-group">
+              <input class="form-control" type="text" ng-model="ut.newUt" />
+              <span class="input-group-btn">
+                <a class="btn btn-default" ng-click="admin.addIncludedInPrice()"><span class="fa fa-plus"></span></a>
+              </span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </uib-tab>
+    <uib-tab index="3" heading="Service types">
+      <ul class="list-group user-list">
+        <li class="list-group-item" ng-repeat="st in admin.serviceTypes">
+          <div class="row">
+            <div class="col-sm-7">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Type new name" value="{{st.name}}" />
+                <span class="input-group-btn">
+                  <a ng-click="admin.editServiceType(st)" class="btn btn-default">Send changes</a>
+                  <a ng-click="admin.deleteServiceType(st)" class="btn btn-danger"><span class="fa fa-trash"></span></a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="col-sm-7">
+            <br>
+            <br>
+            <div class="input-group">
+              <input class="form-control" type="text" ng-model="st.newSt" />
+              <span class="input-group-btn">
+                <a class="btn btn-default" ng-click="admin.addServiceType()"><span class="fa fa-plus"></span></a>
+              </span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </uib-tab>
+  </uib-tabset>
+
 </div>

@@ -14,7 +14,7 @@ class TemplatesController {
     this.user = this.getCurrentUser();
 
     this.$scope.tfm = {};
-    this.$scope.checkForExistance = false;
+    this.$scope.checkForExistence = false;
     this.$scope.templates = this.getTemplatesList();
 
     $scope.$watch('tfm.name', () => {
@@ -23,11 +23,6 @@ class TemplatesController {
 
     $scope.$watch('fm.offerDescription', () => {
        if ($scope.fm && $scope.fm.offerDescription)  $scope.tfm.description = $scope.fm.offerDescription;
-    });
-
-    $scope.$on('$destroy', function () {
-      socket.unsyncUpdates('event');
-      socket.unsyncUpdates('offer');
     });
 
     $scope.$on('$destroy', function () {
@@ -55,8 +50,8 @@ class TemplatesController {
       }
     });
 
-    if (cnt > 0) this.$scope.checkForExistance = true;
-    else this.$scope.checkForExistance = false;
+    if (this.$scope.tfm.name && cnt > 0) this.$scope.checkForExistence = true;
+    else this.$scope.checkForExistence = false;
   }
 
   createTpl(tpl) {

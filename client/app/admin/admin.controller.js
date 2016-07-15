@@ -3,20 +3,28 @@
 (function() {
 
   class AdminController {
-    constructor(User, $scope, FoodTypesService, IncludedInPriceService) {
+    constructor(User, $scope, FoodTypesService, IncludedInPriceService, ServiceTypesService) {
       // Use the User $resource to fetch all users
       this.users = User.query();
+      this.$scope = $scope;
+      this.$scope.ut = {};
+      this.$scope.st = {};
+
       this.ftService = FoodTypesService;
       this.foodTypes = this.ftService.getFoodTypes().then((data)=> {
         this.foodTypes = data;
+      });
+
+      this.sService = ServiceTypesService;
+      this.serviceTypes = this.sService.getServiceTypes().then((data)=> {
+        this.serviceTypes = data;
       });
 
       this.incService = IncludedInPriceService;
       this.includedInPrice = this.incService.getIncludedInPrice().then((data)=> {
         this.includedInPrice = data;
       });
-      this.$scope = $scope;
-      this.$scope.ut = {};
+
     }
 
     delete(user) {
@@ -69,6 +77,24 @@
       }
       this.incService.addIncludedInPrice(query).then((data) => {
         this.includedInPrice.push(data);
+      });
+    }
+
+    deleteServiceType(st) {
+      this.serviceTypes.splice(this.serviceTypes.indexOf(st), 1);
+      this.sService.deleteServiceType(st._id);
+    }
+
+    editServiceType(st) {
+      this.sService.editServiceType(st);
+    }
+
+    addServiceType() {
+      let query = {
+        name: this.$scope.st.newSt
+      }
+      this.sService.addServiceType(query).then((data) => {
+        this.serviceTypes.push(data);
       });
     }
 

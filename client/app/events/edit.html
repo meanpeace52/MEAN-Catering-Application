@@ -140,7 +140,7 @@
                     <div class="select-rest-block">
                       <div class="checkbox" ng-repeat="caterer in caterers" ng-if="caterer.showByFT">
                         <label>
-                          <input type="checkbox" checklist-model="fm.selectedCaterers" ng-change="vm.watchForEdit(caterer._id)" checklist-value="caterer._id" > {{caterer.name}}
+                          <input type="checkbox" checklist-model="fm.selectedCaterers" ng-change="vm.watchForEdit(caterer._id)" checklist-value="caterer._id" > {{caterer.companyName}}
                           <span ng-repeat="ft in foodTypes" class="label label-default m-3" ng-if="vm.checkFT(ft._id, caterer)">{{ft.name}}</span>
                         </label>
                       </div>
@@ -156,7 +156,7 @@
               <div class="panel-body">
                 <div class="ft-panel-fixed-height">
                   <div class="selectedRest" ng-repeat="caterer in caterers" ng-if="caterer.showByEdit">
-                    <button class="btn btn-default btn-xs" ng-click="vm.watchForEdit(caterer._id)"><i class="fa fa-times"></i></button> <strong>{{caterer.name}}</strong> <span ng-repeat="ft in foodTypes" class="label label-default m-3" ng-if="vm.checkFT(ft._id, caterer)">{{ft.name}}</span>
+                    <button class="btn btn-default btn-xs" ng-click="vm.watchForEdit(caterer._id)"><i class="fa fa-times"></i></button> <strong>{{caterer.companyName}}</strong> <span ng-repeat="ft in foodTypes" class="label label-default m-3" ng-if="vm.checkFT(ft._id, caterer)">{{ft.name}}</span>
                   </div>
                 </div>
               </div>

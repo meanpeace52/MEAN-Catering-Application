@@ -21,7 +21,13 @@ module.exports = {
           process.env.OPENSHIFT_APP_NAME ||
           'mongodb://localhost/catering'
   },
-  
+
+  mailgun: {
+    api_key: 'key-11f4fceec484b3d96fbd07dd91b9ff58',
+    domain: 'mg.cateringninja.com',
+    from: 'postmaster@mg.cateringninja.com'
+  },
+
   payments: {
     DWOLLA: {
       KEY: process.env.DWOLLA_KEY,

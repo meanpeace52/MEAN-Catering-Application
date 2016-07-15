@@ -36,7 +36,9 @@ class EventsController {
         _.each(events, (event, i) => {
           if (event.status == "cancelled" ||
               ($scope.user.role == 'caterer' && _.indexOf(event.rejectedBy, $scope.user._id) >= 0) ||
-              ($scope.user.role == 'caterer' && event.status == 'confirmed' && event.confirmedBy !== $scope.user._id)) {
+              ($scope.user.role == 'caterer' && event.status == 'confirmed' && event.confirmedBy !== $scope.user._id) ||
+              ($scope.user.role == 'caterer' && $scope.user.minprice && event.pricePerPerson < $scope.user.minprice )
+          ) {
             events[i].drafted = true;
           }
 

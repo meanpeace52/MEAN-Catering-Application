@@ -13,6 +13,8 @@ import _ from 'lodash';
 import Offer from './offer.model';
 import Event from '../event/event.model';
 
+var  mailer = require('../mailer/mailer');
+
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
   return function(entity) {
@@ -44,6 +46,8 @@ function saveUpdates(updates) {
       delete updates[key];
     }
     var updated = _.mergeWith(entity, updates);
+
+    mailer.notifyOffer(updated, 'updated');
 
     return updated.save()
         .then(updated => {
@@ -123,8 +127,11 @@ export function show(req, res) {
 
 // Creates a new Thing in the DB
 export function create(req, res) {
-  console.log('create', req.body);
   return Offer.create(req.body)
+    .then((res) => {
+      mailer.notifyOffer(req.body, 'created');
+      return res;
+    })
     .then(respondWithResult(res, 201))
     .catch(handleError(res));
 }
@@ -155,6 +162,7 @@ export function update(req, res) {
 export function cancelAll(req, res) {
   return Offer.update(req.body, { status: 'cancelled' }, { multi: true }).exec()
     .then((res) => {
+      mailer.notifyOffer(updated, 'cancelled');
       respondWithResult(res);
     })
     .catch(handleError(res));

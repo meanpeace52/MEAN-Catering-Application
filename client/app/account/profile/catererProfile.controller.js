@@ -1,7 +1,7 @@
 'use strict';
 
 class CatererProfileController {
-  constructor(Auth, $cookies, $state, $http, FoodTypesService, $scope, FileUploader, $rootScope, $timeout) {
+  constructor(Auth, $cookies, $state, $http, FoodTypesService, ServiceTypesService, $scope, FileUploader, $rootScope, $timeout) {
     this.errors = {};
     this.submitted = false;
 
@@ -55,6 +55,11 @@ class CatererProfileController {
         var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
         return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
       }
+    });
+
+    this.sService = ServiceTypesService;
+    this.$scope.serviceTypes = this.sService.getServiceTypes().then((data)=> {
+      this.$scope.serviceTypes = data;
     });
 
     this.$scope.foodTypes = this.ftService.getFoodTypes().then((data)=> {

@@ -1,32 +1,44 @@
-.table.table-events tbody tr td {
-  border-bottom: 1px solid #ddd;
+.table.table-events {
 
-  .btn.delete-event {
-    display: inline-block;
-    float: right;
+  tbody tr {
+    td {
+      border-bottom: 1px solid #ddd;
+      .btn.delete-event {
+        display: inline-block;
+        float: right;
+      }
+    }
+
+    &.drafted td {
+      background: #eee !important;
+      color: #aaa;
+
+      .btn {
+        display: none;
+      }
+
+      .btn.delete-event {
+        display: inline-block;
+        float: right;
+      }
+    }
+
+    &.hidden {
+      display: none !important;
+    }
+    &.active, &.active td {
+      background: #FCE6A2 !important;
+    }
   }
-}
 
-.table.table-events tbody tr.drafted td {
-  background: #eee !important;
-  color: #aaa;
-
-  .btn {
-    display: none;
+  thead>tr>th {
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,f6f6f6+47,ededed+100;White+3D+%231 */
+    background: rgb(255,255,255); /* Old browsers */
+    background: -moz-linear-gradient(top,  rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom,  rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
   }
-
-  .btn.delete-event {
-    display: inline-block;
-    float: right;
-  }
-}
-
-.table-events tr.active, .table-events tr.active td {
-  background: #FCE6A2 !important;
-}
-
-.table-events tr.hidden {
-  display: none !important;
 }
 
 .uib-timepicker {

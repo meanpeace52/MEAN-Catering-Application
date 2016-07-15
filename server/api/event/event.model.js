@@ -16,6 +16,7 @@ var EventSchema = new mongoose.Schema({
   userId: String,
   showToCaterers: Boolean,
   foodTypes: Object,
+  serviceTypes: Object,
   date: String,
   time: String,
   selectedCaterers: Object,

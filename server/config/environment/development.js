@@ -12,6 +12,12 @@ module.exports = {
   // Seed database on startup
   seedDB: true,
 
+  mailgun: {
+    api_key: 'key-11f4fceec484b3d96fbd07dd91b9ff58',
+    domain: 'mg.cateringninja.com',
+    from: 'postmaster@mg.cateringninja.com'
+  },
+
   payments: {
     DWOLLA: {
       KEY: '2jKQn8aERXipDkCuNYG8TKMKPqpGB4KjuK1Gevrw74ZITIK6Ew',

@@ -22,8 +22,10 @@ var UserSchema = new Schema({
     required: true
   },
   foodTypes: Array,
+  serviceTypes: Array,
   contactInfo: String,
   name: String,
+  companyName: String,
   minprice: String,
   location: String,
   website: String,
@@ -50,6 +52,7 @@ UserSchema
       'lastname': this.lastname,
       'foodTypes': this.foodTypes,
       'contactInfo': this.contactInfo,
+      'companyName': this.companyName,
       'name': this.name,
       'minprice': this.minprice,
       'location': this.location,

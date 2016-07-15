@@ -31,6 +31,7 @@ export default function(app) {
   app.use('/api/offers', require('./api/offer'));
   app.use('/api/users', require('./api/user'));
   app.use('/api/foodTypes', require('./api/foodType'));
+  app.use('/api/serviceTypes', require('./api/serviceType'));
   app.use('/api/templates', require('./api/template'));
   app.use('/api/includedInPrice', require('./api/includedInPrice'));
   app.use('/api/payments', require('./api/payments'));

@@ -98,15 +98,15 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-6">
+          <div class="col-sm-4">
             <div class="form-group">
               <label>Select food types</label>
               <div class="checkbox" ng-repeat="type in foodTypes">
                 <label>
-                  <button class="btn btn-default btn-xs" ng-if="vm.checkRights(type)" ng-click="vm.deleteFoodType(type)"><i class="fa fa-times"></i></button>
+                  <!--<button class="btn btn-default btn-xs" ng-if="vm.checkRights(type)" ng-click="vm.deleteFoodType(type)"><i class="fa fa-times"></i></button>-->
                   <input type="checkbox" checklist-model="vm.user.foodTypes" checklist-value="type._id" checked="{{type.checked}}"> {{type.name}}
-                  <span class="label label-info" ng-if="type.approved">approved</span>
-                  <span class="label label-info" ng-if="!type.approved">not approved</span>
+                  <!--<span class="label label-info" ng-if="type.approved">approved</span>-->
+                  <!--<span class="label label-info" ng-if="!type.approved">not approved</span>-->
                 </label>
               </div>
               <!--<label>Add custom foodtype. <span class="muted">Note, that it needs to be approved by admin</span></label>-->
@@ -118,7 +118,17 @@
               <!--</div>-->
             </div>
           </div>
-          <div class="col-sm-6">
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label>Select service types</label>
+              <div class="checkbox" ng-repeat="type in serviceTypes">
+                <label>
+                  <input type="checkbox" checklist-model="vm.user.serviceTypes" checklist-value="type._id" checked="{{type.checked}}"> {{type.name}}
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
             <div class="form-group">
               <label>Payment Info</label>
               <input type="text" name="paymentInfo" class="form-control" ng-model="vm.user.paymentInfo" />
