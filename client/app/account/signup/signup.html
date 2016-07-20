@@ -46,23 +46,23 @@
           </p>
         </div>
 
-        <!--<div class="form-group" ng-class="{ 'has-success': form.confirmemail.$valid && vm.submitted,-->
-                                            <!--'has-error': form.confirmemail.$invalid && vm.submitted }">-->
-          <!--<label>Confirm Email</label>-->
+        <div class="form-group" ng-class="{ 'has-success': form.confirmemail.$valid && vm.submitted,
+                                            'has-error': form.confirmemail.$invalid && vm.submitted }">
+          <label>Confirm Email</label>
 
-          <!--<input type="email" name="confirmemail" class="form-control" ng-model="vm.user.confirmemail"-->
-                 <!--required-->
-                 <!--mongoose-error/>-->
-          <!--<p class="help-block" ng-show="form.confirmemail.$error.confirmemail && vm.submitted">-->
-            <!--Email must match.-->
-          <!--</p>-->
-          <!--<p class="help-block" ng-show="form.confirmemail.$error.required && vm.submitted">-->
-            <!--Repeat your email.-->
-          <!--</p>-->
-          <!--<p class="help-block" ng-show="form.confirmemail.$error.mongoose">-->
-            <!--{{ vm.errors.confirmemail }}-->
-          <!--</p>-->
-        <!--</div>-->
+          <input type="email" name="confirmemail" class="form-control" ng-model="vm.user.confirmemail"
+                 required
+                 mongoose-error/>
+          <p class="help-block" ng-show="form.confirmemail.$error.confirmemail && vm.submitted">
+            Email must match.
+          </p>
+          <p class="help-block" ng-show="form.confirmemail.$error.required && vm.submitted">
+            Repeat your email.
+          </p>
+          <p class="help-block" ng-show="form.confirmemail.$error.mongoose">
+            {{ vm.errors.confirmemail }}
+          </p>
+        </div>
 
         <div class="form-group" ng-class="{ 'has-success': form.password.$valid && vm.submitted,
                                             'has-error': form.password.$invalid && vm.submitted }">

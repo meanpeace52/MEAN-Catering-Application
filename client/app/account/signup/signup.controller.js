@@ -8,8 +8,9 @@ class SignupController {
     this.$state = $state;
     this.$scope = $scope;
     this.ftService = FoodTypesService;
+    this.user = {};
     this.$scope.foodTypes = this.ftService.getFoodTypes().then((data)=> {
-      this.$scope.foodTypes = data;
+      this.user.foodTypes = data;
     });
   }
     //start-non-standard
