@@ -106,7 +106,7 @@ class OffersController {
 
   accept(id) {  // by customer
     if (this.user.role = 'user') {
-      this.$http.post('/api/offers/' + id + '/accept', {status: 'accepted', eventId: this.eventId }).then(response => {
+      this.$http.post('/api/offers/' + id + '/accept', {status: 'accepted', eventId: this.eventId, dateAccepted: new Date() }).then(response => {
         //set visual state
         _.each(this.$scope.offers, (item, i) => {
           this.$scope.offers[i].drafted = true;

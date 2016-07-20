@@ -200,10 +200,6 @@ class EventsEditController {
     }
   }
 
-  validate(model) {
-
-  }
-
   saveDraft() {
     let eventModel = this.$scope.fm,
         url = '/api/events/' + this.$scope.fm._id;

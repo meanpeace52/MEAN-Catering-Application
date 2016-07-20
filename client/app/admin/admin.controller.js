@@ -7,6 +7,7 @@
       // Use the User $resource to fetch all users
       this.users = User.query();
       this.$scope = $scope;
+      this.$scope.ft = {};
       this.$scope.ut = {};
       this.$scope.st = {};
 

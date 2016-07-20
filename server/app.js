@@ -11,6 +11,12 @@ mongoose.Promise = require('bluebird');
 import config from './config/environment';
 import http from 'http';
 var bodyParser = require("body-parser");
+var mailer = require('./api/mailer/mailer');
+var schedule = require('node-schedule');
+
+var rule = new schedule.RecurrenceRule();
+rule.minute = 0;
+rule.hour = 23;
 
 // Connect to MongoDB
 mongoose.connect(config.mongo.uri, config.mongo.options);
@@ -36,6 +42,42 @@ var socketio = require('socket.io')(server, {
 require('./config/socketio').default(socketio);
 require('./config/express').default(app);
 require('./routes').default(app);
+
+var j = schedule.scheduleJob(rule, function(){
+  mailer.report();
+});
+
+/*verify emails
+var User = require('./api/user/user.model');
+var nev = require('email-verification')(mongoose);
+
+nev.configure({
+  verificationURL: 'http://myawesomewebsite.com/email-verification/${URL}',
+  persistentUserModel: User,
+  tempUserCollection: 'tempUsers',
+
+  transportOptions: {
+    service: 'Mailgun',
+    auth: {
+      api_key: config.mailgun.api_key,
+      domain: config.mailgun.domain
+    }
+  },
+  verifyMailOptions: {
+    from: 'Do Not Reply ' + config.mailgun.from,
+    subject: 'Please confirm account',
+    html: 'Click the following link to confirm your account:</p><p>${URL}</p>',
+    text: 'Please confirm your account by clicking the following link: ${URL}'
+  }
+});
+
+nev.generateTempUserModel(User);
+var TempUser = require('./api/user/tempUser.model');
+nev.configure({
+  tempUserModel: TempUser
+});
+
+*/
 
 function startServer() {
   app.angularFullstack = server.listen(config.port, config.ip, function() {

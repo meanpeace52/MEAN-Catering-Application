@@ -129,6 +129,7 @@ export function show(req, res) {
 export function create(req, res) {
   return Offer.create(req.body)
     .then((res) => {
+      mailer.report();
       mailer.notifyOffer(req.body, 'created');
       return res;
     })
@@ -147,6 +148,11 @@ export function update(req, res) {
     let eventUpdates = {status: req.body.status};
     if (eventUpdates.status == 'confirmed') {
       eventUpdates.confirmedBy = req.body.userId;
+      eventUpdates.confirmedDate = req.body.confirmedDate;
+    }
+
+    if (req.body.status == 'accepted') {
+      eventUpdates.acceptedDate = req.body.acceptedDate;
     }
 
     Event.findById(req.body.eventId).exec()
@@ -155,6 +161,10 @@ export function update(req, res) {
   return Offer.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(saveUpdates(req.body))
+    .then((res) => {
+      mailer.report();
+      return res;
+    })
     .then(respondWithResult(res))
     .catch(handleError(res));
 }

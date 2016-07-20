@@ -46,7 +46,7 @@ class OffersEditController {
 
   confirm(id) {  //by caterer
     if (this.user.role = 'caterer') {
-      this.$http.post('/api/offers/' + id + '/confirm', {status: 'confirmed', eventId: this.eventId, userId: this.user._id }).then(response => {
+      this.$http.post('/api/offers/' + id + '/confirm', {status: 'confirmed', eventId: this.eventId, userId: this.user._id, dateConfirmed: new Date() }).then(response => {
         //set visual state
         this.confirmed = true;
         this.$scope.fm.status = 'confirmed';

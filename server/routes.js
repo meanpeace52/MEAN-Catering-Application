@@ -35,6 +35,7 @@ export default function(app) {
   app.use('/api/templates', require('./api/template'));
   app.use('/api/includedInPrice', require('./api/includedInPrice'));
   app.use('/api/payments', require('./api/payments'));
+  app.use('/userconfirm', require('./api/userconfirm'));
 
   app.use('/auth', require('./auth').default);
 

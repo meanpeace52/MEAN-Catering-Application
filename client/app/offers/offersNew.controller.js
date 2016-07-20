@@ -50,6 +50,7 @@ class OffersNewController {
     let offerModel = this.$scope.fm;
     offerModel.catererId = this.user._id;
     offerModel.catererName = this.user.companyName || this.user.name;
+    offerModel.date = new Date();
     offerModel.status = 'sent';
     if (offerModel) {
       this.$http.post('/api/offers/new', offerModel).then(response => {

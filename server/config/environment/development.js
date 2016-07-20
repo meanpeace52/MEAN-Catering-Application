@@ -15,7 +15,7 @@ module.exports = {
   mailgun: {
     api_key: 'key-11f4fceec484b3d96fbd07dd91b9ff58',
     domain: 'mg.cateringninja.com',
-    from: 'postmaster@mg.cateringninja.com'
+    from: 'catering@cateringninja.com'
   },
 
   payments: {

@@ -35,7 +35,8 @@ var UserSchema = new Schema({
   veganOffers: Boolean,
   provider: String,
   salt: String,
-  logo: String
+  logo: String,
+  status: String //active, pending
   //logo: { data: Buffer, contentType: String }
 });
 
@@ -62,6 +63,7 @@ UserSchema
       'description': this.description,
       'veganOffers': this.veganOffers,
       'role': this.role,
+      'status': this.status,
       'logo': this.logo
     };
   });

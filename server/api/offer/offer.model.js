@@ -12,6 +12,9 @@ var OfferSchema = new mongoose.Schema({
   eventId: String,
   catererId: String,
   catererName: String,
+  date: Date,
+  dateAccepted: Date,
+  dateConfirmed: Date,
   status: String
 });
 
