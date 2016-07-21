@@ -83,6 +83,7 @@
                     <a class="btn btn-xs btn-default" href="/events/{{event._id}}">Edit Event</a>
                     <!--<a class="btn btn-xs btn-warning" ui-sref="offers" ng-click="vm.setActiveEvent(event)" >Offers ({{event.offersNumber}})</a>-->
                     <a class="btn btn-xs btn-warning" uib-popover-html="event.offersInfo" popover-trigger="mouseenter" popover-placement="right">Offers ({{event.offersNumber}})</a>
+                    <a class="btn btn-xs btn-success" ng-if="event.status === 'confirmed'">Pay</a>
                   </div>
                   <div ng-if="vm.user.role == 'caterer'">
                     <a class="btn btn-xs btn-default" ng-if="event.offerStatus" href="{{event.offerUrl}}">Edit Offer</a>

@@ -36,8 +36,9 @@ var UserSchema = new Schema({
   provider: String,
   salt: String,
   logo: String,
-  status: String //active, pending
+  status: String, //active, pending
   //logo: { data: Buffer, contentType: String }
+  payableAccountId: String
 });
 
 /**

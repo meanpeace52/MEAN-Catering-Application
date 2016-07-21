@@ -6,14 +6,14 @@ class CheckoutController {
     this.$http = $http;
     $scope.stripeCallback = this.callback.bind(this);
 
-    this.$http.get('/api/payments/tokens').then((response) => {
+    this.$http.get('/api/payments/card/token').then((response) => {
       $window.Stripe.setPublishableKey(response.data.checkoutToken);
     });
 
   }
 
   checkout(token) {
-    this.$http.post('/api/payments/checkout', {
+    this.$http.post('/api/payments/card/checkout', {
       amount: 50, // amount should be in cents
       currency: "usd",
       source: token,
