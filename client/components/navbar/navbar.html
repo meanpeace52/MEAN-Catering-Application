@@ -15,7 +15,7 @@
         <li ng-repeat="item in nav.menu" ui-sref-active="active">
             <a ui-sref="{{item.state}}">{{item.title}}</a>
         </li>
-        <li ng-show="nav.isAdmin()" ui-sref-active="active"><a ui-sref="admin">Admin</a></li>
+        <li ng-show="nav.getCurrentUser().role === 'admin'" ui-sref-active="active"><a ui-sref="admin">Admin</a></li>
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
@@ -24,8 +24,8 @@
         <li ng-show="nav.isLoggedIn()">
           <!--<a class="navbar-text" ng-if="nav.getCurrentUser().firstname || nav.getCurrentUser().lastname">Hello {{ nav.getCurrentUser().firstname }} {{ nav.getCurrentUser().lastname }}</a>-->
           <!--<a class="navbar-text" ng-if="nav.getCurrentUser().name">Hello {{ nav.getCurrentUser().name }}</a>-->
-          <a ng-if="nav.getCurrentUser().role == 'caterer'" ui-sref="caterer-profile">Account Info</a>
-          <a ng-if="nav.getCurrentUser().role == 'user'" ui-sref="customer-profile">Account Info</a>
+          <a ng-if="nav.getCurrentUser().role === 'caterer'" ui-sref="caterer-profile">Account Info</a>
+          <a ng-if="nav.getCurrentUser().role === 'user'" ui-sref="customer-profile">Account Info</a>
         </li>
         <li ng-show="nav.isLoggedIn()" ui-sref-active="active"><a ui-sref="settings"><span class="fa fa-cog"></span></a></li>
         <li ng-show="nav.isLoggedIn()"><a ui-sref="logout">Logout</a></li>
@@ -37,8 +37,8 @@
         <!--<a ui-sref="events" ng-show="nav.isLoggedIn()"  class="btn btn-default">Past Events</a>-->
       </div>
 
-      <a class="btn btn-primary pull-right" ng-if="nav.isUser()" ui-sref="newEvent">Create new event</a>
-      <a class="btn btn-primary pull-right" ng-if="!nav.isLoggedIn()" ui-sref="newEvent">Create new event</a>
+      <a class="btn btn-primary pull-right" ng-if="nav.getCurrentUser().role === 'user'" ui-sref="newEvent">Create new event</a>
+      <!--<a class="btn btn-primary pull-right" ng-if="!nav.isLoggedIn()" ui-sref="newEvent">Create new event</a>-->
 
     </div>
   </div>

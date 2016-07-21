@@ -9,7 +9,7 @@
     <div class="offers-pills">
       <uib-tabset active="activePill" vertical="true" type="pills">
         <uib-tab ng-repeat="offer in offers" heading="{{offer.caterer.companyName}}">
-          <h3><small>Offer from</small> <b>{{offer.caterer.name}}</b>, <small>price:</small> <b><mark>${{offer.priceWithCounter}}</mark></b> <span class="label label-info">{{offer.status}}</span> <span class="label label-warning" ng-if="offer.isUpdated">Heads Up! Event is updated!</span></h3>
+          <h3><small>Offer from</small> <b>{{offer.caterer.name}}</b>, <small>Total price:</small> <b><mark>${{offer.priceWithCounter}}</mark></b> <span class="label label-info">{{offer.status}}</span> <span class="label label-warning" ng-if="offer.isUpdated">Heads Up! Event is updated!</span></h3>
           <div ng-if="offer.status == 'sent' && !offer.drafted">
             <hr>
             <button class="btn btn-success" ng-click="oc.accept(offer._id)">Accept</button>
@@ -19,36 +19,39 @@
           <div class="container-fluid" ng-if="eventId" ng-class="{'cancelled-offer': offer.status === 'cancelled', 'drafted': offer.drafted}">
             <div class="row">
               <div class="col-sm-6">
-                <div ng-if="offer.includedInPrice.length">
-                  <p><b>Offer Included in price:</b>
-                  <ul>
-                    <li ng-repeat="iip in offer.includedInPrice">
-                      {{iip.name}}
-                    </li>
-                  </ul>
-                  </p>
+                <div class="row">
+                  <div class="col-sm-6" ng-if="offer.includedInPrice.length">
+                    <p><b>Offer Included in price:</b>
+                    <ul>
+                      <li ng-repeat="iip in offer.includedInPrice">
+                        {{iip.name}}
+                      </li>
+                    </ul>
+                    </p>
+                  </div>
+                  <div class="col-sm-6" ng-if="event.includedInPrice.length">
+                    <p><b>Event Included in price:</b></p>
+                    <ul>
+                      <li ng-repeat="iip in event.includedInPrice">
+                        {{iip.name}}
+                      </li>
+                    </ul>
+                  </div>
                 </div>
+
                 <p ng-if="offer.counter"><b>Price per person:</b> ${{offer.pricePerPerson}}</p>
-                <p ng-if="offer.counter"><b>Counter:</b> {{offer.counter}}%, Price with counter: <b><mark>${{offer.priceWithCounter}}</mark></b> </p>
+                <p ng-if="offer.counter"><b>Counter:</b> ${{offer.counter}}, Total with counter: <b><mark>${{offer.priceWithCounter}}</mark></b> </p>
+                <p ng-if="!offer.counter">Total: <b><mark>${{offer.priceWithCounter}}</mark></b> </p>
                 <p ng-if="offer.counterReason"><b>Counter Reason:</b> {{offer.counterReason}}</p>
                 <p ng-if="offer.contactInfo"><b>Contact Info:</b> {{offer.contactInfo}}</p>
                 <p ng-if="offer.offerDescription"><b>Offer Description:</b> {{offer.offerDescription}}</p>
 
               </div>
               <div class="col-sm-6">
-                <div ng-if="event.includedInPrice.length">
-                  <p><b>Event Included in price:</b>
-                  <ul>
-                    <li ng-repeat="iip in event.includedInPrice">
-                      {{iip.name}}
-                    </li>
-                  </ul>
-                </div>
-                </p>
-                <hr />
-                <p><b>Caterer:</b> {{offer.caterer.companyName}}</p>
-                <p ng-if="offer.caterer.website"><b>Website:</b> {{offer.caterer.website}}</p>
                 <div ng-if="offer.caterer.logo" class="img-thumbnail" width="300" ng-draw="{file: offer.caterer.logo, width: 300}">
+                <p ng-if="offer.caterer.website"><b>Website:</b> {{offer.caterer.website}}</p>
+                <p ng-if="offer.caterer.location"><b>Location:</b> {{offer.caterer.location}}</p>
+                <p ng-if="offer.caterer.description"><b>Description:</b> {{offer.caterer.description}}</p>
               </div>
             </div>
           </div>

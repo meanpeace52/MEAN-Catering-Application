@@ -68,9 +68,9 @@ class OffersController {
       if (offer.status == 'accepted' || offer.status == 'confirmed') acceptedIndex = i;
       if (offer.status == 'cancelled') this.$scope.offers[i].drafted = true;
       if (offer.counter) {
-        this.$scope.offers[i].priceWithCounter = offer.pricePerPerson - (offer.pricePerPerson * offer.counter / 100);
+        this.$scope.offers[i].priceWithCounter = offer.pricePerPerson * this.event.people - offer.counter;
       } else {
-        this.$scope.offers[i].priceWithCounter = offer.pricePerPerson;
+        this.$scope.offers[i].priceWithCounter = offer.pricePerPerson * this.event.people;
       }
       this.$scope.offers[i].includedInPrice = this.convertIncludedInPrice(this.$scope.offers[i].includedInPrice);
 

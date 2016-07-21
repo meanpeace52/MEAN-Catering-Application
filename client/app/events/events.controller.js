@@ -98,10 +98,14 @@ class EventsController {
 
   delete(event) {
     let url = '/api/events/' + event._id;
-
+    _.each(this.$scope.events, (item, i) => {
+      if (item._id == event._id) {
+        this.$scope.events[i].drafted = true;
+      }
+    });
     this.$http.delete(url, event)
       .then(response => {
-        this.getEventsList();
+        this.pipe();
       })
     .catch(err => {
         this.errors.other = err.message;
@@ -110,13 +114,14 @@ class EventsController {
 
   cancel(id) {
     if (this.user.role = 'user') {
+      _.each(this.$scope.events, (item, i) => {
+        if (item._id == id) {
+          this.$scope.events[i].drafted = true;
+          this.$scope.events[i].status = 'cancelled';
+        }
+      });
       this.$http.post('/api/events/' + id + '/cancel', {status: 'cancelled'}).then(response => {
-        _.each(this.$scope.events, (item, i) => {
-          if (item._id == id) {
-            this.$scope.events[i].drafted = true;
-            this.$scope.events[i].status = 'cancelled';
-          }
-        });
+        this.pipe();
         this.socket.syncUpdates('offer', this.$scope.offers);
       });
     }

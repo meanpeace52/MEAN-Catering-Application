@@ -3,7 +3,7 @@
 import mongoose from 'mongoose';
 
 var OfferSchema = new mongoose.Schema({
-  pricePerPerson: String,
+  pricePerPerson: Number,
   counter: Number,
   counterReason: String,
   contactInfo: String,

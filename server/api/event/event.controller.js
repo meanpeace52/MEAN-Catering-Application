@@ -171,7 +171,6 @@ export function create(req, res) {
   return Event.create(req.body)
     .then((res) => {
       if (req.body.showToCaterers) mailer.notifyEvent(req.body, 'created');
-      mailer.report();
       return res;
     })
     .then(respondWithResult(res, 201))
@@ -188,7 +187,6 @@ export function update(req, res) {
     .then(handleEntityNotFound(res))
     .then(saveUpdates(req.body))
     .then((res) => {
-      mailer.report();
       return res;
     })
     .then(respondWithResult(res))

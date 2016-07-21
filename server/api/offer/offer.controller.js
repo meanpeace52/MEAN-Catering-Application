@@ -47,13 +47,13 @@ function saveUpdates(updates) {
     }
     var updated = _.mergeWith(entity, updates);
 
-    mailer.notifyOffer(updated, 'updated');
+    //mailer.notifyOffer(updated, 'updated');
 
     return updated.save()
         .then(updated => {
         return updated;
-  });
-};
+    });
+  };
 }
 
 function removeEntity(res) {
@@ -129,11 +129,11 @@ export function show(req, res) {
 export function create(req, res) {
   return Offer.create(req.body)
     .then((res) => {
-      mailer.report();
-      mailer.notifyOffer(req.body, 'created');
+      mailer.notifyOffer(res, 'created');
       return res;
     })
     .then(respondWithResult(res, 201))
+
     .catch(handleError(res));
 }
 
@@ -160,11 +160,16 @@ export function update(req, res) {
   }
   return Offer.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
-    .then(saveUpdates(req.body))
     .then((res) => {
-      mailer.report();
+      if (req.body.status == 'accepted') {
+        mailer.notifyOfferAccepted(res, 'accepted');
+      }
+      if (req.body.status == 'confirmed') {
+        mailer.notifyOffer(res, 'confirmed');
+      }
       return res;
     })
+    .then(saveUpdates(req.body))
     .then(respondWithResult(res))
     .catch(handleError(res));
 }

@@ -1,8 +1,6 @@
 'use strict';
 
 class NavbarController {
-  //end-non-standard
-
   //start-non-standard
   constructor(Auth) {
     this.isLoggedIn = Auth.isLoggedIn;
@@ -11,6 +9,9 @@ class NavbarController {
     this.isCaterer = Auth.isCaterer;
     this.isUser = Auth.isUser;
     this.getCurrentUser = Auth.getCurrentUser;
+    this.user = this.getCurrentUser()
+    console.log(this.user);
+
   }
 
 }
