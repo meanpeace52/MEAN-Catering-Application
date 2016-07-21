@@ -1,6 +1,12 @@
 <div class="container">
   <div class="row">
-    <div class="col-sm-12">
+    <div class="col-sm-12" ng-if="!vm.user.payableAccountId">
+      <h1>Verify your credit card</h1>
+      <div class="row">
+        <credit-card-form verifier="true" user="vm.user"></credit-card-form>
+      </div>
+    </div>
+    <div class="col-sm-12" ng-if="vm.user.payableAccountId" redirect="/events/new">
       <h1>New event</h1>
       <form class="form-fluid" name="form" novalidate>
         <div class="row">

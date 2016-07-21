@@ -11,6 +11,12 @@ class StripeController {
     }).then(respondWithResult(res))
   }
 
+  verify(req, res) {
+    return stripe.customers.create(req.body)
+      .then(respondWithResult(res))
+      .catch(handleError(res));
+  }
+
   checkout(req, res) {
     return stripe.charges.create(req.body)
       .then(respondWithResult(res))

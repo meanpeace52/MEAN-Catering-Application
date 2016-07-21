@@ -184,6 +184,10 @@ class EventsNewController {
       }
     }
 
+    verifyUser(data) {
+      console.log(12, data);
+    }
+
     toggleFT() {
       let selectedFT = this.$scope.fm.foodTypes;
 
