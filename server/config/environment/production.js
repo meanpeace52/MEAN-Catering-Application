@@ -30,14 +30,27 @@ module.exports = {
 
   payments: {
     DWOLLA: {
-      KEY: process.env.DWOLLA_KEY,
-      SECRET: process.env.DWOLLA_SECRET,
-      ACCOUNT_ID: process.env.DWOLLA_ACCOUNT_ID,
-      ACCESS_TOKEN: process.env.DWOLLA_ACCESS_TOKEN
+      KEY: '2jKQn8aERXipDkCuNYG8TKMKPqpGB4KjuK1Gevrw74ZITIK6Ew',
+      SECRET: 'tWsvZmICKSRpbGbO0WWRKBVXb4B03j35XpI5ifrP1LJJJ5HExy',
+      ACCOUNT_ID: 'f8615f27-0783-4078-97db-d8d7ce3ae368',
+      ACCESS_TOKEN: 'ozXPnlbOePqgiaUKFMOsgBH9xsl2upuOwxCg7C6K6PNgFIzyCt'
     },
     STRIPE: {
-      SECRET_KEY: process.env.STRIPE_SECRET_KEY,
-      PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY
+      SECRET_KEY: 'sk_test_FgAfCdq6QKhuGwWsHuk0yz7h',
+      PUBLIC_KEY: 'pk_test_sPCubetxhsItqcr1nkZOHQfM'
     }
   }
+
+  //payments: {
+  //  DWOLLA: {
+  //    KEY: process.env.DWOLLA_KEY,
+  //    SECRET: process.env.DWOLLA_SECRET,
+  //    ACCOUNT_ID: process.env.DWOLLA_ACCOUNT_ID,
+  //    ACCESS_TOKEN: process.env.DWOLLA_ACCESS_TOKEN
+  //  },
+  //  STRIPE: {
+  //    SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+  //    PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY
+  //  }
+  //}
 };
