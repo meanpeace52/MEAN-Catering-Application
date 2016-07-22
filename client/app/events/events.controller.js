@@ -25,7 +25,7 @@ class EventsController {
     this.$scope.events = [];
     this.$scope.displayed = [];
 
-    let query = ($scope.user.role == 'caterer' ? {showToCaterers: true, catererId: $scope.user._id, foodTypes: $scope.user.foodTypes} :  {userId: $scope.user._id});
+    let query = ($scope.user.role == 'caterer' ? {showToCaterers: true, catererId: $scope.user._id, foodTypes: $scope.user.foodTypes, serviceTypes: $scope.user.serviceTypes} :  {userId: $scope.user._id});
 
     this.pipe = function(tableState) {
       $scope.tableState = (angular.isObject(tableState) && tableState ? tableState : $scope.tableState);

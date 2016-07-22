@@ -1,0 +1,98 @@
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <!--<a class="btn btn-default" ng-click="showAccepted()">Accepted</a>-->
+          <!--<a class="btn btn-default" ng-click="showConfirmed()">Confirmed</a>-->
+          <!--<a class="btn btn-default active" ng-click="showPayed()">Payed</a>-->
+          <table st-table="events" st-pipe="eac.pipe" class="table table-hover table-condensed table-events">
+            <thead>
+            <tr>
+              <th st-sort="date" st-skip-natural="true">Date</th>
+              <th>Time</th>
+              <th st-sort="name" st-sort-default="true">Name</th>
+              <th st-sort="pricePerPerson">Price</th>
+              <th st-sort="people">People</th>
+              <th>Offer</th>
+            </tr>
+            <tr>
+              <th>
+                <input st-search="date" style="width: 120px;" class="input-sm form-control" type="search"/>
+              </th>
+              <th></th>
+              <th>
+                <input st-search="name" class="input-sm form-control" type="search"/>
+              </th>
+              <th>
+                <input st-search="pricePerPerson" style="width: 50px;" class="input-sm form-control" type="search"/>
+              </th>
+              <th>
+                <input st-search="people" style="width: 50px;" class="input-sm form-control" type="search"/>
+              </th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="event in displayed" ng-class="{'drafted': event.drafted, 'active': event.active, 'hidden': event.hide}" ng-click="setActiveEvent(event)">
+              <td>{{event.date | date: "longDate"}}</td>
+              <td style="width: 80px;">{{event.time | date: "shortTime"}}</td>
+              <td style="max-width: 100px;">{{event.name}}</td>
+              <td>{{event.pricePerPerson}}</td>
+              <td>{{event.people}}</td>
+              <td>
+                <div>
+                  <a class="btn btn-xs btn-warning" ng-click="eac.showOffer()">Confirmed offer</a>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+              <td st-pagination="" st-items-by-page="10" colspan="6">
+              </td>
+            </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" ng-if="eventActive">
+    <div class="col-sm-12">
+      <h3>Offer from <b>{{eventActive.offer.catererName}}</b>, Total price: <b><mark>${{eventActive.offer.priceWithCounter}}</mark></b> <span class="label label-info">{{eventActive.offer.status}}</span></h3>
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="row">
+            <div class="col-sm-6" ng-if="eventActive.offer.includedInPrice.length">
+              <p><b>Offer Included in price:</b>
+              <ul>
+                <li ng-repeat="iip in eventActive.offer.includedInPrice">
+                  {{iip.name}}
+                </li>
+              </ul>
+              </p>
+            </div>
+            <div class="col-sm-6" ng-if="eventActive.includedInPrice.length">
+              <p><b>Event Included in price:</b></p>
+              <ul>
+                <li ng-repeat="iip in eventActive.includedInPrice">
+                  {{iip.name}}
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <p ng-if="eventActive.offer.counter"><b>Price per person:</b> ${{eventActive.offer.pricePerPerson}}</p>
+          <p ng-if="eventActive.offer.counter"><b>Counter:</b> ${{eventActive.offer.counter}}, Total with counter: <b><mark>${{eventActive.offer.priceWithCounter}}</mark></b> </p>
+          <p ng-if="!eventActive.offer.counter">Total: <b><mark>${{eventActive.offer.priceWithCounter}}</mark></b> </p>
+          <p ng-if="eventActive.offer.counterReason"><b>Counter Reason:</b> {{eventActive.offer.counterReason}}</p>
+          <p ng-if="eventActive.offer.contactInfo"><b>Contact Info:</b> {{eventActive.offer.contactInfo}}</p>
+          <p ng-if="eventActive.offer.offerDescription"><b>Offer Description:</b> {{eventActive.offer.offerDescription}}</p>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

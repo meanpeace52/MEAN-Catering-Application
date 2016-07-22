@@ -31,6 +31,9 @@ function getEventMailList(event) {
     if (event.foodTypes.length) { //if only ft were specified
       query = { foodTypes: {$in: event.foodTypes }};
     }
+    if (event.serviceTypes.length) { //if only st were specified
+      query = { serviceTypes: {$in: event.serviceTypes }};
+    }
   }
 
   return User.find(query).exec()
@@ -61,13 +64,13 @@ function getOfferOwnerMail(offer) {
 function getUsers() {
    //return User.find({'role': 'caterer' }, { email: 1, role: 1, name: 1, companyName: 1}).exec();
   //ObjectId("57430b12cc05ff64171e4ffd")    ObjectId("57431a9f869261981414cb87")
-   return User.find({'role': 'caterer' }, { email: 1, role: 1, name: 1, companyName: 1, foodTypes: 1}).exec().then((users) => {
+   return User.find({'role': 'caterer' }, { email: 1, role: 1, name: 1, companyName: 1, foodTypes: 1, serviceTypes: 1}).exec().then((users) => {
        return users;
      });
 }
 
 function createSummary(user) {    //user is caterer
-  let eventsQuery = { foodTypes: { $in: user.foodTypes}},
+  let eventsQuery = { foodTypes: { $in: user.foodTypes}, serviceTypes: { $in: user.serviceTypes}},
       eventsTomorrowQuery = { status: 'confirmed', confirmedBy: user._id },
       offersSentQuery = { catererId: user._id },
       offersAcceptedQuery = { catererId: user._id },
@@ -96,11 +99,13 @@ function createSummary(user) {    //user is caterer
     })
     .then((eventsTomorrow) => {
       summary.eventsTomorrow = eventsTomorrow;
-      let html = '<h2>Events scheduled for tomorrow</h2>',
-        date = new Date(event.date);
+      let html = '<h2>Events scheduled for tomorrow</h2>';
       _.each(summary.eventsTomorrow, (event) => {
+        let date = new Date(event.date),
+            time = new Date(event.time);
         html += '<p><strong>' + event.name + '</strong></p>';
         html += '<p>Date:<strong>' + date.toDateString() + '</strong></p>';
+        html += '<p>Time:<strong>' + time.toTimeString() + '</strong></p>';
         html += '<p>Location: <strong>' + event.location + '</strong></p>';
         html += '<p>People: <strong>' + event.people + '</strong></p>';
         html += '<p>Price per person: <strong>' + event.pricePerPerson + '</strong></p>';
@@ -155,8 +160,10 @@ var mailer = {
   },
   notifyEvent: function(event, fact) {
     let date = new Date(event.date),
+      time = new Date(event.time),
       message = '<h1>Event ' + event.name + ' was ' + fact + '!</h1>';
     message += '<p>Date:<strong>' + date.toDateString() + '</strong></p>';
+    message += '<p>Time:<strong>' + time.toTimeString() + '</strong></p>';
     message += '<p>Location: <strong>' + event.location + '</strong></p>';
     message += '<p>People: <strong>' + event.people + '</strong></p>';
     message += '<p>Price per person: <strong>' + event.pricePerPerson + '</strong></p>';
@@ -206,11 +213,13 @@ var mailer = {
 
       Event.findById(offer.eventId).exec()
         .then((event) => {
-          let date = new Date(event.date);
+          let date = new Date(event.date),
+              time = new Date(event.time);
           message += '<hr />';
           message += '<p>Event details:</p>';
           message += '<p>Name:<strong>' + event.name + '</strong></p>';
           message += '<p>Date:<strong>' + date.toDateString() + '</strong></p>';
+          message += '<p>Time:<strong>' + time.toTimeString() + '</strong></p>';
           message += '<p>Location: <strong>' + event.location + '</strong></p>';
           message += '<p>People: <strong>' + event.people + '</strong></p>';
           message += '<p>Price per person: <strong>' + event.pricePerPerson + '</strong></p>';

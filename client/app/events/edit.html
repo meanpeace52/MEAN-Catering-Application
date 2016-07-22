@@ -87,7 +87,7 @@
           <div class="col-sm-6">
             <div class="form-group" ng-class="{'has-error': (form.location.$touched && form.location.$error.required || form.$submitted && form.location.$untouched)}">
               <label>Location</label>
-              <input type="text" name="location" class="form-control" required ng-model="fm.location" />
+              <input type="text" name="location" class="form-control" data-location="location" required ng-model="fm.location" />
               <div ng-show="form.$submitted || form.location.$touched">
                 <div ng-show="form.location.$error.required">Please enter location</div>
               </div>
@@ -114,40 +114,93 @@
             </div>
           </div>
         </div>
+        <!--<div class="row">-->
+          <!--<div class="col-sm-8">-->
+            <!--<label>Select Food Types</label>-->
+            <!--<div class="panel panel-default">-->
+              <!--<div class="panel-body">-->
+                <!--<div class="row">-->
+                  <!--<div class="col-sm-5">-->
+                    <!--<div class="ft-panel-fixed-height">-->
+                      <!--<div class="checkbox" ng-repeat="type in foodTypes">-->
+                        <!--<label>-->
+                          <!--<input type="checkbox" checklist-model="fm.foodTypes" checklist-value="type._id" checked="type.checked" ng-click="vm.toggleFT()"> {{type.name}}-->
+                        <!--</label>-->
+                      <!--</div>-->
+                    <!--</div>-->
+                  <!--</div>-->
+                  <!--<div class="col-sm-7">-->
+                    <!--<div class="select-all-header">-->
+                      <!--<div class="checkbox">-->
+                        <!--<label>-->
+                          <!--<input type="checkbox" name="foodTypesAll" ng-model="foodTypesAll" ng-click="vm.toggleAll()"> Select All Restaurants-->
+                        <!--</label>-->
+                      <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="select-rest-block">-->
+                      <!--<div class="checkbox" ng-repeat="caterer in caterers" ng-if="caterer.showByFT">-->
+                        <!--<label>-->
+                          <!--<input type="checkbox" checklist-model="fm.selectedCaterers" ng-change="vm.watchForEdit(caterer._id)" checklist-value="caterer._id" > {{caterer.companyName}}-->
+                          <!--<span ng-repeat="ft in foodTypes" class="label label-default m-3" ng-if="vm.checkFT(ft._id, caterer)">{{ft.name}}</span>-->
+                        <!--</label>-->
+                      <!--</div>-->
+                    <!--</div>-->
+                  <!--</div>-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+          <!--<div class="col-sm-4" ng-show="selectionOccured">-->
+            <!--<label>Selected Restaurants</label>-->
+            <!--<div class="panel panel-default">-->
+              <!--<div class="panel-body">-->
+                <!--<div class="ft-panel-fixed-height">-->
+                  <!--<div class="selectedRest" ng-repeat="caterer in caterers" ng-if="caterer.showByEdit">-->
+                    <!--<button class="btn btn-default btn-xs" ng-click="vm.watchForEdit(caterer._id)"><i class="fa fa-times"></i></button> <strong>{{caterer.companyName}}</strong> <span ng-repeat="ft in foodTypes" class="label label-default m-3" ng-if="vm.checkFT(ft._id, caterer)">{{ft.name}}</span>-->
+                  <!--</div>-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
         <div class="row">
-          <div class="col-sm-8">
-            <label>Select Food Types</label>
-            <div class="panel panel-default">
-              <div class="panel-body">
-                <div class="row">
-                  <div class="col-sm-5">
-                    <div class="ft-panel-fixed-height">
-                      <div class="checkbox" ng-repeat="type in foodTypes">
-                        <label>
-                          <input type="checkbox" checklist-model="fm.foodTypes" checklist-value="type._id" checked="type.checked" ng-click="vm.toggleFT()"> {{type.name}}
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-sm-7">
-                    <div class="select-all-header">
-                      <div class="checkbox">
-                        <label>
-                          <input type="checkbox" name="foodTypesAll" ng-model="foodTypesAll" ng-click="vm.toggleAll()"> Select All Restaurants
-                        </label>
-                      </div>
-                    </div>
-                    <div class="select-rest-block">
-                      <div class="checkbox" ng-repeat="caterer in caterers" ng-if="caterer.showByFT">
-                        <label>
-                          <input type="checkbox" checklist-model="fm.selectedCaterers" ng-change="vm.watchForEdit(caterer._id)" checklist-value="caterer._id" > {{caterer.companyName}}
-                          <span ng-repeat="ft in foodTypes" class="label label-default m-3" ng-if="vm.checkFT(ft._id, caterer)">{{ft.name}}</span>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
+          <div class="col-sm-4">
+            <label>Filter Caterers by category</label>
+            <uib-accordion close-others="false">
+              <uib-accordion-group heading="Food Types" is-open="true">
+                <div class="checkbox" ng-repeat="type in foodTypes">
+                  <label>
+                    <input type="checkbox" checklist-model="fm.foodTypes" checklist-value="type._id" ng-click="vm.toggleCat()"> {{type.name}}
+                  </label>
                 </div>
+              </uib-accordion-group>
+              <uib-accordion-group heading="Service Types" is-open="true">
+                <div class="checkbox" ng-repeat="type in serviceTypes">
+                  <label>
+                    <input type="checkbox" checklist-model="fm.serviceTypes" checklist-value="type._id" ng-click="vm.toggleCat()"> {{type.name}}
+                  </label>
+                </div>
+              </uib-accordion-group>
+            </uib-accordion>
+          </div>
+          <div class="col-sm-4">
+            <label>&nbsp;</label>
+            <div class="select-all-header">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" name="selectAll" ng-model="selectAll" ng-click="vm.toggleAll()"> Select All Restaurants
+                </label>
               </div>
+            </div>
+            <div class="select-rest-block">
+              <div class="checkbox" ng-repeat="caterer in caterers" ng-if="caterer.showByCat">
+                <label>
+                  <input type="checkbox" checklist-model="fm.selectedCaterers" ng-change="vm.watchForEdit(caterer._id)" checklist-value="caterer._id" > {{caterer.name}}
+                  <span ng-repeat="ft in foodTypes" class="label label-default m-3" ng-if="vm.checkFT(ft._id, caterer)">{{ft.name}}</span>
+                  <span ng-repeat="st in serviceTypes" class="label label-default m-3" ng-if="vm.checkST(st._id, caterer)">{{st.name}}</span>
+                </label>
+              </div>
+
             </div>
           </div>
           <div class="col-sm-4" ng-show="selectionOccured">
@@ -156,7 +209,7 @@
               <div class="panel-body">
                 <div class="ft-panel-fixed-height">
                   <div class="selectedRest" ng-repeat="caterer in caterers" ng-if="caterer.showByEdit">
-                    <button class="btn btn-default btn-xs" ng-click="vm.watchForEdit(caterer._id)"><i class="fa fa-times"></i></button> <strong>{{caterer.companyName}}</strong> <span ng-repeat="ft in foodTypes" class="label label-default m-3" ng-if="vm.checkFT(ft._id, caterer)">{{ft.name}}</span>
+                    <button class="btn btn-default btn-xs" ng-click="vm.watchForEdit(caterer._id)"><i class="fa fa-times"></i></button> <strong>{{caterer.name}}</strong> <span ng-repeat="ft in foodTypes" class="label label-default m-3" ng-if="vm.checkFT(ft._id, caterer)">{{ft.name}}</span> <span ng-repeat="st in serviceTypes" class="label label-default m-3" ng-if="vm.checkST(st._id, caterer)">{{st.name}}</span>
                   </div>
                 </div>
               </div>

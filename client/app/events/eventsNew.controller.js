@@ -26,24 +26,18 @@ class EventsNewController {
     this.sService = ServiceTypesService;
 
     this.$scope.foodTypes = this.ftService.getFoodTypes().then((data)=> {
-      this.$scope.foodTypes = _.map(data, (item, i) => {
-        if (_.indexOf(this.$scope.fm.foodTypes, item._id) < 0) {
-          item.checked = false;
-        } else {
-          item.checked = true;
-        }
-        return item;
+      this.$scope.foodTypes = data;
+      this.$scope.fm.foodTypes = [];
+      _.each(this.$scope.foodTypes, (item) => {
+        this.$scope.fm.foodTypes.push(item._id);
       });
     });
 
     this.$scope.serviceTypes = this.sService.getServiceTypes().then((data)=> {
-      this.$scope.serviceTypes = _.map(data, (item, i) => {
-        if (_.indexOf(this.$scope.fm.serviceTypes, item._id) < 0) {
-          item.checked = false;
-        } else {
-          item.checked = true;
-        }
-        return item;
+      this.$scope.serviceTypes = data;
+      this.$scope.fm.serviceTypes = [];
+      _.each(this.$scope.serviceTypes, (item) => {
+        this.$scope.fm.serviceTypes.push(item._id);
       });
     });
 
@@ -86,7 +80,7 @@ class EventsNewController {
 
   }
 
-  /*checkFT(id, caterer) {
+  checkFT(id, caterer) {
     if (_.indexOf(caterer.foodTypes, id) > -1) {
       return true;
     } else {
@@ -109,19 +103,26 @@ class EventsNewController {
     //this.$scope.foodTypesAll = true;
 
     _.each(this.$scope.caterers, (item, i) => {
-      let intersectFT = _.intersection(item.foodTypes, selectedFT),
+      if (!selectedFT.length && !selectedST.length) {
+        this.$scope.caterers[i].showByCat = true;
+      } else {
+        let intersectFT = _.intersection(item.foodTypes, selectedFT),
           intersectST = _.intersection(item.serviceTypes, selectedST);
 
-      this.$scope.caterers[i].showByCat = !!(intersectFT.length && intersectST.length);
+        //if (intersectFT.length && intersectST.length) {
+        this.$scope.caterers[i].showByCat = !!(intersectFT.length && intersectST.length);
+        //}
 
-      if (_.indexOf(this.$scope.fm.selectedCaterers, item._id) < 0) {
-        this.$scope.caterers[i].showByEdit = false;
-        this.$scope.caterers[i].checked = false;
+        if (_.indexOf(this.$scope.fm.selectedCaterers, item._id) < 0) {
+          this.$scope.caterers[i].showByEdit = false;
+          this.$scope.caterers[i].checked = false;
 
-      } else {
-        this.$scope.caterers[i].showByEdit = true;
-        this.$scope.caterers[i].checked = true;
+        } else {
+          this.$scope.caterers[i].showByEdit = true;
+          this.$scope.caterers[i].checked = true;
+        }
       }
+
     });
   }
 
@@ -174,9 +175,9 @@ class EventsNewController {
         }
       }
     });
-  } */
+  }
 
-    checkFT(id, caterer) {
+  /*  checkFT(id, caterer) {
       if (_.indexOf(caterer.foodTypes, id) > -1) {
         return true;
       } else {
@@ -254,13 +255,13 @@ class EventsNewController {
         }
       }
     });
-    }
+    } */
 
   getCaterers() {
     this.$http.get('/api/users/caterers').then(response => {
       this.$scope.caterers = response.data;
-      //this.toggleCat();
-      this.toggleFT();
+      this.toggleCat();
+      //this.toggleFT();
     })
     .catch(err => {
       this.errors = err.message;

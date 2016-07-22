@@ -6,9 +6,8 @@
       <ul class="list-group user-list">
         <li class="list-group-item" ng-repeat="user in admin.users">
           <div class="user-info">
-            <strong ng-if="user.role == 'user">{{user.firstName}} {{user.lastName}} {{user.name}}</strong><br>
-            <strong ng-if="user.role == 'caterer">{{user.companyName}} {{user.name}}</strong><br>
-            <strong>{{user.name}}</strong><br>
+            <strong ng-if="user.role === 'user'">{{user.firstName}} {{user.lastName}} {{user.name}}</strong><br>
+            <strong ng-if="user.role === 'caterer'">{{user.companyName}} {{user.name}}</strong><br>
             <span class="text-muted">{{user.email}}</span>
           </div>
           <a ng-click="admin.delete(user)" class="trash"><span class="fa fa-trash fa-2x"></span></a>
@@ -108,6 +107,10 @@
           </div>
         </li>
       </ul>
+    </uib-tab>
+    <uib-tab index="4" heading="Events">
+      <br />
+      <eventsadmin></eventsadmin>
     </uib-tab>
   </uib-tabset>
 

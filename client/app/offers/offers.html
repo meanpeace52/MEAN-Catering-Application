@@ -9,7 +9,7 @@
     <div class="offers-pills">
       <uib-tabset active="activePill" vertical="true" type="pills">
         <uib-tab ng-repeat="offer in offers" heading="{{offer.caterer.companyName}}">
-          <h3><small>Offer from</small> <b>{{offer.caterer.name}}</b>, <small>Total price:</small> <b><mark>${{offer.priceWithCounter}}</mark></b> <span class="label label-info">{{offer.status}}</span> <span class="label label-warning" ng-if="offer.isUpdated">Heads Up! Event is updated!</span></h3>
+          <h3><small>Offer from</small> <b>{{offer.caterer.name}}</b>, <small>Total price:</small> <b><mark>${{offer.priceWithCounter}}</mark></b> <span class="label label-info">{{offer.status}}</span></h3>
           <div ng-if="offer.status == 'sent' && !offer.drafted">
             <hr>
             <button class="btn btn-success" ng-click="oc.accept(offer._id)">Accept</button>

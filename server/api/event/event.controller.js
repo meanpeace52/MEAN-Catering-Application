@@ -87,44 +87,56 @@ export function index(req, res) {
 
 export function dataset(req, res) {
   let query = {},
-    isCaterer = (req.body.userId ? false : true);
+    isCaterer = (req.body.userId ? false : true),
+    showConfirmed = (req.body.status === 'confirmed' ? true : false),
+    today = new Date().toISOString();
 
-  if (!isCaterer) {
-    query = {
-      userId: req.body.userId
-    }
+  if (showConfirmed) {
+    query = { status: 'confirmed' };
   } else {
-    query = {
-      showToCaterers: req.body.showToCaterers /*, selectedCaterers: {$elemMatch: {$eq: req.body.sentTo } }*/
-    }
-    if (req.body.foodTypes && req.body.foodTypes.length) {
-      query.foodTypes = {$elemMatch: {$in: req.body.foodTypes }}
+    if (!isCaterer) {
+      query = {
+        userId: req.body.userId
+      }
+    } else {
+      query = {
+        showToCaterers: req.body.showToCaterers /*, selectedCaterers: {$elemMatch: {$eq: req.body.sentTo } }*/
+      }
+      if (req.body.foodTypes && req.body.foodTypes.length) {
+        query.foodTypes = {$elemMatch: {$in: req.body.foodTypes }}
+      }
+      if (req.body.serviceTypes && req.body.serviceTypes.length) {
+        query.serviceTypes = {$elemMatch: {$in: req.body.serviceTypes }}
+      }
     }
   }
 
+  //query.date = { $gte: today };
+
   return Event.find(query).exec().then((events) => {
     let eventPromises = [];
+    events.forEach((event, i) => {
+      events[i] = events[i].toObject();
+      if (isCaterer && event.selectedCaterers.length && _.indexOf(event.selectedCaterers, req.body.catererId) == -1)
+      {
+        _.pull(events, event);
+      } else {
+        let offerQuery = (isCaterer ? {eventId: '' + event._id, catererId: req.body.catererId} : {eventId: '' + event._id});
+        if (showConfirmed) offerQuery = {eventId: '' + event._id, status: 'confirmed'};
 
-  events.forEach((event, i) => {
-    events[i] = events[i].toObject();
-    if (isCaterer && event.selectedCaterers.length && _.indexOf(event.selectedCaterers, req.body.catererId) == -1)
-    {
-      _.pull(events, event);
-    } else {
-      let offerQuery = (isCaterer ? {eventId: '' + event._id, catererId: req.body.catererId} : {eventId: '' + event._id});
+        eventPromises.push(Offer.find(offerQuery).exec().then((offers) => {
+          events[i].offers = offers;
+          if (showConfirmed) events[i].offer = offers[0];
+          return events[i];
+        }));
+      }
 
-      eventPromises.push(Offer.find(offerQuery).exec().then((offers) => {
-        events[i].offers = offers;
-        return events[i];
-      }));
-    }
+    });
 
-  });
-
-  return Promise.all(eventPromises).then(() => {
-      return events;
-   }).then(respondWithResult(res))
-    .catch(handleError(res));
+    return Promise.all(eventPromises).then(() => {
+        return events;
+     }).then(respondWithResult(res))
+      .catch(handleError(res));
 
  });
 }
