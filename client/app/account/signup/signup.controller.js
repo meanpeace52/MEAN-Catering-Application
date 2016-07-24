@@ -3,12 +3,14 @@
 class SignupController {
   //end-non-standard
 
-  constructor(Auth, $state, $scope, FoodTypesService) {
+  constructor(Auth, $state, $scope, FoodTypesService, PaymentService) {
     this.Auth = Auth;
+    this.payments = PaymentService;
     this.$state = $state;
     this.$scope = $scope;
     this.ftService = FoodTypesService;
     this.user = {};
+    this.addressValidationError = null;
     this.$scope.foodTypes = this.ftService.getFoodTypes().then((data)=> {
       this.user.foodTypes = data;
     });
@@ -16,6 +18,7 @@ class SignupController {
     //start-non-standard
 
   register(form) {
+
     let role = 'user',
       request = {
         firstname: this.user.firstname,
@@ -31,31 +34,45 @@ class SignupController {
       request.contactInfo = this.user.contactInfo;
       request.companyName = this.user.companyName;
       request.foodTypes = this.user.foodTypes;
+      request.location = this.user.location;
+      request.address = this.user.address;
     }
 
-    if (form.$valid) {
-      this.Auth.createUser(request)
-        .then(() => {
-        // Account created, redirect to home
-        if (request.role === 'caterer') {
-          this.$state.go('caterer-profile');
-        } else {
-          this.$state.go('main');
-        }
-
-    })
-  .catch(err => {
-      err = err.data;
-    this.errors = {};
-
-    // Update validity of form fields that match the mongoose errors
-    angular.forEach(err.errors, (error, field) => {
-      form[field].$setValidity('mongoose', false);
-    this.errors[field] = error.message;
-  });
-});
+    if (this.user.role && form.$valid) {
+      this.payments.verifyAddress(request.address).then(address => {
+        request.address = address;
+        _register.call(this, request, form);
+      }).catch(result => {
+        this.addressValidationError = result.ErrDescription;
+      });
+    } else if (!this.user.role && form.$valid) {
+      _register.call(this, request, form);
     }
+
   }
+}
+
+function _register(request, form) {
+  return this.Auth.createUser(request)
+    .then(() => {
+      // Account created, redirect to home
+      if (request.role === 'caterer') {
+        this.$state.go('caterer-profile');
+      } else {
+        this.$state.go('main');
+      }
+    })
+    .catch(err => {
+      err = err.data;
+      this.errors = {};
+
+      // Update validity of form fields that match the mongoose errors
+      angular.forEach(err.errors, (error, field) => {
+        form[field].$setValidity('mongoose', false);
+        this.errors[field] = error.message;
+      });
+
+    });
 }
 
 angular.module('cateringApp')

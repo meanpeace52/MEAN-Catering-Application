@@ -25,7 +25,8 @@ var EventSchema = new mongoose.Schema({
   sentTo: Array,
   rejectedBy: Array,
   confirmedBy: String,
-  isUpdated: Boolean
+  isUpdated: Boolean,
+  address: Object
 });
 
 export default mongoose.model('Event', EventSchema);

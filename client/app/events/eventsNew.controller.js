@@ -1,17 +1,19 @@
 'use strict';
 
 class EventsNewController {
-  constructor($http, $scope,  socket, Auth, $state, EventsService, FoodTypesService, IncludedInPriceService, ServiceTypesService) {
+  constructor($http, $scope,  socket, Auth, $state, EventsService, FoodTypesService, IncludedInPriceService, ServiceTypesService, PaymentService) {
     this.errors = {};
     this.submitted = false;
     this.saved = false;
     this.sent = false;
+    this.waitForSending = false;
 
     this.Auth = Auth;
     this.$state = $state;
     this.$scope = $scope;
     this.$http = $http;
     this.socket = socket;
+    this.payments = PaymentService;
 
     this.isLoggedIn = Auth.isLoggedIn;
     this.isAdmin = Auth.isAdmin;
@@ -269,26 +271,41 @@ class EventsNewController {
   }
 
   sendRequest(form) {
-    let eventModel = this.$scope.fm,
-      url = (this.saved ? '/api/events/' + this.$scope.fm._id : '/api/events/new');
 
-    eventModel.showToCaterers = true;
-    eventModel.sentTo = eventModel.selectedCaterers;
-    eventModel.status = 'sent';
-    eventModel.userId = this.user._id;
+    console.log(this.user.payableAccountId);
+    if (!this.user.payableAccountId) {
+      this.saveDraft(form);
+      this.waitForSending = true;
+    } else {
+      this.waitForSending = false;
+      let eventModel = this.$scope.fm,
+        url = (this.saved ? '/api/events/' + this.$scope.fm._id : '/api/events/new');
 
-    if (this.$scope.fm.status = 'sent') eventModel.isUpdated = true;
+      eventModel.showToCaterers = true;
+      eventModel.sentTo = eventModel.selectedCaterers;
+      eventModel.status = 'sent';
+      eventModel.userId = this.user._id;
 
-    if (eventModel && form.$valid) {
-      this.$http.post(url, eventModel)
-        .then(response => {
-        this.sent = true;
-        this.$state.go('events');
-      })
-      .catch(err => {
-          this.errors.other = err.message;
-      });
+      if (this.$scope.fm.status = 'sent') eventModel.isUpdated = true;
+
+      if (eventModel && form.$valid) {
+        this.payments.verifyAddress(eventModel.address).then(address => {
+          eventModel.address = address;
+          this.$http.post(url, eventModel)
+            .then(response => {
+              this.sent = true;
+              this.$state.go('events');
+            })
+            .catch(err => {
+              this.errors.other = err.message;
+            });
+        }).catch(result => {
+          this.addressValidationError = result.ErrDescription;
+        });
+
+      }
     }
+
   }
 
   saveDraft(form) {
@@ -298,14 +315,20 @@ class EventsNewController {
     eventModel.status = 'draft';
 
     if (eventModel && form.$valid) {
-      this.$http.post('/api/events/new', eventModel)
-        .then(response => {
-          this.saved = true;
-          this.$scope.fm._id = response.data._id;
-        })
-        .catch(err => {
-          this.errors.other = err.message;
-        })
+      this.payments.verifyAddress(eventModel.address).then(address => {
+        eventModel.address = address;
+        this.$http.post('/api/events/new', eventModel)
+          .then(response => {
+            this.saved = true;
+            this.$scope.fm._id = response.data._id;
+          })
+          .catch(err => {
+            this.errors.other = err.message;
+          })
+      }).catch(result => {
+        this.addressValidationError = result.ErrDescription;
+      });
+
     }
   }
 }

@@ -1,7 +1,7 @@
 'use strict';
 
 class EventsEditController {
-  constructor($http, $scope, socket, Auth, $state, EventsService, FoodTypesService, IncludedInPriceService, ServiceTypesService) {
+  constructor($http, $scope, socket, Auth, $state, EventsService, FoodTypesService, IncludedInPriceService, ServiceTypesService, PaymentService) {
     this.errors = {};
     this.submitted = false;
     this.saved = false;
@@ -16,6 +16,7 @@ class EventsEditController {
     this.ftService = FoodTypesService;
     this.incService = IncludedInPriceService;
     this.sService = ServiceTypesService;
+    this.payments = PaymentService;
 
     this.$scope.caterers = [];
     this.$scope.selectionOccured = false;
@@ -198,29 +199,37 @@ class EventsEditController {
     });
   }
 
-  sendRequest() {
+  sendRequest(form, extForm) {
     let eventModel = this.$scope.fm,
         url = '/api/events/' + this.$scope.fm._id;
 
+    extForm.$setSubmitted();
     eventModel.showToCaterers = true;
     eventModel.sentTo = eventModel.selectedCaterers;
     eventModel.status = 'sent';
 
     if (this.$scope.fm.status = 'sent') eventModel.isUpdated = true;
 
-    if (eventModel) {
-      this.$http.post(url, eventModel)
-        .then(response => {
-        this.sent = true;
-        this.$state.go('events');
-      })
-      .catch(err => {
-          this.errors.other = err.message;
+    if (eventModel && form.$valid && extForm.$valid) {
+      this.payments.verifyAddress(eventModel.address).then(address => {
+        eventModel.address = address;
+        this.$http.post(url, eventModel)
+          .then(response => {
+            this.sent = true;
+            this.$state.go('events');
+          })
+          .catch(err => {
+            this.errors.other = err.message;
+          });
+      }).catch(result => {
+        this.addressValidationError = result.ErrDescription;
       });
+
     }
+
   }
 
-  saveDraft() {
+  saveDraft(form, extForm) {
     let eventModel = this.$scope.fm,
         url = '/api/events/' + this.$scope.fm._id;
 
@@ -228,16 +237,25 @@ class EventsEditController {
       //TODO differ and save new draft and what was sent to caterer
     }
 
-    if (eventModel) {
-      this.$http.post(url, eventModel)
-        .then(response => {
-          this.saved = true;
-          //this.$state.go('events');
-        })
-        .catch(err => {
-          this.errors.other = err.message;
-        });
+    extForm.$setSubmitted();
+
+    if (eventModel && form.$valid && extForm.$valid) {
+      this.payments.verifyAddress(eventModel.address).then(address => {
+        eventModel.address = address;
+        this.$http.post(url, eventModel)
+          .then(response => {
+            this.saved = true;
+            //this.$state.go('events');
+          })
+          .catch(err => {
+            this.errors.other = err.message;
+          });
+      }).catch(result => {
+        this.addressValidationError = result.ErrDescription;
+      });
+
     }
+
   }
 }
 

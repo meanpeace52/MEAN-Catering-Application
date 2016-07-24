@@ -4,7 +4,7 @@
       <h1>Sign up</h1>
     </div>
     <div class="col-sm-12">
-      <form class="form" name="form" ng-submit="vm.register(form)" novalidate>
+      <form class="form" name="form" ng-submit="vm.register(form, extForm)" novalidate>
 
         <div class="form-group" ng-class="{ 'has-success': form.name.$valid && vm.submitted,
                                             'has-error': form.name.$invalid && vm.submitted }">
@@ -97,17 +97,25 @@
           <label><input type="checkbox" name="role" ng-model="vm.user.role"/> I'm a Caterer</label>
         </div>
 
-        <div class="form-group" ng-show="vm.user.role">
+        <div class="form-group" ng-if="vm.user.role">
           <label>Company Name</label>
           <input type="text" name="companyName" class="form-control" ng-model="vm.user.companyName" />
         </div>
 
-        <div class="form-group" ng-show="vm.user.role">
+        <div class="form-group" ng-if="vm.user.role">
+          <label>Location</label>
+          <input type="text" name="location" class="form-control" data-location="location" ng-model="vm.user.location"/>
+          <div class="form-group has-error" ng-if="vm.addressValidationError">
+            {{ vm.addressValidationError }}
+          </div>
+        </div>
+
+        <div class="form-group" ng-if="vm.user.role">
           <label>Contact Info</label>
           <textarea type="checkbox" name="contactInfo" class="form-control" ng-model="vm.user.contactInfo"></textarea>
         </div>
 
-        <div class="form-group" ng-show="vm.user.role">
+        <div class="form-group" ng-if="vm.user.role">
           <label>Select food types</label>
           <div class="checkbox" ng-repeat="type in foodTypes">
             <label>

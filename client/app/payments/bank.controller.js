@@ -6,8 +6,6 @@ class BankController {
     this.$http = $http;
     this.$window = $window;
 
-    console.log(authCode);
-
     if (!authCode) {
       this.auth();
     } else {

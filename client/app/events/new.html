@@ -1,14 +1,14 @@
 <div class="container">
   <div class="row">
-    <div class="col-sm-12" ng-if="!vm.user.payableAccountId">
+    <div class="col-sm-12" ng-if="!vm.user.payableAccountId && vm.saved">
       <h1>Verify your credit card</h1>
       <div class="row">
         <credit-card-form verifier="true" user="vm.user"></credit-card-form>
       </div>
     </div>
-    <div class="col-sm-12" ng-if="vm.user.payableAccountId" redirect="/events/new">
+    <div class="col-sm-12" redirect="/events/new" ng-if="vm.user.payableAccountId || !vm.saved">
       <h1>New event</h1>
-      <form class="form-fluid" name="form" novalidate>
+      <ng-form class="form-fluid" name="form" novalidate>
         <div class="row">
           <div class="col-sm-5">
             <div class="form-group" ng-class="{'has-error': (form.name.$touched && form.name.$error.required || form.$submitted && form.name.$untouched) }">
@@ -96,6 +96,9 @@
 
               <div ng-show="form.$submitted || form.location.$touched">
                 <div ng-show="form.location.$error.required">Please enter location</div>
+              </div>
+              <div class="form-group has-error" ng-if="vm.addressValidationError">
+                {{ vm.addressValidationError }}
               </div>
             </div>
             <div class="form-group">
@@ -233,10 +236,10 @@
         <div ng-if="vm.saved" class="alert alert-success">Event is successfully saved</div>
         <div ng-if="vm.sent" class="alert alert-success">Event is successfully sent to restaurants</div>
         <div>
-          <button class="btn btn-default" type="submit" ng-click="vm.saveDraft(form)">
+          <button class="btn btn-default" type="submit" ng-click="vm.saveDraft(form, extForm)">
             Save Draft
           </button>
-          <button class="btn btn-primary" ng-click="vm.sendRequest(form)">
+          <button class="btn btn-primary" ng-click="vm.sendRequest(form, extForm)">
             Send Request
           </button>
         </div>
