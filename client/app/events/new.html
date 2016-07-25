@@ -92,7 +92,7 @@
           <div class="col-sm-6">
             <div class="form-group" ng-class="{'has-error': (form.location.$touched && form.location.$error.required || form.$submitted && form.location.$untouched)}">
               <label>Location</label>
-              <input type="text" name="location" data-location="location" class="form-control" required ng-model="fm.location" />
+              <input type="text" name="location" class="form-control" required data-location="location" ng-model="fm.location"/>
 
               <div ng-show="form.$submitted || form.location.$touched">
                 <div ng-show="form.location.$error.required">Please enter location</div>

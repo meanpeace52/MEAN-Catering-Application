@@ -75,7 +75,7 @@ class EventsAdminController {
       console.log('event', event);
       _.each($scope.events, (item, i) => {
         $scope.events[i].active = false;
-        if (item._id === event._id) {
+        if (item._id == event._id) {
           $scope.events[i].active = true;
         }
       });
