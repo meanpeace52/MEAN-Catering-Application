@@ -29,7 +29,7 @@
           <b>Website: </b> {{vm.user.website}}
         </li>
         <li ng-if="vm.user.location">
-          <b>Location: </b> {{vm.user.location}}
+          <b>Location: </b> <a target="_blank" href="http://maps.google.com/?q={{vm.user.location}}">{{vm.user.location}}</a>
         </li>
         <li ng-if="vm.user.minprice">
           <b>Min Price per person: </b> {{vm.user.minprice}}
