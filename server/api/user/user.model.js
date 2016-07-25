@@ -53,6 +53,7 @@ UserSchema
       'firstname': this.firstname,
       'lastname': this.lastname,
       'foodTypes': this.foodTypes,
+      'serviceTypes': this.serviceTypes,
       'contactInfo': this.contactInfo,
       'companyName': this.companyName,
       'name': this.name,

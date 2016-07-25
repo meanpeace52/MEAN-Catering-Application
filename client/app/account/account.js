@@ -44,6 +44,13 @@ angular.module('cateringApp')
         controller: 'CatererProfileController',
         controllerAs: 'vm',
         authenticate: 'caterer'
+      })
+      .state('caterer-public-profile', {
+        url: '/caterers/:id',
+        templateUrl: 'app/account/profile/caterer_public.html',
+        controller: 'CatererPublicProfileController',
+        controllerAs: 'vm',
+        authenticate: true
       });
   })
   .run(function($rootScope) {

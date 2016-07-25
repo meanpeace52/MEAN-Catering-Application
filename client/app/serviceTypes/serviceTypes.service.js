@@ -12,7 +12,7 @@ angular.module('cateringApp')
         });
       },
       editServiceType(servicetype) {
-        return $http.post('/api/serviceTypes/', servicetype).then(response => {
+        return $http.post('/api/serviceTypes/' + servicetype._id, servicetype).then(response => {
             return response.data;
         })
         .catch(err => {

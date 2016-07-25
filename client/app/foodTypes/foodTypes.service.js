@@ -12,7 +12,7 @@ angular.module('cateringApp')
         });
       },
       editFoodType(foodtype) {
-        return $http.post('/api/foodTypes/', foodtype).then(response => {
+        return $http.post('/api/foodTypes/' + foodtype._id, foodtype).then(response => {
             return response.data;
         })
         .catch(err => {

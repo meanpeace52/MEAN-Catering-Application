@@ -12,7 +12,7 @@ angular.module('cateringApp')
         });
       },
       editIncludedInPrice(includedInPrice) {
-          return $http.post('/api/includedInPrice/', includedInPrice).then(response => {
+          return $http.post('/api/includedInPrice/' + includedInPrice._id, includedInPrice).then(response => {
               return response.data;
         })
         .catch(err => {

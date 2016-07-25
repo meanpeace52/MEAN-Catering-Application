@@ -67,13 +67,6 @@ class CatererProfileController {
     });
 
     this.$scope.ft = {};
-
-    /*Google autocomplete*/
-
-
-
-
-
   }
 
   addFoodType() {

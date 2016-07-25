@@ -1,0 +1,60 @@
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <h1>{{vm.user.companyName}} Profile</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-5" ng-if="vm.user.logo">
+      <div class="img-thumbnail" ng-draw="{file: vm.user.logo, width: 400, userId: vm.user._id}"></div>
+    </div>
+    <div class="col-sm-7">
+      <ul>
+        <li ng-if="vm.user.description">
+          <b>Description: </b> {{vm.user.description}}
+        </li>
+        <li ng-if="vm.user.firstname">
+          <b>First Name: </b> {{vm.user.firstname}}
+        </li>
+        <li ng-if="vm.user.lastname">
+          <b>Last Name: </b> {{vm.user.lastname}}
+        </li>
+        <li ng-if="vm.user.contactInfo">
+          <b>Contact Info: </b> {{vm.user.contactInfo}}
+        </li>
+        <li ng-if="vm.user.phone">
+          <b>Phone: </b> {{vm.user.phone}}
+        </li>
+        <li ng-if="vm.user.website">
+          <b>Website: </b> {{vm.user.website}}
+        </li>
+        <li ng-if="vm.user.location">
+          <b>Location: </b> {{vm.user.location}}
+        </li>
+        <li ng-if="vm.user.minprice">
+          <b>Min Price per person: </b> {{vm.user.minprice}}
+        </li>
+        <li ng-if="vm.user.veganOffers">
+          <b>Have vegan offers: </b> {{vm.user.veganOffers}}
+        </li>
+        <li ng-if="vm.user.foodTypes">
+          <ul>
+            <b>Food types</b>
+            <li ng-repeat="type in foodTypes" ng-if="vm.checkFT(type._id)">
+              {{type.name}}
+            </li>
+          </ul>
+        </li>
+        <li ng-if="vm.user.serviceTypes">
+          <ul>
+            <b>Service types</b>
+            <li ng-repeat="type in serviceTypes" ng-if="vm.checkST(type._id)">
+              {{type.name}}
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</div>
