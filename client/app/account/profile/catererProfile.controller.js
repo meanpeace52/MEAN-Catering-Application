@@ -128,7 +128,7 @@ class CatererProfileController {
             this.saved = true;
             this.$timeout(function() {
               root.saved = false;
-            }, 2000);
+            }, 3000);
             //this.$state.go('events');
           })
           .catch(err => {

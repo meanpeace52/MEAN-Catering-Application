@@ -170,18 +170,28 @@
           <div class="col-sm-4">
             <label>Filter Caterers by category</label>
             <uib-accordion close-others="false">
-              <uib-accordion-group heading="Food Types" is-open="true">
-                <div class="checkbox" ng-repeat="type in foodTypes">
-                  <label>
-                    <input type="checkbox" checklist-model="fm.foodTypes" checklist-value="type._id" ng-click="vm.toggleCat()"> {{type.name}}
-                  </label>
+              <uib-accordion-group is-open="true">
+                <uib-accordion-heading>
+                  Food Types <i class="pull-right fa" ng-class="{'fa-chevron-down': status.open, 'fa-chevron-right': !status.open}"></i>
+                </uib-accordion-heading>
+                <div class="category-container">
+                  <div class="checkbox" ng-repeat="type in foodTypes">
+                    <label>
+                      <input type="checkbox" checklist-model="fm.foodTypes" checklist-value="type._id" ng-click="vm.toggleCat()"> {{type.name}}
+                    </label>
+                  </div>
                 </div>
               </uib-accordion-group>
-              <uib-accordion-group heading="Service Types" is-open="true">
-                <div class="checkbox" ng-repeat="type in serviceTypes">
-                  <label>
-                    <input type="checkbox" checklist-model="fm.serviceTypes" checklist-value="type._id" ng-click="vm.toggleCat()"> {{type.name}}
-                  </label>
+              <uib-accordion-group is-open="true">
+                <uib-accordion-heading>
+                  Service Types <i class="pull-right fa" ng-class="{'fa-chevron-down': status.open, 'fa-chevron-right': !status.open}"></i>
+                </uib-accordion-heading>
+                <div class="category-container">
+                  <div class="checkbox" ng-repeat="type in serviceTypes">
+                    <label>
+                      <input type="checkbox" checklist-model="fm.serviceTypes" checklist-value="type._id" ng-click="vm.toggleCat()"> {{type.name}}
+                    </label>
+                  </div>
                 </div>
               </uib-accordion-group>
             </uib-accordion>
