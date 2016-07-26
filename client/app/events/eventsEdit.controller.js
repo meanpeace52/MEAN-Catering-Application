@@ -18,6 +18,10 @@ class EventsEditController {
     this.sService = ServiceTypesService;
     this.payments = PaymentService;
 
+    this.isUser = Auth.isUser;
+    this.getCurrentUser = Auth.getCurrentUser;
+    this.user = this.getCurrentUser();
+
     this.$scope.caterers = [];
     this.$scope.selectionOccured = false;
 
