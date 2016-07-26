@@ -1,7 +1,7 @@
 'use strict';
 
 class CatererProfileController {
-  constructor(Auth, $cookies, $state, $http, FoodTypesService, ServiceTypesService, $scope, FileUploader, $rootScope, $timeout) {
+  constructor(Auth, $cookies, $state, $http, FoodTypesService, ServiceTypesService, $scope, FileUploader, $rootScope, $timeout, PaymentService) {
     this.errors = {};
     this.submitted = false;
 
@@ -16,6 +16,7 @@ class CatererProfileController {
     this.isLoggedIn = Auth.isLoggedIn;
     this.user = this.getCurrentUser();
     this.ftService = FoodTypesService;
+    this.payments = PaymentService;
 
     let csrf_token = $cookies.get('XSRF-TOKEN'),
         root = this,
@@ -108,7 +109,7 @@ class CatererProfileController {
     });
   }
 
-  save() {
+  save(form) {
     let userModel = this.user,
       url = '/api/users/' + this.user._id;
 
@@ -116,20 +117,28 @@ class CatererProfileController {
       delete userModel.logo;
     }
 
-    if (userModel) {
-      this.$http.post(url, userModel)
-        .then(response => {
-        let root = this;
-        this.saved = true;
-        this.$timeout(function() {
-          root.saved = false;
-        }, 2000);
-      //this.$state.go('events');
-    })
-    .catch(err => {
-        this.errors.other = err.message;
+    console.log(form.address, userModel.address);
+
+    if (userModel && form.$valid) {
+      this.payments.verifyAddress(userModel.address).then(address => {
+        userModel.address = address;
+        this.$http.post(url, userModel)
+          .then(response => {
+            let root = this;
+            this.saved = true;
+            this.$timeout(function() {
+              root.saved = false;
+            }, 2000);
+            //this.$state.go('events');
+          })
+          .catch(err => {
+            this.errors.other = err.message;
+          });
+      }).catch(result => {
+        this.addressValidationError = result.ErrDescription;
       });
     }
+
   }
 }
 

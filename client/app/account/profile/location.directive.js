@@ -26,22 +26,19 @@ angular.module('cateringApp')
       autocomplete.addListener('place_changed', () => {
         let place = autocomplete.getPlace(),
             address = '';
-        if (place.address_components) {
-          address = [
-            (place.address_components[0] && place.address_components[0].short_name || ''),
-            (place.address_components[1] && place.address_components[1].short_name || ''),
-            (place.address_components[2] && place.address_components[2].short_name || ''),
-            (place.address_components[3] && place.address_components[3].short_name || ''),
-            (place.address_components[4] && place.address_components[4].short_name || ''),
-            (place.address_components[5] && place.address_components[5].short_name || ''),
-            (place.address_components[6] && place.address_components[6].short_name || '')
-          ].join(' ');
+        if (place.formatted_address) {
+          address = place.formatted_address;
         }
+
+        console.log(place);
+
         if (scope.vm.user && scope.vm.user.location) {
           scope.vm.user.location = address;
+          scope.vm.user.address = getAddress(place);
         }
         if (scope.fm && scope.fm.location) {
           scope.fm.location = address;
+          scope.fm.address = getAddress(place);
         }
         console.log('address', address);
       });
@@ -49,3 +46,23 @@ angular.module('cateringApp')
       autocomplete.setBounds(defaultBounds);
     }
 }));
+
+function getAddress(place) {
+  let formatedComponents = place.formatted_address.split(',').map(item => item.trim());
+  let region = getByIndex(formatedComponents, -2).split(' ').map(item => item.trim());
+  return {
+    Address1: formatedComponents[0],
+    Address2: '',
+    City: getByIndex(formatedComponents, -3),
+    State: getByIndex(region, -2),
+    Zip5: getByIndex(region, -1),
+    Zip4: '0000'
+  }
+}
+
+function getByIndex(arr, index) {
+  if (index < 0) {
+    index = arr.length + index;
+  }
+  return arr[index];
+}

@@ -15,7 +15,32 @@ var OfferSchema = new mongoose.Schema({
   date: Date,
   dateAccepted: Date,
   dateConfirmed: Date,
-  status: String
+  status: String,
+  invoice: {
+    pricePerPerson: Number,
+    people: Number,
+    service: Number,
+    tax: Number,
+    total: Number,
+    counter: {
+      type: Number,
+      default: 0
+    },
+    commission: {
+      type: Number,
+      default: 10
+    },
+    adjustment: {
+      caterer: {
+        type: Number,
+        default: 0
+      },
+      chargeOff: {
+        type: Number,
+        default: 0
+      }
+    }
+  }
 });
 
 export default mongoose.model('Offer', OfferSchema);

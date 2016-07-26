@@ -19,6 +19,10 @@ module.exports = {
   },
 
   payments: {
+    TAXCLOUD: {
+      API_LOGIN_ID: '36DF64D0',
+      API_KEY: 'E1A33450-A519-4379-8FF8-CBA269A17640'
+    },
     DWOLLA: {
       KEY: '2jKQn8aERXipDkCuNYG8TKMKPqpGB4KjuK1Gevrw74ZITIK6Ew',
       SECRET: 'tWsvZmICKSRpbGbO0WWRKBVXb4B03j35XpI5ifrP1LJJJ5HExy',

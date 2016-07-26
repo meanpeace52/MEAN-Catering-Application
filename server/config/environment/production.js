@@ -29,6 +29,9 @@ module.exports = {
   },
 
   payments: {
+    TAXCLOUD: {
+      API_KEY: process.env.TAXCLOUD_API_KEY
+    },
     DWOLLA: {
       KEY: '2jKQn8aERXipDkCuNYG8TKMKPqpGB4KjuK1Gevrw74ZITIK6Ew',
       SECRET: 'tWsvZmICKSRpbGbO0WWRKBVXb4B03j35XpI5ifrP1LJJJ5HExy',

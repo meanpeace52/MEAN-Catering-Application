@@ -1,11 +1,13 @@
 'use strict';
 
 class OffersNewController {
-  constructor($http, $scope, $rootScope, socket, Auth, $state, $cookies, EventsService, IncludedInPriceService) {
+  constructor($http, $scope, $rootScope, socket, Auth, $state, $cookies, EventsService, IncludedInPriceService, PaymentService) {
     this.errors = {};
     this.submitted = false;
     this.saved = false;
     this.sent = false;
+    this.waitForSending = false;
+    this.payments = PaymentService;
 
     this.Auth = Auth;
     this.$state = $state;
@@ -53,14 +55,29 @@ class OffersNewController {
     offerModel.date = new Date();
     offerModel.status = 'sent';
     if (offerModel) {
-      this.$http.post('/api/offers/new', offerModel).then(response => {
-        this.sent = true;
-        this.$state.go('events');
-        //this.$scope.fm = {};
-      })
-      .catch(err => {
-          this.errors.other = err.message;
-      })
+      let total = this.event.pricePerPerson * this.event.people;
+      if (offerModel.counter) {
+        total -= offerModel.counter;
+      }
+      this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
+        offerModel.invoice = {
+          pricePerPerson: event.pricePerPerson,
+          people: event.people,
+          counter: offerModel.counter || 0,
+          service: total,
+          tax: tax,
+          total: total + tax
+        };
+        this.$http.post('/api/offers/new', offerModel).then(response => {
+          this.sent = true;
+          this.$state.go('events');
+          //this.$scope.fm = {};
+        })
+        .catch(err => {
+            this.errors.other = err.message;
+        });
+      });
+
     }
   }
 
