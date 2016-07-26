@@ -111,7 +111,7 @@ export function dataset(req, res) {
     }
   }
 
-  //query.date = { $gte: today };
+  query.date = { $gte: today };
 
   return Event.find(query).exec().then((events) => {
     let eventPromises = [];

@@ -42,7 +42,6 @@ class EventsController {
             events[i].drafted = true;
           }
 
-          //console.log('event', event);
           let offersNumber = event.offers ? event.offers.length : 0;
 
           if ($scope.user.role == 'caterer') {
