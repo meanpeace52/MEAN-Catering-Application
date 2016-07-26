@@ -272,12 +272,9 @@ class EventsNewController {
 
   sendRequest(form) {
 
-    console.log(this.user.payableAccountId);
     if (!this.user.payableAccountId) {
       this.saveDraft(form);
-      this.waitForSending = true;
     } else {
-      this.waitForSending = false;
       let eventModel = this.$scope.fm,
         url = (this.saved ? '/api/events/' + this.$scope.fm._id : '/api/events/new');
 
