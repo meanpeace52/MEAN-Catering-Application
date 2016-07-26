@@ -14,6 +14,10 @@
               <th st-sort="name" st-sort-default="true">Name</th>
               <th st-sort="pricePerPerson">Price</th>
               <th st-sort="people">People</th>
+              <th>Caterer name</th>
+              <th>Total Price</th>
+              <th>Commission</th>
+              <th>Net</th>
               <th>Offer</th>
             </tr>
             <tr>
@@ -31,6 +35,10 @@
                 <input st-search="people" style="width: 50px;" class="input-sm form-control" type="search"/>
               </th>
               <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
             </tr>
             </thead>
             <tbody>
@@ -40,6 +48,10 @@
               <td style="max-width: 100px;">{{event.name}}</td>
               <td>{{event.pricePerPerson}}</td>
               <td>{{event.people}}</td>
+              <td>{{event.offer.catererName}}</td>
+              <td>{{event.offer.invoice.total}}</td>
+              <td>{{(event.offer.invoice.total * (event.offer.invoice.commission / 100)).toFixed(2)}}</td>
+              <td>{{(event.offer.invoice.total * ((100 - event.offer.invoice.commission) / 100)).toFixed(2)}}</td>
               <td>
                 <div>
                   <a class="btn btn-xs btn-warning" ng-click="eac.showOffer()">Confirmed offer</a>
