@@ -78,7 +78,7 @@
 }
 
 .select-rest-block {
-  height: 200px;
+  height: 400px;
   overflow: auto;
   border: 1px solid #ccc;
   border-radius: 0 0 3px 3px;
@@ -86,12 +86,17 @@
   padding: 3px 15px;
 }
 
+.category-container {
+  height: 150px;
+  overflow: auto;
+}
+
 .m-3 {
   margin-right: 3px;
 }
 
 .ft-panel-fixed-height {
-  height: 247px;
+  height: 415px;
   overflow: auto;
 }
 
