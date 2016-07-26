@@ -199,37 +199,41 @@ class EventsEditController {
     });
   }
 
-  sendRequest(form, extForm) {
-    let eventModel = this.$scope.fm,
+  sendRequest(form) {
+
+    if (!this.user.payableAccountId) {
+      this.saveDraft(form);
+    } else {
+      let eventModel = this.$scope.fm,
         url = '/api/events/' + this.$scope.fm._id;
 
-    extForm.$setSubmitted();
-    eventModel.showToCaterers = true;
-    eventModel.sentTo = eventModel.selectedCaterers;
-    eventModel.status = 'sent';
+      eventModel.showToCaterers = true;
+      eventModel.sentTo = eventModel.selectedCaterers;
+      eventModel.status = 'sent';
 
-    if (this.$scope.fm.status = 'sent') eventModel.isUpdated = true;
+      if (this.$scope.fm.status = 'sent') eventModel.isUpdated = true;
 
-    if (eventModel && form.$valid && extForm.$valid) {
-      this.payments.verifyAddress(eventModel.address).then(address => {
-        eventModel.address = address;
-        this.$http.post(url, eventModel)
-          .then(response => {
-            this.sent = true;
-            this.$state.go('events');
-          })
-          .catch(err => {
-            this.errors.other = err.message;
-          });
-      }).catch(result => {
-        this.addressValidationError = result.ErrDescription;
-      });
+      if (eventModel && form.$valid) {
+        this.payments.verifyAddress(eventModel.address).then(address => {
+          eventModel.address = address;
+          this.$http.post(url, eventModel)
+            .then(response => {
+              this.sent = true;
+              this.$state.go('events');
+            })
+            .catch(err => {
+              this.errors.other = err.message;
+            });
+        }).catch(result => {
+          this.addressValidationError = result.ErrDescription;
+        });
 
+      }
     }
 
   }
 
-  saveDraft(form, extForm) {
+  saveDraft(form) {
     let eventModel = this.$scope.fm,
         url = '/api/events/' + this.$scope.fm._id;
 
@@ -237,9 +241,7 @@ class EventsEditController {
       //TODO differ and save new draft and what was sent to caterer
     }
 
-    extForm.$setSubmitted();
-
-    if (eventModel && form.$valid && extForm.$valid) {
+    if (eventModel && form.$valid) {
       this.payments.verifyAddress(eventModel.address).then(address => {
         eventModel.address = address;
         this.$http.post(url, eventModel)
