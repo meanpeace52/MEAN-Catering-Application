@@ -40,7 +40,9 @@ var OfferSchema = new mongoose.Schema({
         default: 0
       }
     }
-  }
+  },
+  paymentId: String,
+  paymentStatus: String
 });
 
 export default mongoose.model('Offer', OfferSchema);

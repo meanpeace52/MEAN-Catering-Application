@@ -48,7 +48,7 @@
               <tr ng-repeat="event in displayed" ng-class="{'drafted': event.drafted, 'active': event.active, 'hidden': event.hide}" ng-click="vm.setActiveEvent(event)">
                 <td ng-if="vm.user.role == 'user'">
                   <!--<span class="label label-warning" ng-if="vm.user.role == 'caterer' && event.isUpdated">Updated!</span>-->
-                  <span class="label label-info" ng-if="vm.user.role == 'user'">{{event.status}}</span></td>
+                  <span class="label label-info" ng-if="vm.user.role == 'user'">{{event.paymentStatus || event.status}}</span></td>
                 <td>{{event.date | date: "longDate"}}</td>
                 <td style="width: 80px;">{{event.time | date: "shortTime"}}</td>
                 <td style="max-width: 100px;">{{event.name}}</td>
@@ -64,7 +64,6 @@
                     <a class="btn btn-xs btn-default" href="/events/{{event._id}}">Edit Event</a>
                     <!--<a class="btn btn-xs btn-warning" ui-sref="offers" ng-click="vm.setActiveEvent(event)" >Offers ({{event.offersNumber}})</a>-->
                     <a class="btn btn-xs btn-warning" uib-popover-html="event.offersInfo" popover-trigger="mouseenter" popover-placement="right">Offers ({{event.offersNumber}})</a>
-                    <a class="btn btn-xs btn-success" ng-if="event.status === 'confirmed'">Pay</a>
                   </div>
                   <div ng-if="vm.user.role == 'caterer'">
                     <a class="btn btn-xs btn-default" ng-if="event.offerStatus" href="{{event.offerUrl}}">Edit Offer</a>

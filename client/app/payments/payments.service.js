@@ -43,16 +43,15 @@ angular.module('cateringApp')
       },
       dwollaAuth(authCode) {
         if (!authCode) {
-          return $http.get('/api/payments/bank/startAuth?redirect=/offers/new').then((response) => {
+          return $http.get('/api/payments/dwolla/startAuth?redirect=/dwolla').then((response) => {
             $window.open(response.data.authUrl, '_self');
           });
         } else {
           this.isAuth = true;
-          return this.$http.get('/api/payments/bank/startAuth?redirect=/offers/new&authCode=' + authCode).then((response) => {
-            //
+          return $http.get('/api/payments/dwolla/endAuth?redirect=/dwolla&authCode=' + authCode).then((response) => {
+            return JSON.parse(response.data);
           });
         }
-
       }
     }
 
