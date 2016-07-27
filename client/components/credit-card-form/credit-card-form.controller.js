@@ -37,10 +37,6 @@ class CreditCardController {
 
   stripeCallback(code, result) {
 
-    console.log(code, result, this.$scope.verifier, this.verifier);
-
-
-
     if (result.error) {
       console.log(result.error);
     } else {

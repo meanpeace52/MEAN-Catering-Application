@@ -6,7 +6,6 @@ class OffersNewController {
     this.submitted = false;
     this.saved = false;
     this.sent = false;
-    this.waitForSending = false;
     this.payments = PaymentService;
 
     this.Auth = Auth;
@@ -48,48 +47,61 @@ class OffersNewController {
 
   }
 
-  sendRequest() {
-    let offerModel = this.$scope.fm;
-    offerModel.catererId = this.user._id;
-    offerModel.catererName = this.user.companyName || this.user.name;
-    offerModel.date = new Date();
-    offerModel.status = 'sent';
-    if (offerModel) {
-      let total = this.event.pricePerPerson * this.event.people;
-      if (offerModel.counter) {
-        total -= offerModel.counter;
-      }
-      this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
-        offerModel.invoice = {
-          pricePerPerson: event.pricePerPerson,
-          people: event.people,
-          counter: offerModel.counter || 0,
-          service: total,
-          tax: tax,
-          total: total + tax
-        };
-        this.$http.post('/api/offers/new', offerModel).then(response => {
-          this.sent = true;
-          this.$state.go('events');
-          //this.$scope.fm = {};
-        })
-        .catch(err => {
-            this.errors.other = err.message;
-        });
-      });
+  sendRequest(form) {
 
+    if (!this.user.payableAccount) {
+      let saving = this.saveDraft(form, false);
+      if (saving) {
+        saving.then(() => {
+          this.$state.go('dwolla');
+        });
+      }
+    } else {
+      let offerModel = this.$scope.fm;
+      offerModel.catererId = this.user._id;
+      offerModel.catererName = this.user.companyName || this.user.name;
+      offerModel.date = new Date();
+      offerModel.status = 'sent';
+      if (offerModel) {
+        let total = this.event.pricePerPerson * this.event.people;
+        if (offerModel.counter) {
+          total -= offerModel.counter;
+        }
+        this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
+          offerModel.invoice = {
+            pricePerPerson: event.pricePerPerson,
+            people: event.people,
+            counter: offerModel.counter || 0,
+            service: total,
+            tax: tax,
+            total: total + tax
+          };
+          this.$http.post('/api/offers/new', offerModel).then(response => {
+            this.sent = true;
+            this.$state.go('events');
+            //this.$scope.fm = {};
+          })
+            .catch(err => {
+              this.errors.other = err.message;
+            });
+        });
+
+      }
     }
+
   }
 
-  saveDraft() {
+  saveDraft(form, redirect=true) {
     let offerModel = this.$scope.fm;
     offerModel.catererId = this.user._id;
     offerModel.catererName = this.user.companyName || this.user.name;
     offerModel.status = 'draft';
     if (offerModel) {
-        this.$http.post('/api/offers/new', offerModel).then(response => {
+        return this.$http.post('/api/offers/new', offerModel).then(response => {
           this.saved = true;
-          this.$state.go('events');
+          if (redirect) {
+            this.$state.go('events');
+          }
           //this.$scope.fm = {};
       })
       .catch(err => {

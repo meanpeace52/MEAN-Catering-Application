@@ -55,6 +55,7 @@
               <td>
                 <div>
                   <a class="btn btn-xs btn-warning" ng-click="eac.showOffer()">Confirmed offer</a>
+                  <span class="label label-info" ng-if="event.offer.paymentStatus">{{event.offer.paymentStatus}}</span>
                 </div>
               </td>
             </tr>
@@ -72,7 +73,7 @@
   </div>
   <div class="row" ng-if="eventActive">
     <div class="col-sm-12">
-      <h3>Offer from <b>{{eventActive.offer.catererName}}</b>, Total price: <b><mark>${{eventActive.offer.priceWithCounter}}</mark></b> <span class="label label-info">{{eventActive.offer.status}}</span></h3>
+      <h3>Offer from <b>{{eventActive.offer.catererName}}</b>, Total price: <b><mark>${{eventActive.offer.priceWithCounter}}</mark></b> <span class="label label-info">{{eventActive.offer.paymentStatus || eventActive.offer.status}}</span></h3>
       <div class="row">
         <div class="col-sm-6">
           <div class="row">

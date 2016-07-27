@@ -211,6 +211,7 @@ class EventsController {
       });
     }
   }
+
 }
 
 angular.module('cateringApp')

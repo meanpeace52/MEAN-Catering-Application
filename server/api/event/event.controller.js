@@ -89,8 +89,9 @@ export function dataset(req, res) {
   let query = {},
     isCaterer = (req.body.userId ? false : true),
     showConfirmed = (req.body.status === 'confirmed' ? true : false),
-    today = new Date().toISOString();
+    today = (new Date(new Date().setHours(0, 0, 0, 0))).toISOString();
 
+  console.log(today);
   if (showConfirmed) {
     query = { status: 'confirmed' };
   } else {

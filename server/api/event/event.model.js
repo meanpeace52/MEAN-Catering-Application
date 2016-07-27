@@ -26,7 +26,8 @@ var EventSchema = new mongoose.Schema({
   rejectedBy: Array,
   confirmedBy: String,
   isUpdated: Boolean,
-  address: Object
+  address: Object,
+  paymentStatus: String
 });
 
 export default mongoose.model('Event', EventSchema);

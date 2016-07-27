@@ -1,11 +1,12 @@
 'use strict';
 
 class OffersEditController {
-  constructor($http, $scope, $rootScope, socket, Auth, $state, $cookies, OffersService, EventsService, IncludedInPriceService) {
+  constructor($http, $scope, $rootScope, socket, Auth, $state, $cookies, OffersService, EventsService, IncludedInPriceService, PaymentService) {
     this.errors = {};
     this.submitted = false;
     this.saved = false;
     this.sent = false;
+    this.payments = PaymentService;
 
     this.Auth = Auth;
     this.$state = $state;
@@ -65,32 +66,64 @@ class OffersEditController {
     }
   }
 
-  sendRequest() {
-    let offerModel = this.$scope.fm;
-    offerModel.catererId = this.user._id;
-    offerModel.status = 'sent';
-    if (offerModel) {
-      this.$http.post('/api/offers/' + this.$scope.fm._id, offerModel).then(response => {
-        this.sent = true;
-        this.$state.go('events');
-        this.$scope.fm = {};
-      })
-      .catch(err => {
-          this.errors.other = err.message;
-      })
+  sendRequest(form) {
+
+    if (!this.user.payableAccount) {
+      let saving = this.saveDraft(form, false);
+      if (saving) {
+        saving.then(() => {
+          this.$state.go('dwolla');
+        });
+      }
+    } else {
+      let offerModel = this.$scope.fm;
+      offerModel.catererId = this.user._id;
+      offerModel.status = 'sent';
+
+      let total = this.event.pricePerPerson * this.event.people;
+      if (offerModel.counter) {
+        total -= offerModel.counter;
+      }
+      this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
+
+        offerModel.invoice = {
+          pricePerPerson: event.pricePerPerson,
+          people: event.people,
+          counter: offerModel.counter || 0,
+          service: total,
+          tax: tax,
+          total: total + tax
+        };
+
+        if (offerModel) {
+          this.$http.post('/api/offers/' + this.$scope.fm._id, offerModel).then(response => {
+            this.sent = true;
+            this.$state.go('events');
+            this.$scope.fm = {};
+          })
+            .catch(err => {
+              this.errors.other = err.message;
+            })
+        }
+      });
+
     }
+
   }
 
-  saveDraft() {
+  saveDraft(form, redirect=true) {
     let offerModel = this.$scope.fm,
       url = '/api/offers/' + this.$scope.fm._id;
 
     if(!offerModel.status) offerModel.status = 'draft';
 
     if (offerModel) {
-      this.$http.put(url, offerModel)
+      return this.$http.put(url, offerModel)
         .then(response => {
           this.saved = true;
+          if (redirect) {
+            this.$state.go('events');
+          }
         })
       .catch(err => {
         this.errors.other = err.message;

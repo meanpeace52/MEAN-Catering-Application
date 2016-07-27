@@ -3,17 +3,10 @@
 angular.module('cateringApp')
   .config(function($stateProvider) {
     $stateProvider
-      .state('checkout', {
-        url: '/payments/checkout',
-        templateUrl: 'app/payments/checkout.html',
-        controller: 'CheckoutController',
-        controllerAs: 'vm',
-        authenticate: true
-      })
-      .state('bank', {
-        url: '/payments/bank',
-        templateUrl: 'app/payments/bank.html',
-        controller: 'BankController',
+      .state('dwolla', {
+        url: '/dwolla',
+        templateUrl: 'app/payments/dwolla.html',
+        controller: 'DwollaController',
         controllerAs: 'vm',
         authenticate: true,
         resolve: {

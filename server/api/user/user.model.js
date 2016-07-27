@@ -38,7 +38,8 @@ var UserSchema = new Schema({
   logo: String,
   status: String, //active, pending
   //logo: { data: Buffer, contentType: String }
-  payableAccountId: String,
+  payableAccount: Object, // for a caterer
+  payableAccountId: String, // for an user
   address: Object
 });
 

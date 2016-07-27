@@ -49,7 +49,7 @@ class EventsAdminController {
           if ($scope.events[i].offer) {
             $scope.events[i].offer.includedInPrice = convertIncludedInPrice(event.offer.includedInPrice);
             if (event.offer.invoice) {
-              this.$scope.offers[i].priceWithCounter = event.offer.invoice.total;
+              $scope.events[i].offer.priceWithCounter = event.offer.invoice.total;
             } else if (event.offer.counter) {
               $scope.events[i].offer.priceWithCounter = event.pricePerPerson * event.people - event.offer.counter;
             } else {

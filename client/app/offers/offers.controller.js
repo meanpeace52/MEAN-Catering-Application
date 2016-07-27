@@ -130,6 +130,23 @@ class OffersController {
       this.socket.syncUpdates('offer', this.$scope.offers);
     });
   }
+
+  auth(offer) {
+    this.$http.post('/api/payments/card/auth', {
+      offerId: offer._id
+    }).then(response => {
+      offer.paymentStatus = response.data.paymentStatus;
+    });
+  }
+
+  capture(offer) {
+    this.$http.post('/api/payments/card/capture', {
+      offerId: offer._id
+    }).then(response => {
+      offer.paymentStatus = response.data.paymentStatus;
+    });
+  }
+
 }
 
 angular.module('cateringApp')

@@ -6,6 +6,7 @@ class EventsEditController {
     this.submitted = false;
     this.saved = false;
     this.sent = false;
+    this.verifyCard = false;
 
     this.Auth = Auth;
     this.$state = $state;
@@ -206,8 +207,14 @@ class EventsEditController {
   sendRequest(form) {
 
     if (!this.user.payableAccountId) {
-      this.saveDraft(form);
+      let saving = this.saveDraft(form);
+      if (saving) {
+        saving.then(() => {
+          this.verifyCard = true;
+        });
+      }
     } else {
+      this.verifyCard = false;
       let eventModel = this.$scope.fm,
         url = '/api/events/' + this.$scope.fm._id;
 
@@ -238,6 +245,7 @@ class EventsEditController {
   }
 
   saveDraft(form) {
+    this.verifyCard = false;
     let eventModel = this.$scope.fm,
         url = '/api/events/' + this.$scope.fm._id;
 
@@ -246,7 +254,7 @@ class EventsEditController {
     }
 
     if (eventModel && form.$valid) {
-      this.payments.verifyAddress(eventModel.address).then(address => {
+      return this.payments.verifyAddress(eventModel.address).then(address => {
         eventModel.address = address;
         this.$http.post(url, eventModel)
           .then(response => {
