@@ -19,15 +19,37 @@ class StripeController {
   }
 
   auth(req, res) {
-    return _auth(req.body.offerId)
+    return this.$auth(req.body.offerId)
       .then(respondWithResult(res))
       .catch(handleError(res));
   }
 
   capture(req, res) {
-    return _capture(req.body.offerId)
+    return this.$capture(req.body.offerId)
       .then(respondWithResult(res))
       .catch(handleError(res));
+  }
+
+  $auth(offerId) {
+    return _auth(offerId);
+  }
+
+  $capture(offerId) {
+    return _capture(offerId);
+  }
+
+  $refund(charge, amount) {
+
+    let options = {
+      charge: charge
+    };
+
+    // don't pass amount for full refund
+    if (amount) {
+      options.amount = amount * 100; // amount should be in cents
+    }
+
+    return stripe.refunds.create(options);
   }
 
 }

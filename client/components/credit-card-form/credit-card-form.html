@@ -9,3 +9,6 @@
     <input ng-model="cvc" placeholder="CVC" payments-format="cvc" payments-validate="cvc" name="cvc" />
     <button class="btn btn-primary" type="submit">Submit</button>
 </form>
+<div class="form-group has-error" ng-if="vm.error">
+  {{ vm.error }}
+</div>

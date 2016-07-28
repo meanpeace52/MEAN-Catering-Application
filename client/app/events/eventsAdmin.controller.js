@@ -1,7 +1,7 @@
 'use strict';
 
 class EventsAdminController {
-  constructor($http, $scope, $rootScope, socket, Auth, $state, IncludedInPriceService, $interval, $filter) {
+  constructor($http, $scope, $rootScope, socket, Auth, $state, IncludedInPriceService, $interval, $filter, $uibModal, $log, $timeout) {
 
     var root = this;
     this.errors = {};
@@ -22,6 +22,100 @@ class EventsAdminController {
     this.$scope.eventActive = null;
     this.$scope.events = [];
     this.$scope.displayed = [];
+
+    this.$scope.selectedEvents = {};
+    this.$scope.allEventsAreSelected = false;
+
+    $scope.selectAll = value => this.$scope.events.forEach(event => $scope.selectedEvents[event._id] = value);
+    $scope.isSelected = event => selectedEvents[event._id];
+
+    $scope.select = () => {
+      let allIsSelected = true;
+      for (let k in $scope.selectedEvents) {
+        if(!$scope.selectedEvents[k]) {
+          allIsSelected = false;
+          break;
+        }
+      }
+      $scope.allEventsAreSelected = allIsSelected;
+    };
+    $scope.selectAll(false);
+
+    $scope.paySelected = () => {
+      let selectedEventIds = [];
+      for (let k in $scope.selectedEvents) {
+        if($scope.selectedEvents[k]) {
+          selectedEventIds.push(k);
+        }
+      }
+      let selectedEvents = $scope.events.filter(event => selectedEventIds.includes(event._id));
+
+      if (selectedEvents.length) {
+        this.$http.post('/api/payments/pay', {
+          items: selectedEvents.map(event => event.offer._id)
+        }).then(response => {
+          $scope.$emit('eventUpdated');
+        });
+      }
+    };
+
+    $scope.pay = (offer) => {
+      this.$http.post('/api/payments/pay', {
+        items: [offer._id]
+      }).then(response => {
+        $scope.$emit('eventUpdated');
+      });
+    };
+
+    $scope.open = (offer) => {
+
+      var modalInstance = $uibModal.open({
+        animation: true,
+        templateUrl: 'adjustPayment.html',
+        controller: ($scope, $uibModalInstance) => {
+
+          $scope.totalRefund = angular.copy(offer.invoice);
+          $scope.totalRefund.refund = $scope.totalRefund.total;
+          $scope.totalRefund.adjustment.client = 0;
+          $scope.totalRefund.adjustment.caterer = 0;
+          $scope.totalRefund.adjustment.chargeOff = 0;
+          $scope.partialRefund = angular.copy(offer.invoice);
+          $scope.partialRefund.refund = 0;
+          $scope.updatedInvoice = $scope.totalRefund;
+
+          $scope.setAdjustment = (updatedInvoice) => {
+            $scope.updatedInvoice = updatedInvoice
+          };
+
+          $scope.ok = () => {
+            console.log(this.$scope.eventActive.offer.invoice, $scope.updatedInvoice);
+            angular.merge(this.$scope.eventActive.offer.invoice, $scope.updatedInvoice);
+
+            this.$http.post('/api/offers/' + this.$scope.eventActive.offer._id, this.$scope.eventActive.offer).then(response => {
+              this.$http.post('/api/events/' + this.$scope.eventActive._id, this.$scope.eventActive).then(response => {
+                $uibModalInstance.close();
+              })
+            });
+          };
+
+          $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+          };
+        },
+        size: 'lg'
+        //resolve: {
+        //  items: function () {
+        //    return $scope.items;
+        //  }
+        //}
+      });
+
+      modalInstance.result.then(function () {
+        //$scope.selected = selectedItem;
+      }, function () {
+        $log.info('Modal dismissed at: ' + new Date());
+      });
+    };
 
     $scope.includedInPrice = this.incService.getIncludedInPrice().then((data)=> {
       $scope.includedInPrice = data;

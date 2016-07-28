@@ -3,7 +3,7 @@
 (function() {
 
   class AdminController {
-    constructor(User, $scope, FoodTypesService, IncludedInPriceService, ServiceTypesService, $uibModal) {
+    constructor(User, $scope, FoodTypesService, IncludedInPriceService, ServiceTypesService) {
       // Use the User $resource to fetch all users
       this.users = User.query();
       this.$scope = $scope;
@@ -25,35 +25,6 @@
       this.includedInPrice = this.incService.getIncludedInPrice().then((data)=> {
         this.includedInPrice = data;
       });
-
-      $scope.open = function () {
-
-        var modalInstance = $uibModal.open({
-          animation: true,
-          templateUrl: 'adjustPayment.html',
-          controller: function($scope, $uibModalInstance) {
-            $scope.ok = function () {
-              $uibModalInstance.close();
-            };
-
-            $scope.cancel = function () {
-              $uibModalInstance.dismiss('cancel');
-            };
-          },
-          size: 'lg'
-          //resolve: {
-          //  items: function () {
-          //    return $scope.items;
-          //  }
-          //}
-        });
-
-        modalInstance.result.then(function () {
-          //$scope.selected = selectedItem;
-        }, function () {
-          $log.info('Modal dismissed at: ' + new Date());
-        });
-      };
 
     }
 

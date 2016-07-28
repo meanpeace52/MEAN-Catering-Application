@@ -18,7 +18,6 @@ class DwollaController {
           })
             .then(res => {
               let user = res.data;
-              console.log('user', user);
               if (user.payableAccount) {
                 $state.go('events');
               }

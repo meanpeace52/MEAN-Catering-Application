@@ -117,7 +117,7 @@ class CatererProfileController {
       delete userModel.logo;
     }
 
-    console.log(form.address, userModel.address);
+    console.log(form);
 
     if (userModel && form.$valid) {
       this.payments.verifyAddress(userModel.address).then(address => {
