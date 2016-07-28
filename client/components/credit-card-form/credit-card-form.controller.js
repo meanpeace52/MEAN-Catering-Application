@@ -6,6 +6,7 @@ class CreditCardController {
     this.$http = $http;
     this.$scope = $scope;
     this.$location = $location;
+    this.error = null;
 
     $scope.stripeCallback = this.stripeCallback.bind(this);
 
@@ -38,29 +39,17 @@ class CreditCardController {
   stripeCallback(code, result) {
 
     if (result.error) {
-      console.log(result.error);
+      this.error = result.error.message ? result.error.message : result.error;
     } else {
-
+      this.error = null;
       if (this.verifier) {
         this.bindCard(result.id).then(result => {
           this.user.payableAccountId = result.data.id;
           this.$http.post(`/api/users/${this.user._id}`, {
             payableAccountId: result.data.id
-          }).then(result => {
-            console.log(result.data);
-            // this.checkout(result.data, 10000, 'test');
           });
         });
       }
-
-      if (this.auth) {
-
-      }
-
-      if (this.capture) {
-
-      }
-
 
     }
   }

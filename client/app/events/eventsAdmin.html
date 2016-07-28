@@ -6,9 +6,11 @@
           <!--<a class="btn btn-default" ng-click="showAccepted()">Accepted</a>-->
           <!--<a class="btn btn-default" ng-click="showConfirmed()">Confirmed</a>-->
           <!--<a class="btn btn-default active" ng-click="showPayed()">Payed</a>-->
+          <a class="btn btn-success" ng-click="paySelected()">Pay All Selected</a>
           <table st-table="events" st-pipe="eac.pipe" class="table table-hover table-condensed table-events">
             <thead>
             <tr>
+              <th><input type="checkbox" ng-model="allEventsAreSelected" ng-change="selectAll(allEventsAreSelected)"></th>
               <th st-sort="date" st-skip-natural="true">Date</th>
               <th>Time</th>
               <th st-sort="name" st-sort-default="true">Name</th>
@@ -17,10 +19,12 @@
               <th>Caterer name</th>
               <th>Total Price</th>
               <th>Commission</th>
+              <th>Refund</th>
               <th>Net</th>
               <th>Offer</th>
             </tr>
             <tr>
+              <th></th>
               <th>
                 <input st-search="date" style="width: 120px;" class="input-sm form-control" type="search"/>
               </th>
@@ -43,19 +47,28 @@
             </thead>
             <tbody>
             <tr ng-repeat="event in displayed" ng-class="{'drafted': event.drafted, 'active': event.active, 'hidden': event.hide}" ng-click="setActiveEvent(event)">
+              <td><input type="checkbox" ng-model="selectedEvents[event._id]" ng-change="select(selectedEvents[event._id])"></td>
               <td>{{event.date | date: "longDate"}}</td>
               <td style="width: 80px;">{{event.time | date: "shortTime"}}</td>
               <td style="max-width: 100px;">{{event.name}}</td>
               <td>{{event.pricePerPerson}}</td>
               <td>{{event.people}}</td>
               <td>{{event.offer.catererName}}</td>
-              <td>{{event.offer.invoice.total}}</td>
+              <td>{{event.offer.invoice.total.toFixed(2)}}</td>
               <td>{{(event.offer.invoice.total * (event.offer.invoice.commission / 100)).toFixed(2)}}</td>
-              <td>{{(event.offer.invoice.total * ((100 - event.offer.invoice.commission) / 100)).toFixed(2)}}</td>
+              <td>
+                <span ng-if="event.offer.invoice.refund">{{event.offer.invoice.refund.toFixed(2)}}</span>
+                <span ng-if="!event.offer.invoice.refund">{{event.offer.invoice.adjustment.client.toFixed(2)}} ({{event.offer.invoice.adjustment.caterer.toFixed(2)}}/{{event.offer.invoice.adjustment.chargeOff.toFixed(2)}})</span>
+              </td>
+              <td>
+                <span ng-if="event.offer.invoice.refund">0.00</span>
+                <span ng-if="!event.offer.invoice.refund">{{(event.offer.invoice.total * ((100 - event.offer.invoice.commission) / 100) - event.offer.invoice.adjustment.caterer).toFixed(2)}}</span>
+              </td>
               <td>
                 <div>
-                  <a class="btn btn-xs btn-warning" ng-click="eac.showOffer()">Confirmed offer</a>
+                  <a class="btn btn-xs btn-warning">Confirmed offer</a>
                   <span class="label label-info" ng-if="event.offer.paymentStatus">{{event.offer.paymentStatus}}</span>
+                  <a class="btn btn-xs btn-success" ng-if="event.offer.paymentStatus === 'paid'" ng-click="pay(event.offer)">Pay</a>
                 </div>
               </td>
             </tr>
@@ -96,6 +109,8 @@
             </div>
           </div>
 
+          <button class="btn btn-default" ng-click="open(eventActive.offer)" style="margin-left: 15px;">Adjust Payment</button>
+
           <p ng-if="eventActive.offer.counter"><b>Price per person:</b> ${{eventActive.offer.pricePerPerson}}</p>
           <p ng-if="eventActive.offer.counter"><b>Counter:</b> ${{eventActive.offer.counter}}, Total with counter: <b><mark>${{eventActive.offer.priceWithCounter}}</mark></b> </p>
           <p ng-if="!eventActive.offer.counter">Total: <b><mark>${{eventActive.offer.priceWithCounter}}</mark></b> </p>
@@ -109,3 +124,161 @@
     </div>
   </div>
 </div>
+<script type="text/ng-template" id="adjustPayment.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Payment Adjustments</h3>
+  </div>
+  <div class="modal-body">
+    <uib-tabset active="active">
+      <uib-tab index="0" heading="Complete Refund" ng-click="setAdjustment(totalRefund)">
+        <br />
+        <table class="table table-condensed">
+          <tr>
+            <th>Invoice</th>
+            <th>Refund, $</th>
+          </tr>
+          <tr>
+            <td>Service</td>
+            <td>{{totalRefund.service.toFixed(2)}}</td>
+          </tr>
+          <tr>
+            <td>Tax</td>
+            <td>{{totalRefund.tax.toFixed(2)}}</td>
+          </tr>
+          <tr class="bg-info">
+            <td><b>Total</b></td>
+            <td><b>{{totalRefund.total.toFixed(2)}}</b></td>
+          </tr>
+          <tr class="bg-warning">
+            <td><b>Adjustment</b></td>
+            <td><b>{{totalRefund.adjustment.client.toFixed(2)}}</b></td>
+          </tr>
+          <tr class="bg-success">
+            <td><b>New Total</b></td>
+            <td><b>{{(totalRefund.total - (totalRefund.adjustment.caterer + totalRefund.adjustment.chargeOff)).toFixed(2)}}</b></td>
+          </tr>
+          <tr><td colspan="2"></td></tr>
+          <tr><th colspan="2">Payable</th></tr>
+          <tr>
+            <td>Service</td>
+            <td>{{totalRefund.service.toFixed(2)}}</td>
+          </tr>
+          <tr>
+            <td>Tax</td>
+            <td>{{totalRefund.tax.toFixed(2)}}</td>
+          </tr>
+          <tr class="bg-warning">
+            <td><b>Refund Adjustment</b></td>
+            <td><b>{{totalRefund.refund.toFixed(2)}}</b></td>
+          </tr>
+          <tr class="bg-info">
+            <td><b>Sub Total</b></td>
+            <td><b>-</b></td>
+          </tr>
+          <tr>
+            <td>Comission {{totalRefund.commission}}%</td>
+            <td>-</td>
+          </tr>
+          <tr class="bg-warning">
+            <td><b>Caterer Adjustment</b></td>
+            <td><b>-</b></td>
+          </tr>
+          <tr class="bg-primary">
+            <td><b>Total Payment</b></td>
+            <td><b>-</b></td>
+          </tr>
+          <tr><td colspan="2"></td></tr>
+          <tr><th colspan="2">Home Account</th></tr>
+          <tr>
+            <td><b>Charge Off</b></td>
+            <td><b>-</b></td>
+          </tr>
+          <tr>
+            <td><b>Commission Income</b></td>
+            <td><b>-</b></td>
+          </tr>
+          <tr class="bg-success">
+            <td><b>Adjustment Balanced</b></td>
+            <td><b>{{(partialRefund.adjustment.client - (partialRefund.adjustment.caterer + partialRefund.adjustment.chargeOff)).toFixed(2)}}</b></td>
+          </tr>
+        </table>
+      </uib-tab>
+      <uib-tab index="1" heading="Partial Refund" ng-click="setAdjustment(partialRefund)">
+        <table class="table table-condensed">
+          <tr>
+            <th>Invoice</th>
+            <th>Refund, $</th>
+          </tr>
+          <tr>
+            <td>Service</td>
+            <td>{{partialRefund.service.toFixed(2)}}</td>
+          </tr>
+          <tr>
+            <td>Tax</td>
+            <td>{{partialRefund.tax.toFixed(2)}}</td>
+          </tr>
+          <tr class="bg-info">
+            <td><b>Total</b></td>
+            <td><b>{{partialRefund.total.toFixed(2)}}</b></td>
+          </tr>
+          <tr class="bg-warning">
+            <td><b>Adjustment</b></td>
+            <td><input type="number" ng-model="partialRefund.adjustment.client"></td>
+          </tr>
+          <tr class="bg-success">
+            <td><b>New Total</b></td>
+            <td><b>{{(partialRefund.total - (partialRefund.adjustment.caterer + partialRefund.adjustment.chargeOff)).toFixed(2)}}</b></td>
+          </tr>
+          <tr><td colspan="2"></td></tr>
+          <tr><th colspan="2">Payable</th></tr>
+          <tr>
+            <td>Service</td>
+            <td>{{partialRefund.service.toFixed(2)}}</td>
+          </tr>
+          <tr>
+            <td>Tax</td>
+            <td>{{partialRefund.tax.toFixed(2)}}</td>
+          </tr>
+          <tr class="bg-warning">
+            <td><b>Refund Adjustment</b></td>
+            <td><b>{{partialRefund.refund.toFixed(2)}}</b></td>
+          </tr>
+          <tr class="bg-info">
+            <td><b>Sub Total</b></td>
+            <td><b>-</b></td>
+          </tr>
+          <tr>
+            <td>Comission <input type="number" ng-model="partialRefund.commission">%</td>
+            <td>{{(partialRefund.total * (partialRefund.commission / 100)).toFixed(2)}}</td>
+          </tr>
+          <tr class="bg-warning">
+            <td><b>Caterer Adjustment</b></td>
+            <td><input type="number" ng-model="partialRefund.adjustment.caterer"></td>
+          </tr>
+          <tr class="bg-primary">
+            <td><b>Total Payment</b></td>
+            <td><b>{{((partialRefund.total * ((100 - partialRefund.commission) / 100)) - partialRefund.adjustment.caterer).toFixed(2)}}</b></td>
+          </tr>
+          <tr><td colspan="2"></td></tr>
+          <tr><th colspan="2">Home Account</th></tr>
+          <tr>
+            <td><b>Charge Off</b></td>
+            <td><input type="number" ng-model="partialRefund.adjustment.chargeOff"></td>
+          </tr>
+          <tr>
+            <td><b>Commission Income</b></td>
+            <td><b>{{(partialRefund.total * (partialRefund.commission / 100)).toFixed(2)}}</b></td>
+          </tr>
+          <tr class="bg-success">
+            <td><b>Adjustment Balanced</b></td>
+            <td><b>{{(partialRefund.adjustment.client - (partialRefund.adjustment.caterer + partialRefund.adjustment.chargeOff)).toFixed(2)}}</b></td>
+          </tr>
+        </table>
+      </uib-tab>
+    </uib-tabset>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="(updatedInvoice.adjustment.client - (updatedInvoice.adjustment.caterer + updatedInvoice.adjustment.chargeOff))">OK</button>
+    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+  </div>
+</script>

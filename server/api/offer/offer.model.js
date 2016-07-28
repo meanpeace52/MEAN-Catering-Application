@@ -30,7 +30,15 @@ var OfferSchema = new mongoose.Schema({
       type: Number,
       default: 10
     },
+    refund: {
+      type: Number,
+      default: 0
+    },
     adjustment: {
+      client: {
+        type: Number,
+        default: 0
+      },
       caterer: {
         type: Number,
         default: 0
