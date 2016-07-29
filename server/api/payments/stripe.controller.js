@@ -1,6 +1,7 @@
 let config = require('../../config/environment');
 let mongoose = require('mongoose');
 let Promise = require('bluebird');
+let mailer = require('mailer');
 
 let stripe = require('stripe')(config.payments.STRIPE.SECRET_KEY);
 
@@ -90,7 +91,8 @@ function _auth(offerId) {
         return data.event.save().then(() => data.offer.save());
       }
 
-      return data.offer;
+      return _breakOffer(data.user, data.offer, mailer.breakAuth);
+
     });
   });
 }
@@ -103,13 +105,22 @@ function _capture(offerId) {
         data.event.paymentStatus = 'paid';
         return data.event.save().then(() => data.offer.save());
       }
-
-      return data.offer;
+      return _breakOffer(data.user, data.offer, mailer.breakCapture);
     });
   });
 }
 
-  function respondWithResult(res, statusCode) {
+function _breakOffer(user, offer, mailerMethod) {
+  user.payableAccountId = undefined;
+  offer.status = 'canceled';
+  return Promise.all([user.save(), offer.save()]).then(() => {
+    return mongoose.model('User').findById(offer.catererId).then(caterer => {
+      return mailerMethod(user, caterer);
+    });
+  });
+}
+
+function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
   return function(entity) {
     if (entity) {

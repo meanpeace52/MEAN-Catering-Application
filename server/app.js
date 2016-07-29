@@ -14,6 +14,8 @@ var bodyParser = require("body-parser");
 var mailer = require('./api/mailer/mailer');
 var schedule = require('node-schedule');
 
+const stripeController = require('./api/payments/stripe.controller');
+
 var rule = new schedule.RecurrenceRule();
 rule.minute = 0;
 rule.hour = 23;
@@ -45,6 +47,50 @@ require('./routes').default(app);
 
 var j = schedule.scheduleJob(rule, function(){
   mailer.report();
+});
+
+var paymentJobs = schedule.scheduleJob('*/30 * * * *', function() {
+  var moment = +Date.now();
+  var next72h = new Date(moment + 72 * 60 * 60 * 1000);
+  var next24h = new Date(moment + 24 * 60 * 60 * 1000);
+  var promises = [];
+  promises.push(mongoose.model('Event').find({
+    status: 'confirmed',
+    paymentStatus: {
+      $nin: ['hold', 'paid']
+    },
+    date: {
+      $lte: next72h
+    }
+  }).then(function(events) {
+    return events.map(event => {
+      return mongoose.model('Offer').find({
+        status: 'completed',
+        eventId: event._id
+      }).then(function(offers) {
+        return offers.map(offer => stripeController.$auth(offer._id).then(response => console.log('JOB', response)));
+      });
+    })
+  }));
+  promises.push(mongoose.model('Event').find({
+    status: 'confirmed',
+    paymentStatus: {
+      $in: ['hold']
+    },
+    date: {
+      $lte: next24h
+    }
+  }).then(function(events) {
+    return events.map(event => {
+      return mongoose.model('Offer').find({
+        status: 'completed',
+        eventId: event._id
+      }).then(function(offers) {
+        return offers.map(offer => stripeController.$capture(offer._id).then(response => console.log('JOB2', response)));
+      });
+    })
+  }));
+  return Promise.all(promises);
 });
 
 /*verify emails

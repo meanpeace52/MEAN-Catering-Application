@@ -24,6 +24,8 @@ class EventsController {
     this.$scope.eventActive = null;
     this.$scope.events = [];
     this.$scope.displayed = [];
+    this.$scope.isInvoiceMode = false;
+    this.$scope.eventForInvoice = null;
 
     this.$scope.filter = {
       dateFilter: 'All',
@@ -261,7 +263,20 @@ class EventsController {
     }
   }
 
+  showInvoice($event, event) {
+    console.log(123);
+    this.$scope.isInvoiceMode = true;
+    this.$scope.eventForInvoice = angular.copy(event);
+    this.$scope.eventForInvoice.offer = this.$scope.eventForInvoice.offers.filter((offer) => {
+      console.log(this.$scope.eventForInvoice);
+      return (this.user.role === 'user' && offer.paymentStatus === 'paid') || offer.status === 'completed';
+    })[0];
+    $event.stopPropagation();
+  }
+
   setActiveEvent(event) {
+    this.$scope.isInvoiceMode = false;
+    this.$scope.eventForInvoice = null;
     this.$scope.eventActive = event._id;
     this.$rootScope.eventActive = event._id;
     this.$cookies.put('eventActive', event._id);
