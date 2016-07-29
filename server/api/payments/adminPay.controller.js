@@ -53,7 +53,7 @@ class AdminPayController {
         });
 
         if (items.length) {
-          promises.push(dwollaController.pay(items).then);
+          promises.push(dwollaController.pay(items));
         }
 
         return Promise.all(promises).then(() => {
@@ -62,7 +62,6 @@ class AdminPayController {
             offer.paymentStatus = 'completed';
             return offer.save();
           })).then((updatedOffers) => {
-            console.log(updatedOffers);
             return Promise.all(updatedOffers.map(offer => mongoose.model('Event').findById(offer.eventId))).then(events => {
               return Promise.all(events.map(event => {
                 event.status = 'completed';

@@ -136,6 +136,66 @@ var mailer = {
   completeRegistration: function(user) {
 
   },
+  breakAuth: (user, caterer) => {
+    let promises = [];
+    promises.push(nodemailerMailgun.sendMail({
+      from: config.mailgun.from,
+      to: user.email,
+      subject: 'Catering-ninja: your credit card was not authorised',
+      html: 'Simple message',
+    }, function (err, info) {
+      if (err) {
+        console.log('Error: ' + err);
+      }
+      else {
+        console.log('Response: ' + info);
+      }
+    }));
+    promises.push(nodemailerMailgun.sendMail({
+      from: config.mailgun.from,
+      to: caterer.email,
+      subject: 'Catering-ninja: offer has been canceled',
+      html: 'Simple message',
+    }, function (err, info) {
+      if (err) {
+        console.log('Error: ' + err);
+      }
+      else {
+        console.log('Response: ' + info);
+      }
+    }));
+    return Promise.all(promises);
+  },
+  breakCapture: (user, caterer) => {
+    let promises = [];
+    promises.push(nodemailerMailgun.sendMail({
+      from: config.mailgun.from,
+      to: user.email,
+      subject: 'Catering-ninja: money cannot be captured',
+      html: 'Simple message',
+    }, function (err, info) {
+      if (err) {
+        console.log('Error: ' + err);
+      }
+      else {
+        console.log('Response: ' + info);
+      }
+    }));
+    promises.push(nodemailerMailgun.sendMail({
+      from: config.mailgun.from,
+      to: caterer.email,
+      subject: 'Catering-ninja: offer has been canceled',
+      html: 'Simple message',
+    }, function (err, info) {
+      if (err) {
+        console.log('Error: ' + err);
+      }
+      else {
+        console.log('Response: ' + info);
+      }
+    }));
+    return Promise.all(promises);
+  },
   report: function() {
     getUsers().then((users) => {
       _.each(users, (user) =>{

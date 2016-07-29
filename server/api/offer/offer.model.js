@@ -23,10 +23,6 @@ var OfferSchema = new mongoose.Schema({
     service: Number,
     tax: Number,
     total: Number,
-    counter: {
-      type: Number,
-      default: 0
-    },
     commission: {
       type: Number,
       default: 10

@@ -85,16 +85,19 @@
                     <!--<a class="btn btn-xs btn-warning" ui-sref="offers" ng-click="vm.setActiveEvent(event)" >Offers ({{event.offersNumber}})</a>-->
                     <a class="btn btn-xs btn-warning" uib-popover-html="event.offersInfo" popover-trigger="mouseenter" popover-placement="right">Offers ({{event.offersNumber}})</a>
                   </div>
-                  <div ng-if="vm.user.role == 'caterer'">
+                  <div ng-if="vm.user.role == 'caterer' && event.status !== 'completed'">
                     <a class="btn btn-xs btn-default" ng-if="event.offerStatus" href="{{event.offerUrl}}">Edit Offer</a>
                     <a class="btn btn-xs btn-default" ng-if="!event.offerStatus" href="{{event.offerUrl}}">Create Offer</a>
                   </div>
                 </td>
                 <td>
-                  <a class="btn btn-xs btn-danger" ng-click="vm.decline(event._id)" ng-if="vm.user.role == 'caterer' && event.status !== 'accepted' && event.status !== 'confirmed'">Decline Event</a>
-                  <div ng-if="vm.user.role == 'user' && event.status !== 'accepted' && event.status !== 'confirmed'">
+                  <a class="btn btn-xs btn-danger" ng-click="vm.decline(event._id)" ng-if="vm.user.role == 'caterer' && event.status !== 'accepted' && event.status !== 'confirmed' && event.status !== 'completed'">Decline Event</a>
+                  <div ng-if="vm.user.role == 'user' && event.status !== 'accepted' && event.status !== 'confirmed' && event.status !== 'completed'">
                     <a class="btn btn-xs btn-danger" ng-click="vm.cancel(event._id)">Cancel</a>
                     <a class="btn btn-xs btn-default delete-event" ng-click="vm.delete(event)" title="Delete event"><i class="fa fa-times"></i></a>
+                  </div>
+                  <div ng-if="(event.status === 'confirmed' && event.paymentStatus === 'paid') || event.status === 'completed'">
+                    <a class="btn btn-xs btn-success" ng-click="vm.showInvoice($event, event)">Invoice</a>
                   </div>
                 </td>
               </tr>
@@ -113,7 +116,98 @@
       </div>
     </div>
   </div>
-  <div class="row" ng-if="vm.user.role == 'user'">
+  <div class="row" ng-if="isInvoiceMode">
+    <div class="col-sm-12">
+      <header>Invoice</header>
+      <article>
+        <table class="table col-sm-12">
+          <thead>
+            <tr class="active">
+              <th class="col-sm-1">#</th>
+              <th class="col-sm-5">Event Description</th>
+              <th class="col-sm-2"># People</th>
+              <th class="col-sm-2">$ Per Person</th>
+              <th class="col-sm-2">$ Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>{{eventForInvoice.description}}</td>
+              <td>{{eventForInvoice.people.toFixed(2)}}</td>
+              <td>{{eventForInvoice.pricePerPerson.toFixed(2)}}</td>
+              <td>{{(eventForInvoice.people * eventForInvoice.pricePerPerson).toFixed(2)}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <section class="col-sm-4 col-sm-offset-8">
+          <table class="table">
+            <tbody>
+              <tr ng-if="eventForInvoice.offer.counter">
+                <td>Counter</td>
+                <td>{{eventForInvoice.offer.counter.toFixed(2)}}</td>
+              </tr>
+              <tr>
+                <td>Sub Total</td>
+                <td>{{eventForInvoice.offer.invoice.service.toFixed(2)}}</td>
+              </tr>
+              <tr>
+                <td>Sales Tax ({{((eventForInvoice.offer.invoice.tax/eventForInvoice.offer.invoice.service) * 100).toFixed(2)}}%)</td>
+                <td>{{eventForInvoice.offer.invoice.tax.toFixed(2)}}</td>
+              </tr>
+              <tr ng-if="vm.user.role == 'user' || vm.user.role == 'admin'">
+                <td><b>Total</b></td>
+                <td><b>{{eventForInvoice.offer.invoice.total.toFixed(2)}}</b></td>
+              </tr>
+              <tr class="success" ng-if="vm.user.role == 'user'">
+                <td>Charged to Credit Card</td>
+                <td>{{eventForInvoice.offer.invoice.total.toFixed(2)}}</td>
+              </tr>
+              <tr class="info" ng-if="!eventForInvoice.offer.invoice.refund && eventForInvoice.offer.invoice.commission && vm.user.role == 'caterer'">
+                <td>Commission ({{eventForInvoice.offer.invoice.commission.toFixed(2)}}%)</td>
+                <td>-{{(eventForInvoice.offer.invoice.total * (eventForInvoice.offer.invoice.commission / 100)).toFixed(2)}}</td>
+              </tr>
+              <tr class="info" ng-if="!eventForInvoice.offer.invoice.refund && eventForInvoice.offer.invoice.commission && vm.user.role == 'admin'">
+                <td>Commission ({{eventForInvoice.offer.invoice.commission.toFixed(2)}}%)</td>
+                <td>{{(eventForInvoice.offer.invoice.total * (eventForInvoice.offer.invoice.commission / 100)).toFixed(2)}}</td>
+              </tr>
+              <tr class="info" ng-if="!eventForInvoice.offer.invoice.refund && eventForInvoice.offer.invoice.adjustment.chargeOff && vm.user.role == 'admin'">
+                <td>Charge Off</td>
+                <td>-{{eventForInvoice.offer.invoice.adjustment.chargeOff.toFixed(2)}}</td>
+              </tr>
+              <tr class="info" ng-if="!eventForInvoice.offer.invoice.refund && eventForInvoice.offer.invoice.adjustment.caterer && (vm.user.role == 'caterer' || vm.user.role == 'admin')">
+                <td>Caterer Adjustment</td>
+                <td>-{{eventForInvoice.offer.invoice.adjustment.caterer.toFixed(2)}}</td>
+              </tr>
+              <tr class="warning" ng-if="!eventForInvoice.offer.invoice.refund && vm.user.role == 'admin'">
+                <td>Paid to Caterer</td>
+                <td>-{{(eventForInvoice.offer.invoice.total * ((100 - eventForInvoice.offer.invoice.commission) / 100) - eventForInvoice.offer.invoice.adjustment.caterer).toFixed(2)}}</td>
+              </tr>
+              <tr class="success" ng-if="!eventForInvoice.offer.invoice.refund && vm.user.role == 'admin'">
+                <td>Income</td>
+                <td>{{(eventForInvoice.offer.invoice.total * (eventForInvoice.offer.invoice.commission / 100) - eventForInvoice.offer.invoice.adjustment.chargeOff).toFixed(2)}}</td>
+              </tr>
+              <tr ng-if="vm.user.role == 'caterer'">
+                <td><b>Total</b></td>
+                <td ng-if="!eventForInvoice.offer.invoice.refund"><b>{{(eventForInvoice.offer.invoice.total * ((100 - eventForInvoice.offer.invoice.commission) / 100) - eventForInvoice.offer.invoice.adjustment.caterer).toFixed(2)}}</b></td>
+                <td ng-if="eventForInvoice.offer.invoice.refund"><b>{{eventForInvoice.offer.invoice.total.toFixed(2)}}</b></td>
+              </tr>
+              <tr class="danger" ng-if="eventForInvoice.offer.invoice.refund">
+                <td ng-if="vm.user.role == 'user'">Refund</td>
+                <td ng-if="vm.user.role != 'user'">Refund to client</td>
+                <td>-{{eventForInvoice.offer.invoice.refund.toFixed(2)}}</td>
+              </tr>
+              <tr class="warning" ng-if="!eventForInvoice.offer.invoice.refund && eventForInvoice.offer.invoice.adjustment.client && vm.user.role == 'user'">
+                <td>Partial Refund</td>
+                <td>-{{eventForInvoice.offer.invoice.adjustment.client.toFixed(2)}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </article>
+    </div>
+  </div>
+  <div class="row" ng-if="vm.user.role == 'user' && !isInvoiceMode">
     <div class="col-sm-12">
       <offerslist></offerslist>
     </div>
