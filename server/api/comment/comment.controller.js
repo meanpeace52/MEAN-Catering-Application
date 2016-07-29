@@ -96,16 +96,15 @@ export function thread(req, res) {
           _id: "$replyTo",
           comments: { $push: "$$ROOT" }
         }
-      }]).exec().then((comments) => {
+     }]).exec().then((comments) => {
         console.log('comments', comments);
         //comments.forEach((comment, i) => {
         //  comments[i] = comments[i].toObject();
         //
         //})
-      })
-      .then(respondWithResult(res))
-      .catch(handleError(res));
- });
+     })
+     .then(respondWithResult(res))
+     .catch(handleError(res));
 }
 
 // Gets a single Thing from the DB
