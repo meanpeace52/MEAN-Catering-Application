@@ -214,7 +214,7 @@
             <div class="select-rest-block">
               <div class="checkbox" ng-repeat="caterer in caterers" ng-if="caterer.showByCat">
                 <label>
-                  <input type="checkbox" checklist-model="fm.selectedCaterers" ng-change="vm.watchForEdit(caterer._id)" checklist-value="caterer._id" > {{caterer.name}}
+                  <input type="checkbox" checklist-model="fm.selectedCaterers" ng-change="vm.watchForEdit(caterer._id)" checklist-value="caterer._id" > {{caterer.companyName}}
                   <a href="/caterers/{{caterer._id}}" class="label label-info m-3" target="_blank">view profile</a>
                   <span ng-repeat="ft in foodTypes" class="label label-default m-3" ng-if="vm.checkFT(ft._id, caterer)">{{ft.name}}</span>
                   <span ng-repeat="st in serviceTypes" class="label label-default m-3" ng-if="vm.checkST(st._id, caterer)">{{st.name}}</span>
@@ -258,6 +258,9 @@
           </button>
           <button class="btn btn-primary" type="submit" ng-click="vm.sendRequest(form)">
             Send Request
+          </button>
+          <button class="btn btn-danger" ng-click="vm.cancel()">
+            Cancel changes
           </button>
         </div>
         <div></div>

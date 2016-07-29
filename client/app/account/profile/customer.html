@@ -1,10 +1,13 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-12">
-      <h1>Sign up</h1>
+      <h1>Profile</h1>
     </div>
     <div class="col-sm-12">
-      <form class="form" name="form" ng-submit="vm.register(form)" novalidate>
+      <uib-tabset active="active">
+        <uib-tab index="0" heading="Profile">
+          <br />
+          <form class="form" name="form" ng-submit="vm.register(form)" novalidate>
 
         <div class="form-group" ng-class="{ 'has-success': form.name.$valid && vm.submitted,
                                             'has-error': form.name.$invalid && vm.submitted }">
@@ -92,7 +95,7 @@
             <!--Passwords must match.-->
           <!--</p>-->
         <!--</div>-->
-
+        <div class="alert alert-success" role="alert" ng-if="vm.saved">Account information is successfully saved</div>
         <div>
           <button class="btn btn-primary btn-lg btn-register" type="submit">
             Save Changes
@@ -100,6 +103,53 @@
         </div>
 
       </form>
+        </uib-tab>
+        <uib-tab index="1" heading="Change password">
+          <br />
+          <form class="form" name="form" ng-submit="vm.changePassword(form)" novalidate>
+
+            <div class="form-group">
+              <label>Current Password</label>
+
+              <input type="password" name="password" class="form-control" ng-model="vm.user.oldPassword"
+                     mongoose-error/>
+              <p class="help-block" ng-show="form.password.$error.mongoose">
+                {{ vm.errors.other }}
+              </p>
+            </div>
+
+            <div class="form-group">
+              <label>New Password</label>
+
+              <input type="password" name="newPassword" class="form-control" ng-model="vm.user.newPassword"
+                     ng-minlength="3"
+                     required/>
+              <p class="help-block"
+                 ng-show="(form.newPassword.$error.minlength || form.newPassword.$error.required) && (form.newPassword.$dirty || vm.submitted)">
+                Password must be at least 3 characters.
+              </p>
+            </div>
+
+            <div class="form-group">
+              <label>Confirm New Password</label>
+
+              <input type="password" name="confirmPassword" class="form-control" ng-model="vm.user.confirmPassword"
+                     match="vm.user.newPassword"
+                     ng-minlength="3"
+                     required=""/>
+              <p class="help-block"
+                 ng-show="form.confirmPassword.$error.match && vm.submitted">
+                Passwords must match.
+              </p>
+
+            </div>
+
+            <p class="help-block"> {{ vm.message }} </p>
+            <div class="alert alert-success" role="alert" ng-if="vm.saved">Account information is successfully saved</div>
+            <button class="btn btn-lg btn-primary" type="submit">Save changes</button>
+          </form>
+        </uib-tab>
+      </uib-tabset>
     </div>
   </div>
   <hr>

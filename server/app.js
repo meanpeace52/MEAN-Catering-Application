@@ -73,11 +73,12 @@ nev.configure({
 
 nev.generateTempUserModel(User);
 var TempUser = require('./api/user/tempUser.model');
+
 nev.configure({
   tempUserModel: TempUser
 });
-
 */
+
 
 function startServer() {
   app.angularFullstack = server.listen(config.port, config.ip, function() {

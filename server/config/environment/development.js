@@ -10,7 +10,7 @@ module.exports = {
   },
 
   // Seed database on startup
-  seedDB: true,
+  seedDB: false,
 
   mailgun: {
     api_key: 'key-11f4fceec484b3d96fbd07dd91b9ff58',

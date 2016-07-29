@@ -87,32 +87,44 @@ export function index(req, res) {
 
 export function dataset(req, res) {
   let query = {},
-    isCaterer = (req.body.userId ? false : true),
-    showConfirmed = (req.body.status === 'confirmed' ? true : false),
-    today = (new Date(new Date().setHours(0, 0, 0, 0))).toISOString();
+    isUser = (req.body.userId ? true : false),
+    isCaterer = (req.body.catererId ? true : false),
+    isAdmin = !! isUser && isCaterer,
+    today = new Date(new Date().setHours(0, 0, 0, 0)) /*.toISOString()*/;
 
-  console.log(today);
-  if (showConfirmed) {
-    query = { status: 'confirmed' };
-  } else {
-    if (!isCaterer) {
-      query = {
-        userId: req.body.userId
-      }
-    } else {
-      query = {
-        showToCaterers: req.body.showToCaterers /*, selectedCaterers: {$elemMatch: {$eq: req.body.sentTo } }*/
-      }
-      if (req.body.foodTypes && req.body.foodTypes.length) {
-        query.foodTypes = {$elemMatch: {$in: req.body.foodTypes }}
-      }
-      if (req.body.serviceTypes && req.body.serviceTypes.length) {
-        query.serviceTypes = {$elemMatch: {$in: req.body.serviceTypes }}
-      }
+  if (isUser) {
+    query = {
+      userId: req.body.userId
+    }
+  } else if (isCaterer) {
+    query = {
+      showToCaterers: req.body.showToCaterers /*, selectedCaterers: {$elemMatch: {$eq: req.body.sentTo } }*/
+    }
+    if (req.body.foodTypes && req.body.foodTypes.length) {
+      query.foodTypes = { $in: req.body.foodTypes }
+    }
+    if (req.body.serviceTypes && req.body.serviceTypes.length) {
+      query.serviceTypes = { $in: req.body.serviceTypes }
     }
   }
 
-  // query.date = { $gte: today };
+  if (!isAdmin) query.date = { $gte: today };
+
+  if (req.body.confirmedDate && req.body.createDate && req.body.status) {
+    let newExpression = {},
+      confirmedExpression = {};
+
+    newExpression.createDate = { $gte: new Date(req.body.createDate)/*.toISOString()*/ };
+
+    confirmedExpression.confirmedDate = { $gte: new Date(req.body.confirmedDate)/*.toISOString()*/ };
+    confirmedExpression.status = req.body.status;
+
+    query = { $or: [ _.merge(newExpression, query), _.merge(confirmedExpression, query) ] };
+  } else {
+    if (req.body.confirmedDate) query.confirmedDate = { $gte: new Date(req.body.confirmedDate)/*.toISOString()*/ };
+    if (req.body.createDate) query.createDate = { $gte: new Date(req.body.createDate)/*.toISOString()*/ };
+    if (req.body.status) query.status = req.body.status;
+  }
 
   return Event.find(query).exec().then((events) => {
     let eventPromises = [];
@@ -123,11 +135,11 @@ export function dataset(req, res) {
         _.pull(events, event);
       } else {
         let offerQuery = (isCaterer ? {eventId: '' + event._id, catererId: req.body.catererId} : {eventId: '' + event._id});
-        if (showConfirmed) offerQuery = {eventId: '' + event._id, status: 'confirmed'};
+        if (isAdmin) offerQuery = {eventId: '' + event._id, status: 'confirmed'};
 
         eventPromises.push(Offer.find(offerQuery).exec().then((offers) => {
           events[i].offers = offers;
-          if (showConfirmed) events[i].offer = offers[0];
+          if (isAdmin) events[i].offer = offers[0];
           return events[i];
         }));
       }

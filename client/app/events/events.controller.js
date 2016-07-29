@@ -25,13 +25,25 @@ class EventsController {
     this.$scope.events = [];
     this.$scope.displayed = [];
 
-    let query = ($scope.user.role == 'caterer' ? {showToCaterers: true, catererId: $scope.user._id, foodTypes: $scope.user.foodTypes, serviceTypes: $scope.user.serviceTypes} :  {userId: $scope.user._id});
+    this.$scope.filter = {
+      dateFilter: 'All',
+      newEvents: false,
+      confirmedEvents: false
+    }
+
+    let now = new Date();
+    $scope.start24 = Date.parse(now) - (24 * 60 * 60 * 1000);
+    $scope.start1 = Date.parse(now) - (60 * 60 * 1000);
+
+    this.$scope.query = ($scope.user.role == 'caterer' ? {showToCaterers: true, catererId: $scope.user._id, foodTypes: $scope.user.foodTypes, serviceTypes: $scope.user.serviceTypes} :  {userId: $scope.user._id});
 
     this.pipe = function(tableState) {
       $scope.tableState = (angular.isObject(tableState) && tableState ? tableState : $scope.tableState);
 
-      $http.post('/api/events/dataset', query).then(response => {
+      $http.post('/api/events/dataset', $scope.query).then(response => {
         let events = response.data;
+        $scope.newEventsCount = 0;
+        $scope.confirmedEventsCount = 0;
         //console.log('events', events);
         _.each(events, (event, i) => {
           if (event.status == "cancelled" ||
@@ -64,8 +76,22 @@ class EventsController {
 
         //$scope.events = events;
 
-        $scope.events = _.filter(events, (o) => {
-          return !o.drafted;
+        $scope.events = _.map(events, (o) => {
+          if (!o.drafted) {
+            if (o.status == 'confirmed') $scope.confirmedEventsCount++;
+
+            if ($scope.filter.dateFilter == '24') {
+              if (Date.parse(o.createDate) > $scope.start24) {
+                $scope.newEventsCount++;
+              }
+            } else if ($scope.filter.dateFilter == '1') {
+              if (Date.parse(o.createDate) > $scope.start1) {
+                $scope.newEventsCount++;
+              }
+            }
+
+            return o;
+          }
         });
 
         let filtered = $scope.tableState.search.predicateObject ? $filter('filter')($scope.events, $scope.tableState.search.predicateObject) : $scope.events,
@@ -81,6 +107,44 @@ class EventsController {
           if ($rootScope.eventActive) $rootScope.$broadcast('eventActive', $rootScope.eventActive);
       });
     }
+
+    $scope.$watchGroup(['filter.dateFilter', 'filter.newEvents', 'filter.confirmedEvents'], () => {
+      let now = new Date();
+        $scope.start24 = Date.parse(now) - (24 * 60 * 60 * 1000);
+        $scope.start1 = Date.parse(now) - (60 * 60 * 1000);
+
+      if ($scope.filter.newEvents) {
+        if ($scope.filter.dateFilter == 'All') {
+          delete $scope.query.createDate;
+        } else if ($scope.filter.dateFilter == '24') {
+          $scope.query.createDate = $scope.start24;
+        } else if ($scope.filter.dateFilter == '1') {
+          $scope.query.createDate = $scope.start1;
+        }
+      } else {
+        delete $scope.query.createDate;
+      }
+
+      if ($scope.filter.confirmedEvents) {
+        if ($scope.filter.dateFilter == 'All') {
+          delete $scope.query.confirmedDate;
+          $scope.query.status = 'confirmed';
+        } else if ($scope.filter.dateFilter == '24') {
+          $scope.query.confirmedDate = $scope.start24;
+          $scope.query.status = 'confirmed';
+        } else if ($scope.filter.dateFilter == '1') {
+          $scope.query.confirmedDate = $scope.start1;
+          $scope.query.status = 'confirmed';
+        }
+      } else {
+        delete $scope.query.confirmedDate;
+        delete $scope.query.status;
+      }
+
+      console.log('query', $scope.query);
+
+      root.pipe();
+    });
 
     var sync = $interval(root.pipe, (1000 * 60));
 

@@ -288,6 +288,7 @@ class EventsNewController {
       eventModel.sentTo = eventModel.selectedCaterers;
       eventModel.status = 'sent';
       eventModel.userId = this.user._id;
+      eventModel.createDate = new Date();
 
       if (this.$scope.fm.status = 'sent') eventModel.isUpdated = true;
 
@@ -309,6 +310,10 @@ class EventsNewController {
       }
     }
 
+  }
+
+  cancel() {
+    this.$state.go('events');
   }
 
   saveDraft(form) {

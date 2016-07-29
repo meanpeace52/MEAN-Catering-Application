@@ -3,6 +3,26 @@
     <div class="col-sm-12">
       <div class="panel panel-default">
         <div class="panel-body">
+          <div class="filter-events">
+            <div class="row">
+              <div class="col-sm-3">
+                <label>Filter By</label>
+                <select class="input-sm form-control" ng-model="filter.dateFilter">
+                  <option value="All" selected >All</option>
+                  <option value="24">Last 24 Hr</option>
+                  <option value="1">Last Hr</option>
+                </select>
+              </div>
+              <div class="col-sm-4">
+                <label>Select to Filter</label>
+                <div class="form-group">
+                  <label><input type="checkbox" name="role" ng-model="filter.newEvents" /> <span ng-if="newEventsCount > 0" class="label label-warning">{{newEventsCount}}</span> # New of events</label>
+                  <label><input type="checkbox" name="role" ng-model="filter.confirmedEvents" /> <span ng-if="confirmedEventsCount > 0" class="label label-success">{{confirmedEventsCount}}</span> # Confirmed events</label>
+                </div>
+              </div>
+            </div>
+
+          </div>
           <table st-table="events" st-pipe="vm.pipe" class="table table-hover table-condensed table-events">
             <thead>
               <tr>
@@ -71,8 +91,8 @@
                   </div>
                 </td>
                 <td>
-                  <a class="btn btn-xs btn-danger" ng-click="vm.decline(event._id)" ng-if="vm.user.role == 'caterer'">Decline Event</a>
-                  <div ng-if="vm.user.role == 'user'">
+                  <a class="btn btn-xs btn-danger" ng-click="vm.decline(event._id)" ng-if="vm.user.role == 'caterer' && event.status !== 'accepted' && event.status !== 'confirmed'">Decline Event</a>
+                  <div ng-if="vm.user.role == 'user' && event.status !== 'accepted' && event.status !== 'confirmed'">
                     <a class="btn btn-xs btn-danger" ng-click="vm.cancel(event._id)">Cancel</a>
                     <a class="btn btn-xs btn-default delete-event" ng-click="vm.delete(event)" title="Delete event"><i class="fa fa-times"></i></a>
                   </div>

@@ -64,9 +64,10 @@ class TemplatesController {
     this.$http.post('/api/templates/new', query).then(response => {
       this.$scope.templates = this.getTemplatesList();
       this.saved = true;
+      this.$scope.tfm = {};
       this.$timeout(function() {
         root.saved = false;
-      }, 2000);
+      }, 3000);
       this.socket.syncUpdates('tpl', this.$scope.templates);
     });
   }
@@ -75,6 +76,10 @@ class TemplatesController {
     let query = tpl;
     query.userId = this.user._id;
     this.$http.post('/api/templates/' + tpl._id, tpl).then(response => {
+      tpl.saved = true;
+      this.$timeout(function() {
+        tpl.saved = false;
+      }, 3000);
       this.socket.syncUpdates('tpl', this.$scope.templates);
     });
   }

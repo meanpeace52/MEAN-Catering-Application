@@ -24,10 +24,10 @@
         <li ng-show="nav.isLoggedIn()">
           <!--<a class="navbar-text" ng-if="nav.getCurrentUser().firstname || nav.getCurrentUser().lastname">Hello {{ nav.getCurrentUser().firstname }} {{ nav.getCurrentUser().lastname }}</a>-->
           <!--<a class="navbar-text" ng-if="nav.getCurrentUser().name">Hello {{ nav.getCurrentUser().name }}</a>-->
-          <a ng-if="nav.getCurrentUser().role === 'caterer'" ui-sref="caterer-profile">Account Info</a>
-          <a ng-if="nav.getCurrentUser().role === 'user'" ui-sref="customer-profile">Account Info</a>
+          <a ng-if="nav.getCurrentUser().role === 'caterer'" ui-sref="caterer-profile">Account Info <span class="fa fa-cog"></span></a>
+          <a ng-if="nav.getCurrentUser().role === 'user'" ui-sref="customer-profile">Account Info <span class="fa fa-cog"></span></a>
         </li>
-        <li ng-show="nav.isLoggedIn()" ui-sref-active="active"><a ui-sref="settings"><span class="fa fa-cog"></span></a></li>
+        <!--<li ng-show="nav.isLoggedIn()" ui-sref-active="active"><a ui-sref="settings"></a></li>-->
         <li ng-show="nav.isLoggedIn()"><a ui-sref="logout">Logout</a></li>
       </ul>
 

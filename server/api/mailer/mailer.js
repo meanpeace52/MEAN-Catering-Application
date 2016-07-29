@@ -27,6 +27,8 @@ function getEventMailList(event) {
       return new mongoose.Types.ObjectId(id);
     });
     query = { _id: {$in: event.sentTo }};
+  } else if (event.confirmedBy) {
+    query = { _id: event.confirmedBy }
   } else {
     if (event.foodTypes.length) { //if only ft were specified
       query = { foodTypes: {$in: event.foodTypes }};
@@ -62,8 +64,6 @@ function getOfferOwnerMail(offer) {
 }
 
 function getUsers() {
-   //return User.find({'role': 'caterer' }, { email: 1, role: 1, name: 1, companyName: 1}).exec();
-  //ObjectId("57430b12cc05ff64171e4ffd")    ObjectId("57431a9f869261981414cb87")
    return User.find({'role': 'caterer' }, { email: 1, role: 1, name: 1, companyName: 1, foodTypes: 1, serviceTypes: 1}).exec().then((users) => {
        return users;
      });
@@ -189,7 +189,7 @@ var mailer = {
 
   notifyOffer: function(offer, fact) {
     getOfferMailList(offer).then((sendTo) => {
-      let message = '<h1>Offer from ' + offer.catererName + ' was ' + fact + '!</h1><p>Counter: ' + offer.counter + '</p><p>Description: ' + offer.offerDescription + '</p><p>Status: ' + offer.status + '</p>';
+      let message = '<h1>Offer from ' + offer.catererName + ' was ' + fact + '!</h1><p>Description: ' + offer.offerDescription + '</p><p>Status: ' + offer.status + '</p>';
 
       nodemailerMailgun.sendMail({
         from: config.mailgun.from,
@@ -209,7 +209,7 @@ var mailer = {
 
   notifyOfferAccepted: function(offer, fact) {
     getOfferOwnerMail(offer).then((sendTo) => {
-      let message = '<h1>Your offer was ' + fact + '!</h1><p>Counter: ' + offer.counter + '</p><p>Description: ' + offer.offerDescription + '</p><p>Status: ' + offer.status + '</p>';
+      let message = '<h1>Your offer was ' + fact + '!</h1><p>Description: ' + offer.offerDescription + '</p><p>Status: ' + offer.status + '</p>';
 
       Event.findById(offer.eventId).exec()
         .then((event) => {

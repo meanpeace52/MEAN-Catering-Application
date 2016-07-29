@@ -115,15 +115,6 @@
           <textarea type="checkbox" name="contactInfo" class="form-control" ng-model="vm.user.contactInfo"></textarea>
         </div>
 
-        <div class="form-group" ng-if="vm.user.role">
-          <label>Select food types</label>
-          <div class="checkbox" ng-repeat="type in foodTypes">
-            <label>
-              <input type="checkbox" checklist-model="vm.user.foodTypes" checklist-value="type._id" checked="{{type.checked}}"> {{type.name}}
-            </label>
-          </div>
-        </div>
-
         <div>
           <button class="btn btn-primary btn-lg btn-register" type="submit">
             Register

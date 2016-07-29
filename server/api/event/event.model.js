@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 var EventSchema = new mongoose.Schema({
   name: String,
   description: String,
+  createDate: Date,
   status: String,
   pricePerPerson: Number,
   people: Number,
@@ -19,8 +20,8 @@ var EventSchema = new mongoose.Schema({
   serviceTypes: Object,
   date: Date,
   time: String,
-  dateAccepted: Date,
-  dateConfirmed: Date,
+  acceptedDate: Date,
+  confirmedDate: Date,
   selectedCaterers: Object,
   sentTo: Array,
   rejectedBy: Array,

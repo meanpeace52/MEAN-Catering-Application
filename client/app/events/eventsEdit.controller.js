@@ -244,6 +244,10 @@ class EventsEditController {
 
   }
 
+  cancel() {
+    this.$state.go('events');
+  }
+
   saveDraft(form) {
     this.verifyCard = false;
     let eventModel = this.$scope.fm,

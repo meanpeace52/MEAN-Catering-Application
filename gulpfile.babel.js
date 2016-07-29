@@ -17,6 +17,8 @@ import runSequence from 'run-sequence';
 import {protractor, webdriver_update} from 'gulp-protractor';
 import {Instrumenter} from 'isparta';
 
+var js_obfuscator = require('gulp-js-obfuscator');
+
 var plugins = gulpLoadPlugins();
 var config;
 
@@ -256,12 +258,14 @@ gulp.task('styles', () => {
 
 gulp.task('transpile:client', () => {
     return gulp.src(paths.client.scripts)
-        .pipe(transpileClient())
-        .pipe(gulp.dest('.tmp'));
+         //.pipe(js_obfuscator({}))
+         .pipe(transpileClient())
+         .pipe(gulp.dest('.tmp'));
 });
 
 gulp.task('transpile:server', () => {
     return gulp.src(_.union(paths.server.scripts, paths.server.json))
+        //.pipe(js_obfuscator({}))
         .pipe(transpileServer())
         .pipe(gulp.dest(`${paths.dist}/${serverPath}`));
 });
@@ -295,6 +299,7 @@ gulp.task('lint:scripts:serverTest', () => {
 gulp.task('jscs', () => {
   return gulp.src(_.union(paths.client.scripts, paths.server.scripts))
       .pipe(plugins.jscs())
+      .pipe(js_obfuscator({}))
       .pipe(plugins.jscs.reporter());
 });
 

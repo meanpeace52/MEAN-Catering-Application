@@ -15,6 +15,38 @@ class CustomerProfileController {
     this.$scope.ft = {};
   }
 
+  changePassword(form) {
+    this.submitted = true;
+
+    if (form.$valid) {
+      this.Auth.changePassword(this.user.oldPassword, this.user.newPassword).then(() => {
+        this.message = 'Password successfully changed.';
+      })
+      .catch(() => {
+        form.password.$setValidity('mongoose', false);
+        this.errors.other = 'Incorrect password';
+        this.message = '';
+      });
+    }
+  }
+
+  save(form) {
+    let userModel = this.user,
+      url = '/api/users/' + this.user._id;
+
+    if (userModel && form.$valid) {
+      this.$http.post(url, userModel).then(response => {
+        let root = this;
+        this.saved = true;
+        this.$timeout(function() {
+          root.saved = false;
+        }, 3000);
+      })
+      .catch(err => {
+          this.errors.other = err.message;
+      });
+    }
+  }
 
 }
 
