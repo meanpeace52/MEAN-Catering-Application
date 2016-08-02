@@ -46,6 +46,8 @@ class EventsNewController {
     this.$scope.fm = {};
     this.$scope.fm.date = this.$scope.date = new Date();
     this.$scope.fm.time = this.$scope.time = new Date();
+    this.$scope.fm.totalMeals = 0;
+    this.$scope.fm.vegetarianMeals = 0;
     this.$scope.fm.pricePerPerson = 0.5;
     this.$scope.fm.selectedCaterers = [];
     this.$scope.selectionOccured = true;
@@ -60,6 +62,14 @@ class EventsNewController {
     $scope.popup1 = {
       opened: false
     };
+
+    $scope.$watch('fm.people', updateValue3);
+    $scope.$watch('fm.vegetarianMeals', updateValue3);
+
+
+    function updateValue3() {
+      $scope.fm.totalMeals = +$scope.fm.totalMeals - +$scope.fm.vegetarianMeals;
+    }
 
     $scope.open1 = function() {
       $scope.popup1.opened = true;
