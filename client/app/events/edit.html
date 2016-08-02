@@ -1,7 +1,9 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-12" ng-if="!vm.user.payableAccountId && vm.verifyCard">
-      <h1>Verify your credit card</h1>
+      <h1>Please Verify your Credit Card</h1>
+      <p>To send an event we need to have a valid credit card on file.  This credit card will be saved in your profile for payment.</p>
+      <p>You can always update you credit card information in the account settings.</p>
       <div class="row">
         <credit-card-form verifier="true" user="vm.user"></credit-card-form>
       </div>
@@ -14,7 +16,7 @@
           <div class="col-sm-5">
             <div class="form-group" ng-class="{'has-error': (form.name.$touched && form.name.$error.required || form.$submitted && form.name.$untouched) }">
               <label>Event Name</label>
-              <input type="text" name="name" class="form-control" ng-model="fm.name" required>
+              <input tooltip-placement="top" uib-tooltip='Enter Event Name to use as a reference' type="text" name="name" class="form-control" ng-model="fm.name" required>
               <div ng-show="form.$submitted || form.name.$touched">
                 <div ng-show="form.name.$error.required">Please enter name of event</div>
               </div>
@@ -23,7 +25,7 @@
           <div class="col-sm-7">
             <div class="form-group">
               <label>Description</label>
-              <input type="text" name="description" class="form-control" ng-model="fm.description">
+              <input tooltip-placement="top" uib-tooltip='Description is for your internal use' type="text" name="description" class="form-control" ng-model="fm.description">
             </div>
           </div>
         </div>
@@ -32,7 +34,7 @@
             <div class="form-group" ng-class="{'has-error': (form.date.$touched && form.date.$error.required  || form.$submitted && form.date.$untouched)}">
               <label>Date</label>
               <p class="input-group">
-                <input type="text" class="form-control" uib-datepicker-popup="MMMM d, y" ng-model="fm.date" is-open="popup1.opened" datepicker-options="dateOptions" required close-text="Close"/>
+                <input tooltip-placement="top" uib-tooltip='This is the date and time the event will start, not when catering should arrive' type="text" class="form-control" uib-datepicker-popup="MMMM d, y" ng-model="fm.date" is-open="popup1.opened" datepicker-options="dateOptions" required close-text="Close"/>
                 <span class="input-group-btn">
                   <button type="button" class="btn btn-default" ng-click="open1()" style="height: 34px;"><i class="fa fa-calendar"></i></button>
                 </span>
@@ -50,19 +52,25 @@
               </div>
             </div>
           </div>
-          <div class="col-sm-4">
+          <div class="col-sm-3">
             <div class="form-group" ng-class="{'has-error': (form.people.$touched && form.people.$error.required || form.$submitted && form.people.$untouched)}">
-              <label>People</label>
-              <input type="number" name="people" class="form-control" required ng-model="fm.people">
+              <label>Total Meals</label>
+              <input tooltip-placement="top" uib-tooltip='Total number of meals needed'  type="number" name="people" class="form-control" required ng-model="fm.people">
               <div ng-show="form.$submitted || form.people.$touched">
                 <div ng-show="form.people.$error.required">Please enter number of people</div>
               </div>
             </div>
           </div>
-          <div class="col-sm-3">
+          <div class="col-sm-2">
             <div class="form-group">
               <label>Vegetarian Meals</label>
-              <input type="number" name="vegetarianMeals" class="form-control" ng-model="fm.vegetarianMeals">
+              <input  tooltip-placement="top" uib-tooltip='Total number of Vegatarian meals' type="number" name="vegetarianMeals" class="form-control" ng-model="fm.vegetarianMeals">
+            </div>
+          </div>
+          <div class="col-sm-2">
+            <div class="form-group">
+              <label>Standard Meals</label>
+              <input readonly tooltip-placement="top" uib-tooltip='The number of standard meals, meaning non vegatarian. You can not update this field, only total meals and Vegatarian.' type="number" name="totaladttending" ng-model="fm.totalMeals" class="form-control">
             </div>
           </div>
         </div>
@@ -81,7 +89,7 @@
               <label>Price per person</label>
               <div class="input-group">
                 <span class="input-group-addon">$</span>
-                <input type="text" name="pricePerPerson" class="form-control" required ng-model="fm.pricePerPerson">
+                <input tooltip-placement="top" uib-tooltip='This is the price per person/meal excluding sales tax' type="text" name="pricePerPerson" class="form-control" required ng-model="fm.pricePerPerson">
               </div>
               <div ng-show="form.$submitted || form.pricePerPerson.$touched">
                 <div ng-show="form.pricePerPerson.$error.required">Please enter price per person</div>
@@ -93,7 +101,7 @@
           <div class="col-sm-6">
             <div class="form-group" ng-class="{'has-error': (form.location.$touched && form.location.$error.required || form.$submitted && form.location.$untouched)}">
               <label>Location</label>
-              <input type="text" name="location" class="form-control" required data-location="location" ng-model="fm.location"/>
+              <input tooltip-placement="top" uib-tooltip='Enter the location of the event if it is delivery, or your business address if pickup or if you need a room offsite' type="text" name="location" class="form-control" required data-location="location" ng-model="fm.location"/>
               <div ng-show="form.$submitted || form.location.$touched">
                 <div ng-show="form.location.$error.required">Please enter location</div>
               </div>
@@ -103,15 +111,15 @@
             </div>
             <div class="form-group">
               <label>Delivery Instructions</label>
-              <input type="text" name="deliveryInstructions" class="form-control" ng-model="fm.deliveryInstructions" />
+              <input tooltip-placement="top" uib-tooltip='If there are any special delivery instructions like arrive x or check with front desk, enter it here' type="text" name="deliveryInstructions" class="form-control" ng-model="fm.deliveryInstructions" />
             </div>
             <div class="form-group">
               <label>Special Request</label>
-              <input type="text" name="specialRequest" class="form-control" ng-model="fm.specialRequest">
+              <input tooltip-placement="top" uib-tooltip='If there are any special requests, enter them here, ex we want sweet tea' type="text" name="specialRequest" class="form-control" ng-model="fm.specialRequest">
             </div>
           </div>
           <div class="col-sm-6">
-            <label>Included in price</label>
+            <label tooltip-placement="top" uib-tooltip='These are items you want included in the price'>Included in price</label>
             <div class="panel panel-default">
               <div class="panel-body">
                 <div class="checkbox" ng-repeat="iip in includedInPrice">
@@ -176,7 +184,7 @@
           <div class="col-sm-4">
             <label>Filter Caterers by category</label>
             <uib-accordion close-others="false">
-              <uib-accordion-group is-open="true">
+              <uib-accordion-group is-open="true" tooltip-placement="top" uib-tooltip='Select the Food Type if you want to narrow the list of caterers your event is sent to.  You do not have to select any caterers manually if you dont want to'>
                 <uib-accordion-heading>
                   Food Types <i class="pull-right fa" ng-class="{'fa-chevron-down': status.open, 'fa-chevron-right': !status.open}"></i>
                 </uib-accordion-heading>
@@ -188,7 +196,7 @@
                   </div>
                 </div>
               </uib-accordion-group>
-              <uib-accordion-group is-open="true">
+              <uib-accordion-group is-open="true" tooltip-placement="top" uib-tooltip='Service Type allows you to add additional services to your order.  If you dont havea a room, you can request one here, if you want waiter service, or a cash bar, you can do that here.'>
                 <uib-accordion-heading>
                   Service Types <i class="pull-right fa" ng-class="{'fa-chevron-down': status.open, 'fa-chevron-right': !status.open}"></i>
                 </uib-accordion-heading>
@@ -203,7 +211,7 @@
             </uib-accordion>
           </div>
           <div class="col-sm-4">
-            <label>&nbsp;</label>
+            <label tooltip-placement="top" uib-tooltip='This is Optional, but you can manually select the caterers you event goes to. You can even select just one caterer if you know which one you want.'>Optional - Manually Select Caterers to Send Event</label>
             <div class="select-all-header">
               <div class="checkbox">
                 <label>
@@ -253,10 +261,10 @@
           </button>
         </div>
         <div ng-if="fm.status !== 'cancelled'">
-          <button class="btn btn-default" type="submit" ng-click="vm.saveDraft(form)">
+          <button tooltip-placement="top" uib-tooltip='Allows you to save changes and return later to send' class="btn btn-default" type="submit" ng-click="vm.saveDraft(form)">
             Save Changes
           </button>
-          <button class="btn btn-primary" type="submit" ng-click="vm.sendRequest(form)">
+          <button tooltip-placement="top" uib-tooltip='When you are ready, click send and the event will be sent to all filtered or selected caterers. They will then review and send back offers.' class="btn btn-primary" type="submit" ng-click="vm.sendRequest(form)">
             Send Request
           </button>
         </div>
