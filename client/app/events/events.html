@@ -6,7 +6,7 @@
           <table st-table="events" st-pipe="vm.pipe" class="table table-hover table-condensed table-events">
             <thead>
               <tr>
-                <th ng-if="vm.user.role == 'user'">Status</th>
+                <th tooltip-placement="top" uib-tooltip='Shows the status of the event, Sent and Confirmed' ng-if="vm.user.role == 'user'">Status</th>
                 <th st-sort="date" st-skip-natural="true">Date</th>
                 <th>Time</th>
                 <th st-sort="name" st-sort-default="true">Name</th>

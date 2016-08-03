@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-sm-12" ng-if="!vm.user.address">
       <h1>Your address is required</h1>
-      Please, add you address via you profile.
+      Please, add you address via Account Info.
     </div>
     <!--<div class="col-sm-12" ng-if="vm.user.address && !vm.user.payableAccountId">-->
       <!--<h1>Your account should be integrated with Dwolla service</h1>-->
@@ -13,15 +13,15 @@
     <div class="col-sm-12" ng-if="vm.user.address">
       <h1>New offer</h1>
       <uib-accordion>
-        <uib-accordion-group heading="Event Details" is-open="false">
+        <uib-accordion-group heading="Event Details - Click to Open and Close Window" is-open="true">
           <div class="row">
-            <div class="col-sm-5">
+            <div class="col-sm-4">
               <div class="form-group">
                 <label>Event Name</label>
                 <span>{{vm.event.name}}</span>
               </div>
             </div>
-            <div class="col-sm-7">
+            <div class="col-sm-8">
               <div class="form-group">
                 <label>Description</label>
                 <span>{{vm.event.description}}</span>
@@ -29,7 +29,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-sm-2">
+            <div class="col-sm-4">
               <div class="form-group">
                 <label>Date</label>
                 <span>{{vm.event.date | date: "longDate"}}</span>
@@ -41,16 +41,16 @@
                 <span>{{vm.event.time | date: "shortTime"}}</span>
               </div>
             </div>
-            <div class="col-sm-3">
-              <div class="form-group">
-                <label>People</label>
-                <span>{{vm.event.people}}</span>
-              </div>
-            </div>
-            <div class="col-sm-3">
+            <div class="col-sm-2">
               <div class="form-group">
                 <label>Price per person</label>
                 <span>{{vm.event.pricePerPerson}}</span>
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <div class="form-group">
+                <label tooltip-placement="top" uib-tooltip='This is the total number of meals including Vegetarian'>Total Meals</label>
+                <span>{{vm.event.people}}</span>
               </div>
             </div>
             <div class="col-sm-2">
@@ -92,22 +92,22 @@
         <div class="row">
           <div class="col-sm-3">
             <div class="form-group">
-              <label>Price per person</label>
+              <label tooltip-placement="top" uib-tooltip='All inclusive price per person.  Does not include tax.'>Price per person</label>
               <input type="text" name="pricePerPerson" disabled class="form-control" ng-model="fm.pricePerPerson">
             </div>
           </div>
           <div class="col-sm-3">
             <div class="form-group">
-              <label>Counter</label>
+              <label tooltip-placement="top" uib-tooltip='You can counter with a higher price if you like'>Counter Price</label>
               <div class="input-group">
                 <input type="number" name="counter" class="form-control" ng-model="fm.counter">
                 <span class="input-group-addon">$</span>
               </div>
             </div>
           </div>
-          <div class="col-sm-3">
+          <div class="col-sm-6">
             <div class="form-group">
-              <label>Counter Reason</label>
+              <label tooltip-placement="top" uib-tooltip='It is suggested that you enter a reason for the higher price'>Counter Reason</label>
               <input type="text" name="counterReason" class="form-control" ng-model="fm.counterReason">
             </div>
           </div>
@@ -115,13 +115,13 @@
         <div class="row">
           <div class="col-sm-9">
             <div class="form-group">
-              <label>Select Offer Template or Create New Offer</label>
+              <label tooltip-placement="top" uib-tooltip='Enter the Offer details below'>Offer Details</label>
               <templates></templates>
               <!--<textarea name="offerDescription" class="form-control" ng-model="fm.offerDescription"></textarea>-->
             </div>
           </div>
           <div class="col-sm-3">
-            <label>Included in price</label>
+            <label tooltip-placement="top" uib-tooltip='Items that should be included with the price.  You do not have to include anything if you wish'>Included in price</label>
             <div class="panel panel-default">
               <div class="panel-body">
                 <div class="checkbox" ng-repeat="iip in includedInPrice">
