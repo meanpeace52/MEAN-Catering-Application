@@ -16,8 +16,8 @@
               <th st-sort="name" st-sort-default="true">Name</th>
               <th st-sort="pricePerPerson">Price</th>
               <th st-sort="people">People</th>
-              <th>Caterer name</th>
-              <th>Total Price</th>
+              <th>Caterer</th>
+              <th>Total</th>
               <th>Commission</th>
               <th>Refund</th>
               <th>Net</th>
@@ -30,7 +30,7 @@
               </th>
               <th></th>
               <th>
-                <input st-search="name" class="input-sm form-control" type="search"/>
+                <input st-search="name" class="input-sm form-control" style="width: 100px;" type="search"/>
               </th>
               <th>
                 <input st-search="pricePerPerson" style="width: 50px;" class="input-sm form-control" type="search"/>
@@ -38,6 +38,7 @@
               <th>
                 <input st-search="people" style="width: 50px;" class="input-sm form-control" type="search"/>
               </th>
+              <th></th>
               <th></th>
               <th></th>
               <th></th>
@@ -53,22 +54,22 @@
               <td style="max-width: 100px;">{{event.name}}</td>
               <td>{{event.pricePerPerson}}</td>
               <td>{{event.people}}</td>
-              <td>{{event.offer.catererName}}</td>
-              <td>{{event.offer.invoice.total.toFixed(2)}}</td>
-              <td>{{(event.offer.invoice.total * (event.offer.invoice.commission / 100)).toFixed(2)}}</td>
+              <td>{{event.offers[0].catererName}}</td>
+              <td>{{event.offers[0].invoice.total.toFixed(2)}}</td>
+              <td>{{(event.offers[0].invoice.total * (event.offers[0].invoice.commission / 100)).toFixed(2)}}</td>
               <td>
-                <span ng-if="event.offer.invoice.refund">{{event.offer.invoice.refund.toFixed(2)}}</span>
-                <span ng-if="!event.offer.invoice.refund">{{event.offer.invoice.adjustment.client.toFixed(2)}} ({{event.offer.invoice.adjustment.caterer.toFixed(2)}}/{{event.offer.invoice.adjustment.chargeOff.toFixed(2)}})</span>
+                <span ng-if="event.offers[0].invoice.refund">{{event.offers[0].invoice.refund.toFixed(2)}}</span>
+                <span ng-if="!event.offers[0].invoice.refund">{{event.offers[0].invoice.adjustment.client.toFixed(2)}} ({{event.offers[0].invoice.adjustment.caterer.toFixed(2)}}/{{event.offers[0].invoice.adjustment.chargeOff.toFixed(2)}})</span>
               </td>
               <td>
-                <span ng-if="event.offer.invoice.refund">0.00</span>
-                <span ng-if="!event.offer.invoice.refund">{{(event.offer.invoice.total * ((100 - event.offer.invoice.commission) / 100) - event.offer.invoice.adjustment.caterer).toFixed(2)}}</span>
+                <span ng-if="event.offers[0].invoice.refund">0.00</span>
+                <span ng-if="!event.offers[0].invoice.refund">{{(event.offers[0].invoice.total * ((100 - event.offers[0].invoice.commission) / 100) - event.offers[0].invoice.adjustment.caterer).toFixed(2)}}</span>
               </td>
               <td>
                 <div>
                   <a class="btn btn-xs btn-warning">Confirmed offer</a>
-                  <span class="label label-info" ng-if="event.offer.paymentStatus">{{event.offer.paymentStatus}}</span>
-                  <a class="btn btn-xs btn-success" ng-if="event.offer.paymentStatus === 'paid'" ng-click="pay(event.offer)">Pay</a>
+                  <span class="label label-info" ng-if="event.offers[0].paymentStatus">{{event.offers[0].paymentStatus}}</span>
+                  <a class="btn btn-xs btn-success" ng-if="event.offers[0].paymentStatus === 'paid'" ng-click="pay(event.offers[0])">Pay</a>
                 </div>
               </td>
             </tr>
@@ -86,14 +87,17 @@
   </div>
   <div class="row" ng-if="eventActive">
     <div class="col-sm-12">
-      <h3>Offer from <b>{{eventActive.offer.catererName}}</b>, Total price: <b><mark>${{eventActive.offer.priceWithCounter}}</mark></b> <span class="label label-info">{{eventActive.offer.paymentStatus || eventActive.offer.status}}</span></h3>
+      <h3>Offer from <b>{{eventActive.offers[0].catererName}}</b>, Total price: <b><mark>${{eventActive.offers[0].priceWithCounter}}</mark></b> <span class="label label-info">{{eventActive.offers[0].paymentStatus || eventActive.offers[0].status}}</span></h3>
+      <hr />
+      <button class="btn btn-primary" ng-click="open(eventActive.offers[0])">Adjust Payment</button>
+      <hr />
       <div class="row">
         <div class="col-sm-6">
           <div class="row">
-            <div class="col-sm-6" ng-if="eventActive.offer.includedInPrice.length">
+            <div class="col-sm-6" ng-if="eventActive.offers[0].includedInPrice.length">
               <p><b>Offer Included in price:</b>
               <ul>
-                <li ng-repeat="iip in eventActive.offer.includedInPrice">
+                <li ng-repeat="iip in eventActive.offers[0].includedInPrice">
                   {{iip.name}}
                 </li>
               </ul>
@@ -109,14 +113,12 @@
             </div>
           </div>
 
-          <button class="btn btn-default" ng-click="open(eventActive.offer)" style="margin-left: 15px;">Adjust Payment</button>
-
-          <p ng-if="eventActive.offer.counter"><b>Price per person:</b> ${{eventActive.offer.pricePerPerson}}</p>
-          <p ng-if="eventActive.offer.counter"><b>Counter:</b> ${{eventActive.offer.counter}}, Total with counter: <b><mark>${{eventActive.offer.priceWithCounter}}</mark></b> </p>
-          <p ng-if="!eventActive.offer.counter">Total: <b><mark>${{eventActive.offer.priceWithCounter}}</mark></b> </p>
-          <p ng-if="eventActive.offer.counterReason"><b>Counter Reason:</b> {{eventActive.offer.counterReason}}</p>
-          <p ng-if="eventActive.offer.contactInfo"><b>Contact Info:</b> {{eventActive.offer.contactInfo}}</p>
-          <p ng-if="eventActive.offer.offerDescription"><b>Offer Description:</b> {{eventActive.offer.offerDescription}}</p>
+          <p ng-if="eventActive.offers[0].counter"><b>Price per person:</b> ${{eventActive.offers[0].pricePerPerson}}</p>
+          <p ng-if="eventActive.offers[0].counter"><b>Counter:</b> ${{eventActive.offers[0].counter}}, Total with counter: <b><mark>${{eventActive.offers[0].priceWithCounter}}</mark></b> </p>
+          <p ng-if="!eventActive.offers[0].counter">Total: <b><mark>${{eventActive.offers[0].priceWithCounter}}</mark></b> </p>
+          <p ng-if="eventActive.offers[0].counterReason"><b>Counter Reason:</b> {{eventActive.offers[0].counterReason}}</p>
+          <p ng-if="eventActive.offers[0].contactInfo"><b>Contact Info:</b> {{eventActive.offers[0].contactInfo}}</p>
+          <p ng-if="eventActive.offers[0].offerDescription"><b>Offer Description:</b> {{eventActive.offers[0].offerDescription}}</p>
 
         </div>
       </div>

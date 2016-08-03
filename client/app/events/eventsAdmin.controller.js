@@ -140,14 +140,14 @@ class EventsAdminController {
         $scope.events = response.data;
         _.each($scope.events, (event, i) => {
           $scope.events[i].includedInPrice = convertIncludedInPrice(event.includedInPrice);
-          if ($scope.events[i].offer) {
-            $scope.events[i].offer.includedInPrice = convertIncludedInPrice(event.offer.includedInPrice);
-            if (event.offer.invoice) {
-              $scope.events[i].offer.priceWithCounter = event.offer.invoice.total;
-            } else if (event.offer.counter) {
-              $scope.events[i].offer.priceWithCounter = event.pricePerPerson * event.people - event.offer.counter;
+          if ($scope.events[i].offers.length) {
+            $scope.events[i].offers[0].includedInPrice = convertIncludedInPrice(event.offers[0].includedInPrice);
+            if (event.offers[0].invoice) {
+              $scope.events[i].offers[0].priceWithCounter = event.offers[0].invoice.total;
+            } else if (event.offers[0].counter) {
+              $scope.events[i].offers[0].priceWithCounter = event.pricePerPerson * event.people - event.offers[0].counter;
             } else {
-              $scope.events[i].offer.priceWithCounter = event.pricePerPerson * event.people;
+              $scope.events[i].offers[0].priceWithCounter = event.pricePerPerson * event.people;
             }
           }
         })
