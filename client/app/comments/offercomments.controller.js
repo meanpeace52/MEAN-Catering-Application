@@ -1,7 +1,7 @@
 'use strict';
 
 class OfferCommentsController {
-  constructor($http, $scope, $rootScope, socket, Auth, $cookies) {
+  constructor($http, $scope, $rootScope, socket, Auth, $cookies, CommentsService) {
     this.$scope = $scope;
     this.$rootScope = $rootScope;
     this.$http = $http;
@@ -10,22 +10,224 @@ class OfferCommentsController {
 
     this.isLoggedIn = Auth.isLoggedIn;
     this.getCurrentUser = Auth.getCurrentUser;
-    this.user = this.getCurrentUser();  //customer
+    this.user = this.getCurrentUser();  //author
 
-    this.$scope.comments = [];
+    this.CS = CommentsService;
+
+    this.offer = {
+      _id : "579f4eb7cececad41ea4e7d4",
+      eventId : "579b3fbf1003d24c2b1788ab",
+      pricePerPerson : 29.5,
+      counter : 150,
+      offerDescription : "Bacon\nWatermelon\nShrimps",
+      catererId : "5798c3ef15558be42c5a886b",
+      catererName : "Horns and Bulls",
+      status : "sent",
+      invoice : {
+        counter : 150,
+        service : 5750,
+        tax : 460,
+        total : 6210
+      },
+      includedInPrice : [
+        "57601908cc28a088c3f0f69c"
+      ]
+    }
+
+    this.$scope.occfm = {};
+
+    this.event = $scope.oc.event;
+
+    this.$scope.comments = this.CS.getComments(this.offer._id);
+
+    /*this.$scope.comments = [
+      {
+        _id: '1l1',
+        name: '@caitp',
+        date: new Date(),
+        profileUrl: 'https://github.com/caitp',
+        text: 'UI-Comments is designed to simplify the process of creating comment systems similar to Reddit, Imgur or Discuss in AngularJS.',
+        children: [{
+          parentId: '1l1',
+          _id: '2l2',
+          name: '@bizarro-caitp',
+          date: new Date(),
+          profileUrl: 'https://github.com/bizarro-caitp',
+          text: 'We support nested comments, in a very simple fashion. It\'s great!',
+          children: [{
+            parentId: '2l2',
+            _id: '3l3',
+            name: '@caitp',
+            date: new Date(),
+            profileUrl: 'https://github.com/caitp',
+            text: 'These nested comments can descend arbitrarily deep, into many levels. This can be used to reflect a long and detailed conversation about typical folly which occurs in comments',
+            children: [{
+              parentId: '3l3',
+              _id: '4l4',
+              name: '@bizarro-caitp',
+              date: new Date(),
+              profileUrl: 'https://github.com/bizarro-caitp',
+              text: 'Having deep conversations on the internet can be used to drive and derive data about important topics, from marketing demographic information to political affiliation and even sexual orientation if you care to find out about that. Isn\'t that exciting?'
+            }]
+          },{
+            parentId: '1l1',
+            _id: '5l3',
+            name: '@bizarro-caitp',
+            date: new Date(),
+            profileUrl: 'https://github.com/bizarro-caitp',
+            text: 'Is it REALLY all that wonderful? People tend to populate comments with innane nonsense that ought to get them hellbanned!',
+            children: [{
+              parentId: '5l3',
+              _id: '6l4',
+              name: '@caitp',
+              date: new Date(),
+              profileUrl: 'https://github.com/caitp',
+              text: 'Oh whatever lady, whatever'
+            }]
+          }]
+        }]
+      }, {
+        parentId: '1l1',
+        _id: '7l1',
+        name: '@caitp',
+        date: new Date(),
+        profileUrl: 'https://github.com/caitp',
+        text: 'We can have multiple threads of comments at a given moment...',
+      }, {
+        parentId: '1l1',
+        _id: '8l1',
+        name: '@bizarro-caitp',
+        date: new Date(),
+        profileUrl: 'https://github.com/bizarro-caitp',
+        text: 'We can do other fancy things too, maybe...',
+        children: [{
+          parentId: '8l1',
+          _id: '9l2',
+          name: '@caitp',
+          date: new Date(),
+          profileUrl: 'https://github.com/caitp',
+          text: '...other fancy things, you say?',
+        }, {
+          parentId: '1l1',
+          _id: '10l1',
+          name: '@caitp',
+          date: new Date(),
+          profileUrl: 'https://github.com/caitp',
+          text: 'suddenly I\'m all curious, what else can we do...',
+          children: [{
+            parentId: '10l1',
+            _id: '11l2',
+            name: '@bizarro-caitp',
+            date: new Date(),
+            profileUrl: 'https://github.com/bizarro-caitp',
+            text: 'Oh, you\'ll see...',
+          }]
+        }]
+      }] */
+
+    this.deepSearch(function(item, array) {
+      item.collapsed = true;
+      item.toggled = true;
+      item.new = '';
+    });
 
     //comment: {
     //  _id,
-    //  name,
+    //  date,
     //  userId,
     //  offerId //thread
-    //  userName,
+    //  parentId,
+    //  name,
     //  text,
-    //  level,
-    //  repyTo //parent id
+    //  profileUrl,
+    //  children
     //}
   }
+
+  deepSearch(todo) {
+    _.each(this.$scope.comments, (level1) => {
+      todo(level1, this.$scope.comments);
+      if (level1.children) {
+        _.each(level1.children, (level2) => {
+          todo(level2, level1.children);
+          if (level2.children) {
+            _.each(level2.children, (level3) => {
+              todo(level3, level2.children);
+              if (level3.children) {
+                _.each(level3.children, (level4) => {
+                  todo(level4, level3.children);
+                  if (level4.children) {
+                    _.each(level4.children, (level5) => {
+                      todo(level5, level4.children);
+                    })
+                  }
+                })
+              }
+            })
+          }
+        })
+      }
+    });
+  }
+
 }
+
+
+class OfferCommentController {
+  constructor($http, $scope, $rootScope, socket, Auth, $cookies, CommentsService) {
+    let root = this;
+    this.$scope = $scope;
+    this.$rootScope = $rootScope;
+    this.$http = $http;
+    this.$cookies = $cookies;
+    this.socket = socket;
+
+    this.isLoggedIn = Auth.isLoggedIn;
+    this.getCurrentUser = Auth.getCurrentUser;
+    this.user = this.getCurrentUser();  //author
+
+    this.CS = CommentsService;
+
+    $scope.toggleFrom = function(comment) {
+      console.log('we here');
+      if (comment.toggled) comment.toggled = false;
+      else comment.toggled = true;
+    }
+
+    $scope.collapse = function(comment) {
+      console.log('we here');
+      if (comment.collapsed) comment.collapsed = false;
+      else comment.collapsed = true;
+    }
+
+    console.log()
+
+    $scope.add = function(comment) {
+      let newComment = {};
+      newComment.parentId = comment._id;
+      newComment.date = new Date();
+      newComment.userId = root.user._id;
+      newComment.name = (root.user.role == 'caterer' ? root.user.companyName : (root.user.firstname + ' ' + root.user.lastname));
+      if (root.user.role == 'caterer') {
+        newComment.profileUrl = '/caterers/' + root.user._id;
+      }
+      //newComment.offerId = this.offer._id;
+      newComment.text = comment.new;
+      //this.CS.addComment(newComment).then((data) => {
+        if (comment.children) comment.children.push(newComment);
+        else comment.children = [newComment];
+        comment.collapsed = false;
+      //});
+    }
+
+    $scope.edit = function() {
+
+    }
+  }
+}
+
+
 angular.module('cateringApp')
-  .controller('OfferCommentsController', OfferCommentsController);
+  .controller('OfferCommentsController', OfferCommentsController)
+  .controller('OfferCommentController', OfferCommentController);
 

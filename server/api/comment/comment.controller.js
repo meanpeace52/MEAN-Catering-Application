@@ -76,33 +76,22 @@ export function index(req, res) {
 }
 
 export function thread(req, res) {
-  let query = { $query: {}, $orderby: { createDate : -1 } },
+  let query = { offerId: req.body.offerId },
       today = new Date().toISOString();
 
   //comment: {
   //  _id,
-  //  name,
+  //  date,
   //  userId,
   //  offerId //thread
-  //  userName,
+  //  parentId,
+  //  name,
   //  text,
-  //  level,
-  //  repyTo //parent id
+  //  profileUrl,
+  //  children
   //}
 
-  return Comment.find(query)
-     .aggregate([{
-        $group: {
-          _id: "$replyTo",
-          comments: { $push: "$$ROOT" }
-        }
-     }]).exec().then((comments) => {
-        console.log('comments', comments);
-        //comments.forEach((comment, i) => {
-        //  comments[i] = comments[i].toObject();
-        //
-        //})
-     })
+  return Comment.find(query).exec()
      .then(respondWithResult(res))
      .catch(handleError(res));
 }
@@ -127,6 +116,11 @@ export function update(req, res) {
   if (req.body._id) {
     delete req.body._id;
   }
+
+  //update parent.children
+  //find parent by Id
+  //push
+  //create objectId
 
   return Comment.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))

@@ -3,14 +3,14 @@
 import mongoose from 'mongoose';
 
 var CommentSchema = new mongoose.Schema({
-  name: String,
+  date: Date,
   text: String,
-  createDate: Date,
   userId: String,
-  userName: String,
+  name: String,
+  profileUrl: String,
+  parentId: String,
   offerId: String,
-  level: Number,
-  replyTo: String
+  children: Array
 });
 
 export default mongoose.model('Comment', CommentSchema);

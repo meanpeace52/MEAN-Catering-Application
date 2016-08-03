@@ -4,9 +4,13 @@ angular.module('cateringApp', ['cateringApp.auth', 'cateringApp.admin', 'caterin
     'ngCookies', 'ngResource', 'ngSanitize', 'btford.socket-io', 'ui.router', 'ui.bootstrap',
     'validation.match', "checklist-model", "rzModule", "angularFileUpload", 'smart-table', 'angularPayments', 'ngAnimate', 'ui.comments.directive'
   ])
-  .config(function($urlRouterProvider, $locationProvider /*, commentsConfig*/) {
+  .config(function($urlRouterProvider, $locationProvider, commentsConfigProvider) {
     $urlRouterProvider.otherwise('/');
 
     $locationProvider.html5Mode(true);
-
+    commentsConfigProvider.set({
+      containerTemplate: 'assets/comments/template/comments/comments.html',
+      commentTemplate: 'assets/comments/template/comments/comment.html',
+      commentController: 'OfferCommentController'
+    });
   });

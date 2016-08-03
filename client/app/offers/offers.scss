@@ -26,3 +26,29 @@
 .cancelled-offer, .drafted {
   color: #aaa;
 }
+
+.comments-collapse-button
+
+.comment {
+  padding: .25em;
+  margin: .25em;
+}
+
+.comment > .comments {
+  margin-top: 1em;
+  margin-left: 2em;
+}
+
+.comment-header {
+  vertical-align: middle;
+  line-height: 2em;
+}
+
+.comment-header > h4 {
+  display: inline;
+}
+
+.comment > .page-header {
+  margin-top: 0;
+  padding-top: 0;
+}

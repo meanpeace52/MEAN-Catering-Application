@@ -63,7 +63,7 @@ class EventsController {
               status = (event.offers && event.offers.length ? event.offers[0].status : null);
 
             events[i].offerUrl = offerUrl;
-            events[i].offerStatus = status;
+            events[i].offerStatus = (status !== 'declined' ? status : null);
             events[i].offersNumber = offersNumber;
           } else {
             let offersInfo = '';

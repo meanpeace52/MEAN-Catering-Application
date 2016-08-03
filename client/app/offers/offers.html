@@ -9,7 +9,7 @@
     <div class="offers-pills">
       <uib-tabset active="activePill" vertical="true" type="pills">
         <uib-tab ng-repeat="offer in offers" heading="{{offer.caterer.companyName}}">
-          <h3><small>Offer from</small> <b>{{offer.catererName}}</b>, <small>Total price:</small> <b><mark>${{offer.priceWithCounter}}</mark></b> <span class="label label-info">{{offer.paymentStatus || offer.status}}</span><a class="btn btn-success" ng-if="offer.status === 'confirmed' && !offer.paymentStatus" ng-click="oc.auth(offer)">Hold</a><a class="btn btn-success" ng-if="offer.paymentStatus === 'hold'" ng-click="oc.capture(offer)">Pay</a></h3>
+          <h3><small>Offer from</small> <b>{{offer.catererName}}</b>, <small>Total price:</small> <b><mark>${{offer.invoice.total}}</mark></b> <span class="label label-info">{{offer.paymentStatus || offer.status}}</span><a class="btn btn-success" ng-if="offer.status === 'confirmed' && !offer.paymentStatus" ng-click="oc.auth(offer)">Hold</a><a class="btn btn-success" ng-if="offer.paymentStatus === 'hold'" ng-click="oc.capture(offer)">Pay</a></h3>
           <div ng-if="offer.status == 'sent' && !offer.drafted">
             <hr>
             <button class="btn btn-success" ng-click="oc.accept(offer._id)">Accept</button>
@@ -40,7 +40,7 @@
                 </div>
 
                 <p ng-if="offer.counter"><b>Price per person:</b> ${{offer.pricePerPerson}}</p>
-                <p ng-if="offer.counter"><b>Counter:</b> ${{offer.counter}}, Total with counter: <b><mark>${{offer.priceWithCounter}}</mark></b> </p>
+                <p ng-if="offer.counter"><b>Counter:</b> ${{offer.counter}}, Total with counter: <b><mark>${{offer.invoice.total}}</mark></b> </p>
                 <p ng-if="!offer.counter">Total: <b><mark>${{offer.priceWithCounter}}</mark></b> </p>
                 <p ng-if="offer.counterReason"><b>Counter Reason:</b> {{offer.counterReason}}</p>
                 <p ng-if="offer.contactInfo"><b>Contact Info:</b> {{offer.contactInfo}}</p>
