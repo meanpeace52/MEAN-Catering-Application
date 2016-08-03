@@ -7,9 +7,9 @@ let dwollaOptions = {
   id: config.payments.DWOLLA.KEY,
   secret: config.payments.DWOLLA.SECRET
 };
-if (process.env.NODE_ENV !== 'production') {
+//if (process.env.NODE_ENV !== 'production') {
   dwollaOptions.environment = 'sandbox';
-}
+//}
 let dwollaClient = new dwolla.Client(dwollaOptions);
 
 console.log(12, dwollaClient);

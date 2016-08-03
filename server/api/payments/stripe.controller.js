@@ -1,7 +1,7 @@
 let config = require('../../config/environment');
 let mongoose = require('mongoose');
 let Promise = require('bluebird');
-let mailer = require('mailer');
+let  mailer = require('../mailer/mailer');
 
 let stripe = require('stripe')(config.payments.STRIPE.SECRET_KEY);
 

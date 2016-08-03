@@ -14,7 +14,6 @@ import Comment from './comment.model';
 import Offer from '../offer/offer.model';
 import User from '../user/user.model';
 var Promise = require('bluebird');
-var  mailer = require('../mailer/mailer');
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -32,7 +31,7 @@ function saveUpdates(updates) {
       delete updates[key];
     }
     var updated = _.mergeWith(entity, updates);
-    //mailer.notifyComment(updated, 'updated');
+
     return updated.save()
       .then(updated => {
         return updated;
