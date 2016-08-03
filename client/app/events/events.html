@@ -27,9 +27,9 @@
             <thead>
               <tr>
                 <th ng-if="vm.user.role == 'user'">Status</th>
-                <th st-sort="date" st-skip-natural="true">Date</th>
+                <th st-sort="date" st-skip-natural="true" st-sort-default="true">Date</th>
                 <th>Time</th>
-                <th st-sort="name" st-sort-default="true">Name</th>
+                <th st-sort="name">Name</th>
                 <th st-sort="pricePerPerson">Price</th>
                 <th st-sort="people">People</th>
                 <th st-sort="location" ng-if="vm.user.role == 'caterer'" style="width: 150px;">Location</th>

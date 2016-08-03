@@ -9,11 +9,19 @@
     <div class="offers-pills">
       <uib-tabset active="activePill" vertical="true" type="pills">
         <uib-tab ng-repeat="offer in offers" heading="{{offer.caterer.companyName}}">
-          <h3><small>Offer from</small> <b>{{offer.catererName}}</b>, <small>Total price:</small> <b><mark>${{offer.invoice.total}}</mark></b> <span class="label label-info">{{offer.paymentStatus || offer.status}}</span><a class="btn btn-success" ng-if="offer.status === 'confirmed' && !offer.paymentStatus" ng-click="oc.auth(offer)">Hold</a><a class="btn btn-success" ng-if="offer.paymentStatus === 'hold'" ng-click="oc.capture(offer)">Pay</a></h3>
+          <h3><small>Offer from</small> <b>{{offer.catererName}}</b>, <small>Total price:</small> <b><mark>${{offer.invoice.total}}</mark></b> <span class="label label-info">{{offer.paymentStatus || offer.status}}</span></h3>
           <div ng-if="offer.status == 'sent' && !offer.drafted">
             <hr>
             <button class="btn btn-success" ng-click="oc.accept(offer._id)">Accept</button>
             <button class="btn btn-danger" ng-click="oc.decline(offer._id)">Decline</button>
+          </div>
+          <div ng-if="offer.paymentStatus === 'hold'">
+            <hr>
+            <a class="btn btn-success" ng-click="oc.capture(offer)">Pay</a>
+          </div>
+          <div ng-if="offer.status === 'confirmed' && !offer.paymentStatus">
+            <hr>
+            <a class="btn btn-success" ng-click="oc.auth(offer)">Hold</a>
           </div>
           <hr>
           <div class="container-fluid" ng-if="eventId" ng-class="{'cancelled-offer': offer.status === 'cancelled', 'drafted': offer.drafted}">

@@ -1,7 +1,7 @@
 let config = require('../../config/environment');
 let mongoose = require('mongoose');
 let Promise = require('bluebird');
-let  mailer = require('../mailer/mailer');
+let mailer = require('../mailer/mailer');
 
 let stripe = require('stripe')(config.payments.STRIPE.SECRET_KEY);
 
@@ -20,13 +20,13 @@ class StripeController {
   }
 
   auth(req, res) {
-    return this.$auth(req.body.offerId)
+    return _auth(req.body.offerId)
       .then(respondWithResult(res))
       .catch(handleError(res));
   }
 
   capture(req, res) {
-    return this.$capture(req.body.offerId)
+    return _capture(req.body.offerId)
       .then(respondWithResult(res))
       .catch(handleError(res));
   }

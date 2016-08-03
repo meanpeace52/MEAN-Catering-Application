@@ -47,6 +47,10 @@ class OffersNewController {
 
   }
 
+  cancelChanges() {
+    this.$state.go('events');
+  }
+
   sendRequest(form) {
 
     if (!this.user.payableAccount) {

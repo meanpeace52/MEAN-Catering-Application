@@ -55,7 +55,7 @@ class DwollaController {
       "client_secret": config.payments.DWOLLA.SECRET,
       "code": req.query.authCode,
       "grant_type": "authorization_code",
-      "redirect_uri": '//' + req.headers.host + req.query.redirect
+      "redirect_uri": request.headers.protocol + '://' + req.headers.host + req.query.redirect
     };
     console.log('OPTIONS', options);
 
