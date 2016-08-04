@@ -14,6 +14,7 @@ import Comment from './comment.model';
 import Offer from '../offer/offer.model';
 import User from '../user/user.model';
 var Promise = require('bluebird');
+var mongoose = require('mongoose');
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -75,8 +76,7 @@ export function index(req, res) {
 }
 
 export function thread(req, res) {
-  let query = { offerId: req.body.offerId },
-      today = new Date().toISOString();
+  let query = { offerId: req.params.id };
 
   //comment: {
   //  _id,
@@ -116,14 +116,35 @@ export function update(req, res) {
     delete req.body._id;
   }
 
+  return Comment.findById(req.params.id).exec()
+    .then(handleEntityNotFound(res))
+    .then(saveUpdates(req.body))
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+}
+
+export function addChild(req, res) {
   //update parent.children
   //find parent by Id
   //push
   //create objectId
 
-  return Comment.findById(req.params.id).exec()
+  req.body._id = mongoose.Types.ObjectId();
+
+
+  console.log(req.body.parentId);
+
+  return Comment.findById(req.body.parentId).exec()
     .then(handleEntityNotFound(res))
-    .then(saveUpdates(req.body))
+    .then((res) => {
+      if (res.children) {
+        res.children.push(req.body);
+      } else {
+        res.children = [req.body];
+      }
+      return res;
+    })
+    .then(saveUpdates(res))
     .then(respondWithResult(res))
     .catch(handleError(res));
 }

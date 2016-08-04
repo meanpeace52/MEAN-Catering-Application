@@ -8,7 +8,7 @@ angular.module('cateringApp')
           return response.data;
         })
         .catch(err => {
-          return err.message;
+          return [];
         });
       },
       editComment(comment) {
@@ -28,7 +28,15 @@ angular.module('cateringApp')
         });
       },
       addComment(comment) {
-        return $http.post('/api/comments/', comment).then(response => {
+        return $http.post('/api/comments/add', comment).then(response => {
+            return response.data;
+        })
+        .catch(err => {
+          return err.message;
+        });
+      },
+      addChildComment(comment) {
+        return $http.post('/api/comments/addChild', comment).then(response => {
             return response.data;
         })
         .catch(err => {

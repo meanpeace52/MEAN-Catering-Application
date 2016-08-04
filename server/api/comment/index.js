@@ -10,6 +10,7 @@ router.get('/:id', controller.show);
 router.get('/thread/:id', controller.thread);
 router.post('/', controller.index);
 router.post('/add', controller.create);
+router.post('/addChild', controller.addChild);
 router.put('/:id', controller.update);
 router.post('/:id', controller.update);
 router.patch('/:id', controller.update);

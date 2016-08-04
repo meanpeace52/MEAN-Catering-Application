@@ -34,11 +34,11 @@ class OfferCommentsController {
       ]
     }
 
-    this.$scope.occfm = {};
-
     this.event = $scope.oc.event;
 
-    this.$scope.comments = this.CS.getComments(this.offer._id);
+    this.CS.getComments(this.offer._id).then((res) => {
+      this.$scope.comments = res;
+    });
 
     /*this.$scope.comments = [
       {
@@ -126,7 +126,7 @@ class OfferCommentsController {
       }] */
 
     this.deepSearch(function(item, array) {
-      item.collapsed = true;
+      item.collapsed = false;
       item.toggled = true;
       item.new = '';
     });
@@ -170,6 +170,25 @@ class OfferCommentsController {
     });
   }
 
+  create() {
+    let newComment = {};
+    newComment.parentId = '';
+    newComment.date = new Date();
+    newComment.userId = this.user._id;
+    newComment.name = (this.user.role == 'caterer' ? this.user.companyName : (this.user.firstname + ' ' + this.user.lastname));
+    if (this.user.role == 'caterer') {
+      newComment.profileUrl = '/caterers/' + this.user._id;
+    }
+    newComment.offerId = this.offer._id;
+    newComment.text = this.$scope.newComment;
+    newComment.children = [];
+    this.CS.addComment(newComment).then((comment) => {
+      comment.collapsed = false;
+      comment.toggled = true;
+      comment.new = '';
+      this.$scope.comments.push(comment);
+    });
+  }
 }
 
 
@@ -189,18 +208,14 @@ class OfferCommentController {
     this.CS = CommentsService;
 
     $scope.toggleFrom = function(comment) {
-      console.log('we here');
       if (comment.toggled) comment.toggled = false;
       else comment.toggled = true;
     }
 
     $scope.collapse = function(comment) {
-      console.log('we here');
       if (comment.collapsed) comment.collapsed = false;
       else comment.collapsed = true;
     }
-
-    console.log()
 
     $scope.add = function(comment) {
       let newComment = {};
@@ -211,13 +226,12 @@ class OfferCommentController {
       if (root.user.role == 'caterer') {
         newComment.profileUrl = '/caterers/' + root.user._id;
       }
-      //newComment.offerId = this.offer._id;
       newComment.text = comment.new;
-      //this.CS.addComment(newComment).then((data) => {
-        if (comment.children) comment.children.push(newComment);
-        else comment.children = [newComment];
+      CommentsService.addChildComment(newComment).then((data) => {
+        if (comment.children) comment.children.push(data);
+        else comment.children = [data];
         comment.collapsed = false;
-      //});
+      });
     }
 
     $scope.edit = function() {
