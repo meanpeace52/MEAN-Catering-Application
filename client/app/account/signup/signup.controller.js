@@ -3,17 +3,22 @@
 class SignupController {
   //end-non-standard
 
-  constructor(Auth, $state, $scope, FoodTypesService, PaymentService) {
+  constructor(Auth, $state, $scope, FoodTypesService, ServiceTypesService, PaymentService) {
     this.Auth = Auth;
     this.payments = PaymentService;
     this.$state = $state;
     this.$scope = $scope;
     this.ftService = FoodTypesService;
+    this.stService = ServiceTypesService;
     this.user = {};
     this.addressValidationError = null;
     this.$scope.foodTypes = this.ftService.getFoodTypes().then((data)=> {
       this.user.foodTypes = data;
     });
+    this.$scope.serviceTypes = this.stService.getServiceTypes().then((data)=> {
+      this.user.serviceTypes = data;
+    });
+
   }
     //start-non-standard
 
@@ -36,6 +41,19 @@ class SignupController {
       request.foodTypes = this.user.foodTypes;
       request.location = this.user.location;
       request.address = this.user.address;
+      request.contact_email = this.user.contact_email;
+      request.contact_phone = this.user.contact_phone;
+      request.ninja_firstname = this.user.ninja_firstname;
+      request.ninja_lastname = this.user.ninja_lastname;
+      request.ninja_email = this.user.ninja_email;
+      request.ninja_phone = this.user.ninja_phone;
+      request.serviceTypes = this.user.serviceTypes;
+      request.minprice = this.user.minprice;
+      request.description = this.user.description;
+      request.veganOffers = this.user.veganOffers;
+      request.website = this.user.website;
+      request.phone = this.user.phone;
+
     }
 
     if (this.user.role && form.$valid) {
@@ -51,6 +69,7 @@ class SignupController {
 
   }
 }
+
 
 function _register(request, form) {
   return this.Auth.createUser(request)
@@ -73,7 +92,11 @@ function _register(request, form) {
       });
 
     });
+
 }
+
+
+
 
 angular.module('cateringApp')
   .controller('SignupController', SignupController);

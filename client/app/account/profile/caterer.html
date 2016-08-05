@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" xmlns="http://www.w3.org/1999/html">
   <div class="row">
     <div class="col-sm-12">
       <h1>Profile</h1>
@@ -22,28 +22,6 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-sm-6">
-                <div class="form-group" ng-class="{ 'has-success': form.name.$valid && vm.submitted, 'has-error': form.name.$invalid && vm.submitted }">
-                  <label>First Name</label>
-                  <input type="text" name="firstname" class="form-control" ng-model="vm.user.firstname" required/>
-                  <p class="help-block" ng-show="form.name.$error.required && vm.submitted">A name is required</p>
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group" ng-class="{ 'has-success': form.name.$valid && vm.submitted, 'has-error': form.name.$invalid && vm.submitted }">
-                  <label>Last Name</label>
-                  <input type="text" name="lastname" class="form-control" ng-model="vm.user.lastname" required/>
-                  <p class="help-block" ng-show="form.name.$error.required && vm.submitted">A name is required</p>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-4">
-                <div class="form-group">
-                  <label>Contact Info</label>
-                  <textarea name="contactInfo" class="form-control" ng-model="vm.user.contactInfo"></textarea>
-                </div>
-              </div>
               <div class="col-sm-4">
                 <div class="form-group">
                   <label>Phone</label>
@@ -56,10 +34,11 @@
                   <input type="text" name="website" class="form-control" ng-model="vm.user.website"/>
                 </div>
               </div>
-            </div>
-            <div class="row">
-              <div class="form-group has-error" ng-if="vm.user.role && vm.addressValidationError">
-                {{ vm.addressValidationError }}
+              <div class="col-sm-3">
+                <div class="form-group">
+                  <label>Min Price per person</label>
+                  <input type="text" name="minprice" class="form-control" ng-model="vm.user.minprice"/>
+                </div>
               </div>
             </div>
             <div class="row">
@@ -74,18 +53,90 @@
               </div>
               <div class="col-sm-3">
                 <div class="form-group">
-                  <label>Min Price per person</label>
-                  <input type="text" name="minprice" class="form-control" ng-model="vm.user.minprice"/>
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group">
-                  <label><input type="checkbox" name="veganOffers" ng-model="vm.user.veganOffers"/> Have vegan offers</label>
+                  <label> Have Vegetarian offers</label>
+                  <input type="checkbox" name="veganOffers" ng-model="vm.user.veganOffers"/>
                 </div>
               </div>
             </div>
+            <label>Catering Ninja Administrative Contact</label>
+            <div class="panel panel-default" style="padding: 10px; background-color: #d3d3d3 ">
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group" ng-class="{ 'has-success': form.name.$valid && vm.submitted, 'has-error': form.name.$invalid && vm.submitted }">
+                    <label>First Name</label>
+                    <input type="text" name="firstname" class="form-control" ng-model="vm.user.firstname" required/>
+                    <p class="help-block" ng-show="form.name.$error.required && vm.submitted">A first is required</p>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group" ng-class="{ 'has-success': form.name.$valid && vm.submitted, 'has-error': form.name.$invalid && vm.submitted }">
+                    <label>Last Name</label>
+                    <input type="text" name="lastname" class="form-control" ng-model="vm.user.lastname" required/>
+                    <p class="help-block" ng-show="form.name.$error.required && vm.submitted">A last name is required</p>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group" ng-class="{ 'has-success': form.name.$valid && vm.submitted, 'has-error': form.name.$invalid && vm.submitted }">
+                    <label>Email</label>
+                    <input type="text" name="contact_email" class="form-control" ng-model="vm.user.contact_email" required/>
+                    <p class="help-block" ng-show="form.name.$error.required && vm.submitted">An email is required</p>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group" ng-class="{ 'has-success': form.name.$valid && vm.submitted, 'has-error': form.name.$invalid && vm.submitted }">
+                    <label>Phone</label>
+                    <input type="text" name="contact_phone" class="form-control" ng-model="vm.user.contact_phone" required/>
+                    <p class="help-block" ng-show="form.name.$error.required && vm.submitted">A phone number is required</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <label>Customer Contact Information</label>
+            <div class="panel panel-default" style="padding: 10px; background-color: #d3d3d3 ">
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group" ng-class="{ 'has-success': form.name.$valid && vm.submitted, 'has-error': form.name.$invalid && vm.submitted }">
+                    <label>First Name</label>
+                    <input type="text" name="ninja_firstname" class="form-control" ng-model="vm.user.ninja_firstname" required/>
+                    <p class="help-block" ng-show="form.name.$error.required && vm.submitted">A  first name is required</p>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group" ng-class="{ 'has-success': form.name.$valid && vm.submitted, 'has-error': form.name.$invalid && vm.submitted }">
+                    <label>Last Name</label>
+                    <input type="text" name="ninja_lastname" class="form-control" ng-model="vm.user.ninja_lastname" required/>
+                    <p class="help-block" ng-show="form.name.$error.required && vm.submitted">A last name is required</p>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group" ng-class="{ 'has-success': form.name.$valid && vm.submitted, 'has-error': form.name.$invalid && vm.submitted }">
+                    <label>Email</label>
+                    <input type="text" name="ninja_email" class="form-control" ng-model="vm.user.ninja_email" required/>
+                    <p class="help-block" ng-show="form.name.$error.required && vm.submitted">An email is required</p>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group" ng-class="{ 'has-success': form.name.$valid && vm.submitted, 'has-error': form.name.$invalid && vm.submitted }">
+                    <label>Phone</label>
+                    <input type="text" name="ninja_phone" class="form-control" ng-model="vm.user.ninja_phone" required/>
+                    <p class="help-block" ng-show="form.name.$error.required && vm.submitted">A phone number is required</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group has-error" ng-if="vm.user.role && vm.addressValidationError">
+                {{ vm.addressValidationError }}
+              </div>
+            </div>
+
           </div>
           <div class="col-sm-4">
+            <label>Company Picture or Logo</label>
             <div class="img-thumbnail" ng-draw="{file: vm.user.logo, width: 300, userId: vm.user._id}">
             </div>
             <br />
@@ -107,7 +158,8 @@
           <div class="col-sm-4">
             <div class="form-group">
               <label>Select food types</label>
-              <div class="checkbox" ng-repeat="type in foodTypes">
+              <div class="panel panel-default" style="padding: 10px; background-color: #e7e7e7 ">
+                <div class="checkbox" ng-repeat="type in foodTypes">
                 <label>
                   <!--<button class="btn btn-default btn-xs" ng-if="vm.checkRights(type)" ng-click="vm.deleteFoodType(type)"><i class="fa fa-times"></i></button>-->
                   <input type="checkbox" checklist-model="vm.user.foodTypes" checklist-value="type._id" checked="{{type.checked}}"> {{type.name}}
@@ -117,27 +169,24 @@
               </div>
               <!--<label>Add custom foodtype. <span class="muted">Note, that it needs to be approved by admin</span></label>-->
               <!--<div class="input-group" style="width: 250px;">-->
-                <!--<input class="form-control" type="text" ng-model="ft.newFoodType" />-->
-                <!--<span class="input-group-btn">-->
-                  <!--<a class="btn btn-default" ng-click="vm.addFoodType()"><span class="fa fa-plus"></span></a>-->
-                <!--</span>-->
+              <!--<input class="form-control" type="text" ng-model="ft.newFoodType" />-->
+              <!--<span class="input-group-btn">-->
+              <!--<a class="btn btn-default" ng-click="vm.addFoodType()"><span class="fa fa-plus"></span></a>-->
+              <!--</span>-->
               <!--</div>-->
-            </div>
-          </div>
-          <div class="col-sm-4">
-            <div class="form-group">
-              <label>Select service types</label>
-              <div class="checkbox" ng-repeat="type in serviceTypes">
-                <label>
-                  <input type="checkbox" checklist-model="vm.user.serviceTypes" checklist-value="type._id" checked="{{type.checked}}"> {{type.name}}
-                </label>
               </div>
             </div>
           </div>
           <div class="col-sm-4">
             <div class="form-group">
-              <label>Payment Info</label>
-              <input type="text" name="paymentInfo" class="form-control" ng-model="vm.user.paymentInfo" />
+              <label>Select service types</label>
+                <div class="panel panel-default" style="padding: 10px; background-color: #e7e7e7 ">
+                  <div class="checkbox" ng-repeat="type in serviceTypes">
+                    <label>
+                      <input type="checkbox" checklist-model="vm.user.serviceTypes" checklist-value="type._id" checked="{{type.checked}}"> {{type.name}}
+                    </label>
+                  </div>
+                </div>
             </div>
           </div>
         </div>

@@ -350,3 +350,5 @@ class EventsNewController {
 angular.module('cateringApp')
   .controller('EventsNewController', EventsNewController);
 
+
+

@@ -3,138 +3,232 @@
     <div class="col-sm-12">
       <h1>Sign up</h1>
     </div>
-    <div class="col-sm-12">
-      <form class="form" name="form" ng-submit="vm.register(form)" novalidate>
+    <form class="form" name="form" ng-submit="vm.register(form)" novalidate>
+      <div class="panel panel-default" style="padding: 10px; background-color: #e7e7e7 ">
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group" ng-class="{ 'has-success': form.name.$valid && vm.submitted,
+                                              'has-error': form.name.$invalid && vm.submitted }">
+            <label>First Name</label>
 
-        <div class="form-group" ng-class="{ 'has-success': form.name.$valid && vm.submitted,
-                                            'has-error': form.name.$invalid && vm.submitted }">
-          <label>First Name</label>
+            <input type="text" name="firstname" class="form-control" ng-model="vm.user.firstname"
+                   required/>
+            <p class="help-block" ng-show="form.name.$error.required && vm.submitted">
+              A name is required
+            </p>
+          </div>
+          <div class="form-group" ng-class="{ 'has-success': form.password.$valid && vm.submitted,
+                                              'has-error': form.password.$invalid && vm.submitted }">
+            <label>Password</label>
 
-          <input type="text" name="firstname" class="form-control" ng-model="vm.user.firstname"
-                 required/>
-          <p class="help-block" ng-show="form.name.$error.required && vm.submitted">
-            A name is required
-          </p>
-        </div>
+            <input type="password" name="password" class="form-control" ng-model="vm.user.password"
+                   ng-minlength="3"
+                   required
+                   mongoose-error/>
+            <p class="help-block"
+               ng-show="(form.password.$error.minlength || form.password.$error.required) && vm.submitted">
+              Password must be at least 3 characters.
+            </p>
+            <p class="help-block" ng-show="form.password.$error.mongoose">
+              {{ vm.errors.password }}
+            </p>
+          </div>
 
-        <div class="form-group" ng-class="{ 'has-success': form.name.$valid && vm.submitted,
-                                            'has-error': form.name.$invalid && vm.submitted }">
-          <label>Last Name</label>
-
-          <input type="text" name="lastname" class="form-control" ng-model="vm.user.lastname"
-                 required/>
-          <p class="help-block" ng-show="form.name.$error.required && vm.submitted">
-            A name is required
-          </p>
-        </div>
-
-        <div class="form-group" ng-class="{ 'has-success': form.email.$valid && vm.submitted,
-                                            'has-error': form.email.$invalid && vm.submitted }">
-          <label>Email</label>
-
-          <input type="email" name="email" class="form-control" ng-model="vm.user.email"
-                 required
-                 mongoose-error/>
-          <p class="help-block" ng-show="form.email.$error.email && vm.submitted">
-            Doesn't look like a valid email.
-          </p>
-          <p class="help-block" ng-show="form.email.$error.required && vm.submitted">
-            What's your email address?
-          </p>
-          <p class="help-block" ng-show="form.email.$error.mongoose">
-            {{ vm.errors.email }}
-          </p>
-        </div>
-
-        <div class="form-group" ng-class="{ 'has-success': form.confirmemail.$valid && vm.submitted,
-                                            'has-error': form.confirmemail.$invalid && vm.submitted }">
-          <label>Confirm Email</label>
-
-          <input type="email" name="confirmemail" class="form-control" ng-model="vm.user.confirmemail"
-                 required
-                 mongoose-error/>
-          <p class="help-block" ng-show="form.confirmemail.$error.confirmemail && vm.submitted">
-            Email must match.
-          </p>
-          <p class="help-block" ng-show="form.confirmemail.$error.required && vm.submitted">
-            Repeat your email.
-          </p>
-          <p class="help-block" ng-show="form.confirmemail.$error.mongoose">
-            {{ vm.errors.confirmemail }}
-          </p>
-        </div>
-
-        <div class="form-group" ng-class="{ 'has-success': form.password.$valid && vm.submitted,
-                                            'has-error': form.password.$invalid && vm.submitted }">
-          <label>Password</label>
-
-          <input type="password" name="password" class="form-control" ng-model="vm.user.password"
-                 ng-minlength="3"
-                 required
-                 mongoose-error/>
-          <p class="help-block"
-             ng-show="(form.password.$error.minlength || form.password.$error.required) && vm.submitted">
-            Password must be at least 3 characters.
-          </p>
-          <p class="help-block" ng-show="form.password.$error.mongoose">
-            {{ vm.errors.password }}
-          </p>
-        </div>
-
-        <div class="form-group" ng-class="{ 'has-success': form.confirmPassword.$valid && vm.submitted,
-                                            'has-error': form.confirmPassword.$invalid && vm.submitted }">
-          <label>Confirm Password</label>
-          <input type="password" name="confirmPassword" class="form-control" ng-model="vm.user.confirmPassword"
-                 match="vm.user.password"
-                 ng-minlength="3" required/>
-          <p class="help-block"
-             ng-show="form.confirmPassword.$error.match && vm.submitted">
-            Passwords must match.
-          </p>
-        </div>
-
-        <div class="form-group">
-          <label><input type="checkbox" name="role" ng-model="vm.user.role"/> I'm a Caterer</label>
-        </div>
-
-        <div class="form-group" ng-if="vm.user.role">
-          <label>Company Name</label>
-          <input type="text" name="companyName" class="form-control" ng-model="vm.user.companyName" />
-        </div>
-
-        <div class="form-group" ng-if="vm.user.role">
-          <label>Location</label>
-          <input type="text" name="location" class="form-control" data-location="location" ng-model="vm.user.location"/>
-          <div class="form-group has-error" ng-if="vm.addressValidationError">
-            {{ vm.addressValidationError }}
+          <div class="form-group" ng-class="{ 'has-success': form.confirmPassword.$valid && vm.submitted,
+                                              'has-error': form.confirmPassword.$invalid && vm.submitted }">
+            <label>Confirm Password</label>
+            <input type="password" name="confirmPassword" class="form-control" ng-model="vm.user.confirmPassword"
+                   match="vm.user.password"
+                   ng-minlength="3" required/>
+            <p class="help-block"
+               ng-show="form.confirmPassword.$error.match && vm.submitted">
+              Passwords must match.
+            </p>
+          </div>
+          <div class="form-group">
+              <label><input type="checkbox" name="role" ng-model="vm.user.role"/> I'm a Caterer</label>
           </div>
         </div>
+        <div class="col-sm-6">
+          <div class="form-group" ng-class="{ 'has-success': form.name.$valid && vm.submitted,
+                                                'has-error': form.name.$invalid && vm.submitted }">
+            <label>Last Name</label>
 
-        <div class="form-group" ng-if="vm.user.role">
-          <label>Contact Info</label>
-          <textarea type="checkbox" name="contactInfo" class="form-control" ng-model="vm.user.contactInfo"></textarea>
-        </div>
+            <input type="text" name="lastname" class="form-control" ng-model="vm.user.lastname"
+                   required/>
+            <p class="help-block" ng-show="form.name.$error.required && vm.submitted">
+              A name is required
+            </p>
+          </div>
+          <div class="form-group" ng-class="{ 'has-success': form.email.$valid && vm.submitted,
+                                              'has-error': form.email.$invalid && vm.submitted }">
+            <label>Email</label>
 
-        <div class="form-group" ng-if="vm.user.role">
-          <label>Select food types</label>
-          <div class="checkbox" ng-repeat="type in foodTypes">
-            <label>
-              <input type="checkbox" checklist-model="vm.user.foodTypes" checklist-value="type._id" checked="{{type.checked}}"> {{type.name}}
-            </label>
+            <input type="email" name="email" class="form-control" ng-model="vm.user.email"
+                   required
+                   mongoose-error/>
+            <p class="help-block" ng-show="form.email.$error.email && vm.submitted">
+              Doesn't look like a valid email.
+            </p>
+            <p class="help-block" ng-show="form.email.$error.required && vm.submitted">
+              What's your email address?
+            </p>
+            <p class="help-block" ng-show="form.email.$error.mongoose">
+              {{ vm.errors.email }}
+            </p>
+          </div>
+          <div class="form-group" ng-class="{ 'has-success': form.confirmemail.$valid && vm.submitted,
+                                              'has-error': form.confirmemail.$invalid && vm.submitted }">
+            <label>Confirm Email</label>
+
+            <input type="email" name="confirmemail" class="form-control" ng-model="vm.user.confirmemail"
+                   required
+                   mongoose-error/>
+            <p class="help-block" ng-show="form.confirmemail.$error.confirmemail && vm.submitted">
+              Email must match.
+            </p>
+            <p class="help-block" ng-show="form.confirmemail.$error.required && vm.submitted">
+              Repeat your email.
+            </p>
+            <p class="help-block" ng-show="form.confirmemail.$error.mongoose">
+              {{ vm.errors.confirmemail }}
+            </p>
           </div>
         </div>
-
-        <div>
-          <button class="btn btn-primary btn-lg btn-register" type="submit">
-            Register
-          </button>
-          <a ui-sref="login" style="margin-left: 40px;">
-            Go to Login Page
-          </a>
+      </div>
+      </div>
+      <h2 ng-if="vm.user.role">Additional Company Information</h2>
+      <div class="panel panel-default" style="padding: 10px; background-color: #e7e7e7 " ng-if="vm.user.role">
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group" ng-if="vm.user.role">
+              <label>Company Name</label>
+              <input type="text" name="companyName" class="form-control" ng-model="vm.user.companyName" />
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group" ng-if="vm.user.role">
+              <label>Website</label>
+              <input type="text" name="website" class="form-control" ng-model="vm.user.website" />
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group" ng-if="vm.user.role">
+              <label>Description</label>
+              <input type="text" name="description" class="form-control" ng-model="vm.user.description"/>
+            </div>
+          </div>
         </div>
-
-      </form>
-    </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group" ng-if="vm.user.role">
+              <label>Location</label>
+              <input type="text" name="location" class="form-control" data-location="location" ng-model="vm.user.location"/>
+              <div class="form-group has-error" ng-if="vm.addressValidationError">
+                {{ vm.addressValidationError }}
+              </div>
+            </div>
+           </div>
+          <div class="col-sm-6">
+            <div class="form-group" ng-if="vm.user.role">
+              <label>Main Phone Number</label>
+              <input type="text" name="phone" class="form-control" ng-model="vm.user.phone" />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group" ng-if="vm.user.role">
+              <label>Admin Email</label>
+              <input type="text" name="contact_email" class="form-control" ng-model="vm.user.contact_email" />
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group" ng-if="vm.user.role">
+              <label>Admin Phone</label>
+              <input type="text" name="contact_phone" class="form-control" ng-model="vm.user.contact_phone" />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="form-group" ng-if="vm.user.role">
+              <label>Min Price per person</label>
+              <input type="text" name="minprice" class="form-control" ng-model="vm.user.minprice"/>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group" ng-if="vm.user.role">
+              <label>Have Vegetarian Options</label>
+              <input type="checkbox" name="veganOffers" class="form-control" ng-model="vm.user.veganOffers" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <label ng-if="vm.user.role">Customer Contact Information</label>
+      <div style="border: 3px solid transparent; padding: 10px; border-radius: 4px; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05); border-color: #ddd;" ng-if="vm.user.role">
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group" ng-if="vm.user.role">
+              <label>First Name</label>
+              <input type="text" name="ninja_firstname" class="form-control" ng-model="vm.user.ninja_firstname" />
+            </div>
+            <div class="form-group" ng-if="vm.user.role">
+              <label>Contact Email</label>
+              <input type="text" name="ninja_email" class="form-control" ng-model="vm.user.ninja_email" />
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group" ng-if="vm.user.role">
+              <label>Last Name</label>
+              <input type="text" name="ninja_lastname" class="form-control" ng-model="vm.user.ninja_lastname" />
+            </div>
+            <div class="form-group" ng-if="vm.user.role">
+              <label>Contact Phone</label>
+              <input type="text" name="ninja_phone" class="form-control" ng-model="vm.user.ninja_phone" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group" ng-if="vm.user.role">
+            <label>Select Food types</label>
+            <div class="panel panel-default" style="padding: 10px; background-color: #e7e7e7 ">
+              <div class="checkbox" ng-repeat="type in foodTypes">
+                <label>
+                  <input type="checkbox" checklist-model="vm.user.foodTypes" checklist-value="type._id" checked="{{type.checked}}"> {{type.name}}
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group" ng-if="vm.user.role">
+            <label>Select Service types</label>
+            <div class="panel panel-default" style="padding: 10px; background-color: #e7e7e7 ">
+              <div class="checkbox" ng-repeat="type in serviceTypes">
+                <label>
+                  <input type="checkbox" checklist-model="vm.user.serviceTypes" checklist-value="type._id" checked="{{type.checked}}"> {{type.name}}
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+            <button class="btn btn-primary btn-lg btn-register" type="submit">
+              Register
+            </button>
+            <a ui-sref="login" style="margin-left: 40px;">
+              Go to Login Page
+            </a>
+        </div>
+      </div>
+    </form>
   </div>
-  <hr>
 </div>
+<hr>
+
+
