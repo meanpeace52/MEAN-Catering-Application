@@ -73,14 +73,14 @@ class OffersEditController {
 
   sendRequest(form) {
 
-    /*if (!this.user.payableAccount) {
+    if (!this.user.payableAccount) {
       let saving = this.saveDraft(form, false);
       if (saving) {
         saving.then(() => {
           this.$state.go('dwolla');
         });
       }
-    } else { */
+    } else {
       let offerModel = this.$scope.fm;
       offerModel.catererId = this.user._id;
       offerModel.status = 'sent';
@@ -112,7 +112,7 @@ class OffersEditController {
         }
       });
 
-    //}
+    }
 
   }
 
