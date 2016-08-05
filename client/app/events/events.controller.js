@@ -39,6 +39,8 @@ class EventsController {
 
     this.$scope.query = ($scope.user.role == 'caterer' ? {showToCaterers: true, catererId: $scope.user._id, foodTypes: $scope.user.foodTypes, serviceTypes: $scope.user.serviceTypes} :  {userId: $scope.user._id});
 
+    console.log('query', this.$scope.query);
+
     this.pipe = function(tableState) {
       $scope.tableState = (angular.isObject(tableState) && tableState ? tableState : $scope.tableState);
 
@@ -46,7 +48,7 @@ class EventsController {
         let events = response.data;
         $scope.newEventsCount = 0;
         $scope.confirmedEventsCount = 0;
-        //console.log('events', events);
+        console.log('events', events);
         _.each(events, (event, i) => {
           if (event.status == "cancelled" ||
               ($scope.user.role == 'caterer' && _.indexOf(event.rejectedBy, $scope.user._id) >= 0) ||

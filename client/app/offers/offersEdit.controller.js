@@ -22,6 +22,7 @@ class OffersEditController {
     this.id = this.$state.params.id;
     this.$scope.fm = OffersService.getOfferById(this.id).then((data) => {
       this.$scope.fm = data;
+      this.$scope.offer = data;
     });
 
     this.eventId =  $rootScope.eventActive || $cookies.get('eventActive');
@@ -72,14 +73,14 @@ class OffersEditController {
 
   sendRequest(form) {
 
-    if (!this.user.payableAccount) {
+    /*if (!this.user.payableAccount) {
       let saving = this.saveDraft(form, false);
       if (saving) {
         saving.then(() => {
           this.$state.go('dwolla');
         });
       }
-    } else {
+    } else { */
       let offerModel = this.$scope.fm;
       offerModel.catererId = this.user._id;
       offerModel.status = 'sent';
@@ -111,7 +112,7 @@ class OffersEditController {
         }
       });
 
-    }
+    //}
 
   }
 

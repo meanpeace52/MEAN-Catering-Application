@@ -123,31 +123,31 @@ export function update(req, res) {
     .catch(handleError(res));
 }
 
-export function addChild(req, res) {
-  //update parent.children
-  //find parent by Id
-  //push
-  //create objectId
-
-  req.body._id = mongoose.Types.ObjectId();
-
-
-  console.log(req.body.parentId);
-
-  return Comment.findById(req.body.parentId).exec()
-    .then(handleEntityNotFound(res))
-    .then((res) => {
-      if (res.children) {
-        res.children.push(req.body);
-      } else {
-        res.children = [req.body];
-      }
-      return res;
-    })
-    .then(saveUpdates(res))
-    .then(respondWithResult(res))
-    .catch(handleError(res));
-}
+//export function addChild(req, res) {
+//  //update parent.children
+//  //find parent by Id
+//  //push
+//  //create objectId
+//
+//  req.body._id = mongoose.Types.ObjectId();
+//
+//
+//  console.log(req.body.parentId);
+//
+//  return Comment.findById(req.body.parentId).exec()
+//    .then(handleEntityNotFound(res))
+//    .then((res) => {
+//      if (res.children) {
+//        res.children.push(req.body);
+//      } else {
+//        res.children = [req.body];
+//      }
+//      return res;
+//    })
+//    .then(saveUpdates(res))
+//    .then(respondWithResult(res))
+//    .catch(handleError(res));
+//}
 
 // Deletes a Thing from the DB
 export function destroy(req, res) {

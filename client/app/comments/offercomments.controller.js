@@ -13,31 +13,12 @@ class OfferCommentsController {
     this.user = this.getCurrentUser();  //author
 
     this.CS = CommentsService;
+    this.$scope.newComment = '';
 
-    this.offer = {
-      _id : "579f4eb7cececad41ea4e7d4",
-      eventId : "579b3fbf1003d24c2b1788ab",
-      pricePerPerson : 29.5,
-      counter : 150,
-      offerDescription : "Bacon\nWatermelon\nShrimps",
-      catererId : "5798c3ef15558be42c5a886b",
-      catererName : "Horns and Bulls",
-      status : "sent",
-      invoice : {
-        counter : 150,
-        service : 5750,
-        tax : 460,
-        total : 6210
-      },
-      includedInPrice : [
-        "57601908cc28a088c3f0f69c"
-      ]
-    }
-
-    this.event = $scope.oc.event;
-
-    this.CS.getComments(this.offer._id).then((res) => {
-      this.$scope.comments = res;
+    $scope.$watch('offer', () => {
+      this.CS.getComments($scope.offer._id).then((res) => {
+        $scope.comments = res;
+      });
     });
 
     /*this.$scope.comments = [
@@ -125,11 +106,11 @@ class OfferCommentsController {
         }]
       }] */
 
-    this.deepSearch(function(item, array) {
+    /*this.deepSearch(function(item, array) {
       item.collapsed = false;
       item.toggled = true;
       item.new = '';
-    });
+    });*/
 
     //comment: {
     //  _id,
@@ -179,13 +160,14 @@ class OfferCommentsController {
     if (this.user.role == 'caterer') {
       newComment.profileUrl = '/caterers/' + this.user._id;
     }
-    newComment.offerId = this.offer._id;
+    newComment.offerId = this.$scope.offer._id;
     newComment.text = this.$scope.newComment;
     newComment.children = [];
     this.CS.addComment(newComment).then((comment) => {
-      comment.collapsed = false;
-      comment.toggled = true;
-      comment.new = '';
+      //comment.collapsed = false;
+      //comment.toggled = true;
+      //comment.new = '';
+      this.$scope.newComment = '';
       this.$scope.comments.push(comment);
     });
   }
@@ -217,7 +199,7 @@ class OfferCommentController {
       else comment.collapsed = true;
     }
 
-    $scope.add = function(comment) {
+    /*$scope.add = function(comment) {
       let newComment = {};
       newComment.parentId = comment._id;
       newComment.date = new Date();
@@ -232,11 +214,7 @@ class OfferCommentController {
         else comment.children = [data];
         comment.collapsed = false;
       });
-    }
-
-    $scope.edit = function() {
-
-    }
+    }*/
   }
 }
 

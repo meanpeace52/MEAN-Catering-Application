@@ -16,6 +16,7 @@ router.post('/:id', controller.update);
 router.post('/:id/accept', controller.update);
 router.post('/:id/cancel', controller.update);
 router.post('/:id/decline', controller.update);
+router.post('/total', controller.total);
 router.patch('/:id', controller.update);
 router.delete('/:id', controller.destroy);
 router.post('/filtered', controller.filteredList);

@@ -19,6 +19,14 @@ angular.module('cateringApp')
           return err.message;
         });
       },
+      total(eventId) {
+        $http.post('/api/offers/total', {eventId: eventId}).then(response => {
+          return response.data;
+        })
+        .catch(err => {
+          return err.message;
+        });
+      },
       getFilteredOffers(params) {
         return $http.post('/api/offers/filtered', params).then(response => {
           return response.data;

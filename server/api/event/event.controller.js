@@ -89,7 +89,7 @@ export function dataset(req, res) {
   let query = {},
     isUser = (req.body.userId ? true : false),
     isCaterer = (req.body.catererId ? true : false),
-    isAdmin = !! isUser && isCaterer,
+    isAdmin = !isUser && !isCaterer,
     today = new Date(new Date().setHours(0, 0, 0, 0)) /*.toISOString()*/;
 
   if (isUser) {
@@ -126,6 +126,8 @@ export function dataset(req, res) {
     if (req.body.status) query.status = req.body.status;
   }
 
+  if (!req.body.status) query.status = { $not: /(cancelled)/};
+
   return Event.find(query).exec().then((events) => {
     let eventPromises = [];
     events.forEach((event, i) => {
@@ -134,16 +136,37 @@ export function dataset(req, res) {
       {
         _.pull(events, event);
       } else {
-        let offerQuery = (isCaterer ? {eventId: '' + event._id, catererId: req.body.catererId} : {eventId: '' + event._id});
-        if (isAdmin) offerQuery = {eventId: '' + event._id, status: 'confirmed'};
+        let total = { eventId: '' + event._id, status: { $not: /(draft)/} },
+          catererQuery = { eventId: '' + event._id, catererId: req.body.catererId},
+          adminQuery = {eventId: '' + event._id, status: 'confirmed'};
+        if (isAdmin) {
+          eventPromises.push(Offer.find(adminQuery).exec().then((offers) => {
+            events[i].offers = offers;
+            //if (isAdmin) events[i].offer = offers[0];
+            return events[i];
+          }));
+        } else if (isCaterer) {
 
-        eventPromises.push(Offer.find(offerQuery).exec().then((offers) => {
-          events[i].offers = offers;
-          if (isAdmin) events[i].offer = offers[0];
-          return events[i];
-        }));
+          eventPromises.push(Offer.find(total).exec()
+            .then((offersTotal) => {
+              events[i].offersTotal = offersTotal.length;
+            })
+            .then(() => {
+              return Offer.find(catererQuery).exec();
+            })
+            .then((offers) => {
+              events[i].offers = offers;
+              //console.log(events[i]);
+              return events[i];
+            }));
+
+        } else {
+          eventPromises.push(Offer.find(total).exec().then((offers) => {
+            events[i].offers = offers;
+            return events[i];
+          }));
+        }
       }
-
     });
 
     return Promise.all(eventPromises).then(() => {

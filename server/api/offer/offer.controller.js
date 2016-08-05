@@ -125,11 +125,21 @@ export function show(req, res) {
     .catch(handleError(res));
 }
 
+export function total(req, res) {
+  return Offer.find({eventId: req.body.eventId, status: { $not: /(draft)/}}).exec()
+    .then(handleEntityNotFound(res))
+    .then((res) => {
+      return { total: res.length }
+    })
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+}
+
 // Creates a new Thing in the DB
 export function create(req, res) {
   return Offer.create(req.body)
     .then((res) => {
-      mailer.notifyOffer(res, 'created');
+      if (req.body.status !== 'draft') mailer.notifyOffer(res, 'created');
       return res;
     })
     .then(respondWithResult(res, 201))

@@ -1,6 +1,6 @@
 <div class="comment panel panel-default">
   <div class="panel-heading comment-header">
-    <button ng-if="comment.children" class="btn btn-xs btn-default comments-collapse-button" title="toggle children" ng-click="collapse(comment)"><span class="fa" ng-class="{'fa-chevron-down': !comment.collapsed, 'fa-chevron-up': comment.collapsed}"></span></button>
+    <!--<button ng-if="comment.children" class="btn btn-xs btn-default comments-collapse-button" title="toggle children" ng-click="collapse(comment)"><span class="fa" ng-class="{'fa-chevron-down': !comment.collapsed, 'fa-chevron-up': comment.collapsed}"></span></button>-->
     <span class="comment-user">
       <a class="comment-username" ng-if="comment.profileUrl" ng-href="{{comment.profileUrl}}" title="{{comment.name}}">{{comment.name}}</a>
       <img class="comment-avatar" ng-if="comment.avatarUrl" ng-src="{{comment.avatarUrl}}" alt="{{comment.name}}" />
@@ -14,17 +14,17 @@
       <div comments-transclude comment-data="comment.children"></div>
     </div>
   </div>
-  <div class="panel-footer">
-    <form name="form" ng-submit="add(comment)" ng-hide="comment.toggled">
-      <div class="form-group">
-        <textarea class="form-control" required ng-model="comment.new" placeholder="Your comment" ng-minlength="5" rows="2"></textarea>
-      </div>
-      <button ng-disabled="form.$invalid" type="submit" class="btn btn-primary btn-sm" disabled="disabled">Submit</button>
-      <button class="btn btn-default btn-sm pull-right" ng-click="cancel(comment)">Close</button>
-    </form>
-    <button class="btn btn-primary btn-sm pull-right" ng-show="comment.toggled" ng-click="toggleFrom(comment)">
-      Add comment
-    </button>
-    <div class="clearfix"></div>
-  </div>
+  <!--<div class="panel-footer">-->
+    <!--<form name="form" ng-submit="add(comment)" ng-hide="comment.toggled">-->
+      <!--<div class="form-group">-->
+        <!--<textarea class="form-control" required ng-model="comment.new" placeholder="Your comment" ng-minlength="5" rows="2"></textarea>-->
+      <!--</div>-->
+      <!--<button ng-disabled="form.$invalid" type="submit" class="btn btn-primary btn-sm" disabled="disabled">Submit</button>-->
+      <!--<button class="btn btn-default btn-sm pull-right" ng-click="cancel(comment)">Close</button>-->
+    <!--</form>-->
+    <!--<button class="btn btn-primary btn-sm pull-right" ng-show="comment.toggled" ng-click="toggleFrom(comment)">-->
+      <!--Add comment-->
+    <!--</button>-->
+    <!--<div class="clearfix"></div>-->
+  <!--</div>-->
 </div>

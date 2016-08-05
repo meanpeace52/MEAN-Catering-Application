@@ -65,7 +65,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="event in displayed" ng-class="{'drafted': event.drafted, 'active': event.active, 'hidden': event.hide}" ng-click="vm.setActiveEvent(event)">
+              <tr ng-repeat="event in displayed track by $index" ng-class="{'drafted': event.drafted, 'active': event.active, 'hidden': event.hide}" ng-click="vm.setActiveEvent(event)">
                 <td ng-if="vm.user.role == 'user'">
                   <!--<span class="label label-warning" ng-if="vm.user.role == 'caterer' && event.isUpdated">Updated!</span>-->
                   <span class="label label-info" ng-if="vm.user.role == 'user'">{{event.paymentStatus || event.status}}</span></td>
@@ -77,18 +77,19 @@
                 <td ng-if="vm.user.role == 'caterer'" style="width: 180px;"><a target="_blank" href="http://maps.google.com/?q={{event.location}}">{{event.location}}</a></td>
                 <td style="max-width: 180px;">{{event.description}}</td>
                 <td ng-if="vm.user.role == 'caterer'">
+                  <span class="label label-default" uib-tooltip="Total amount of offers sent for this event">{{event.offersTotal}}</span>
                   <span class="label label-info" ng-if="event.offerStatus" >{{event.offerStatus}}</span>
                 </td>
                 <td>
-                  <div ng-if="vm.user.role == 'user'">
+                  <span ng-if="vm.user.role == 'user'">
                     <a class="btn btn-xs btn-default" href="/events/{{event._id}}">Edit Event</a>
                     <!--<a class="btn btn-xs btn-warning" ui-sref="offers" ng-click="vm.setActiveEvent(event)" >Offers ({{event.offersNumber}})</a>-->
                     <a class="btn btn-xs btn-warning" uib-popover-html="event.offersInfo" popover-trigger="mouseenter" popover-placement="right">Offers ({{event.offersNumber}})</a>
-                  </div>
-                  <div ng-if="vm.user.role == 'caterer' && event.status !== 'completed'">
+                  </span>
+                  <span ng-if="vm.user.role == 'caterer' && event.status !== 'completed'">
                     <a class="btn btn-xs btn-default" ng-if="event.offerStatus" href="{{event.offerUrl}}">Edit Offer</a>
                     <a class="btn btn-xs btn-default" ng-if="!event.offerStatus" href="{{event.offerUrl}}">Create Offer</a>
-                  </div>
+                  </span>
                 </td>
                 <td>
                   <a class="btn btn-xs btn-danger" ng-click="vm.decline(event._id)" ng-if="vm.user.role == 'caterer' && event.status !== 'accepted' && event.status !== 'confirmed' && event.status !== 'completed'">Decline Event</a>

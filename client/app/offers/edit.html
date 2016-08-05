@@ -2,7 +2,6 @@
   <div class="row">
     <div class="col-sm-12">
       <h1>Edit offer</h1>
-      <!--<span class="label label-warning" ng-if="vm.event.isUpdated">Heads Up! Event is updated!</span>-->
       <uib-accordion>
        <uib-accordion-group heading="Event Details" is-open="false">
          <div class="row">
@@ -134,9 +133,6 @@
           </div>
         </div>
         <div class="form-group has-error">
-          <p class="help-block" ng-show="form.name.$error.required && vm.submitted">
-            Please enter the name of new Event.
-          </p>
           <p class="help-block">{{ vm.errors.other }}</p>
         </div>
         <div ng-if="vm.saved" class="alert alert-success">Offer is successfully saved.</div>
@@ -154,6 +150,9 @@
         </div>
         <div></div>
       </form>
+      <hr>
+
+      <div offercomments offer="offer"></div>
     </div>
   </div>
 </div>
