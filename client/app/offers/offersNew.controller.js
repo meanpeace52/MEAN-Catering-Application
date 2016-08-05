@@ -53,8 +53,8 @@ class OffersNewController {
 
   sendRequest(form) {
 
-    if (!this.user.payableAccount) {
-      /*let saving = this.saveDraft(form, false);
+  /*if (!this.user.payableAccount) {
+      let saving = this.saveDraft(form, false);
       if (saving) {
         saving.then(() => {
           this.$state.go('dwolla');
