@@ -204,7 +204,7 @@
                 <div class="category-container">
                   <div class="checkbox" ng-repeat="type in serviceTypes">
                     <label>
-                      <input type="checkbox" checklist-model="fm.serviceTypes" checklist-value="type._id" ng-click="vm.toggleCat()"> {{type.name}}
+                      <input type="checkbox" checklist-model="fm.serviceTypes" ng-init="checked=false" checklist-value="type._id" ng-click="vm.toggleCat()"> {{type.name}}
                     </label>
                   </div>
                 </div>
