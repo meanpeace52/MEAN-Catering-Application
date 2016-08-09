@@ -143,9 +143,10 @@
         <div ng-if="vm.sent" class="alert alert-success">Event is successfully sent to restaurants</div>
         <div>
           <div>
-            <button class="btn btn-primary" type="submit" ng-click="vm.sendRequest(form)"  ng-if="fm.status !== 'confirmed' || fm.status !== 'accepted' || fm.status !== 'cancelled'">
+            <button class="btn btn-primary" type="submit" ng-click="vm.sendRequest(form)"  ng-if="fm.status !== 'confirmed' && fm.status !== 'accepted' && fm.status !== 'cancelled' && !vm.sent">
               Send Offer
             </button>
+            <button class="btn btn-inverse" ng-if="vm.sent || vm.cancelled || vm.confirmed" ng-click="vm.backToList()">Return to events list</button>
             <button class="btn btn-primary" type="submit" ng-click="vm.saveDraft(form)" ng-if="fm.status == 'draft'">
               Save Changes
             </button>

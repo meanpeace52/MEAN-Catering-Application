@@ -136,7 +136,7 @@ class CatererProfileController {
     console.log(form);
 
     if (userModel) {
-      this.payments.verifyAddress(userModel.address).then(address => {
+      //this.payments.verifyAddress(userModel.address).then(address => {
         userModel.address = address;
         this.$http.post(url, userModel)
           .then(response => {
@@ -149,9 +149,9 @@ class CatererProfileController {
           .catch(err => {
             this.errors.other = err.message;
           });
-      }).catch(result => {
-        this.addressValidationError = result.ErrDescription;
-      });
+      //}).catch(result => {
+      //  this.addressValidationError = result.ErrDescription;
+      //});
     }
 
   }

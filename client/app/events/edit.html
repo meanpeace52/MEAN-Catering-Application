@@ -242,7 +242,7 @@
           </p>
           <p class="help-block">{{ vm.errors.other }}</p>
         </div>
-        <div ng-if="vm.saved" class="alert alert-success">Event is successfully saved as draft. <span ng-if="fm.status == 'sent'">Be aware that event information sent to Caterers will not be updated till you send it.</span></div>
+        <div ng-if="vm.saved" class="alert alert-success">Event is successfully saved as draft</div>
         <div ng-if="vm.sent" class="alert alert-success">Event is successfully sent to restaurants.</div>
         <div ng-if="fm.status == 'cancelled'">
           <button class="btn btn-default disabled" type="submit">
@@ -253,11 +253,11 @@
           </button>
         </div>
         <div ng-if="fm.status !== 'cancelled'">
-          <button class="btn btn-default" type="submit" ng-click="vm.saveDraft(form)">
+          <button class="btn btn-default" type="submit" ng-if="fm.status == 'draft'" ng-click="vm.saveDraft(form)">
             Save Changes
           </button>
-          <button class="btn btn-primary" type="submit" ng-click="vm.sendRequest(form)">
-            Send Request
+          <button class="btn btn-primary" type="submit" ng-if="fm.status !== 'draft'" ng-click="vm.sendRequest(form)">
+            Send Updated Changes
           </button>
           <button class="btn btn-danger" ng-click="vm.cancel()">
             Cancel changes

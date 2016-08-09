@@ -172,10 +172,6 @@
         return Auth.hasRole.apply(Auth, [].concat.apply(['admin'], arguments));
       },
 
-      isManager() {
-        return Auth.hasRole.apply(Auth, [].concat.apply(['manager'], arguments));
-      },
-
       isCaterer() {
         return Auth.hasRole.apply(Auth, [].concat.apply(['caterer'], arguments));
       },

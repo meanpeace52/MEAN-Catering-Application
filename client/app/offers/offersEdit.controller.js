@@ -52,6 +52,7 @@ class OffersEditController {
         //set visual state
         this.confirmed = true;
         this.$scope.fm.status = 'confirmed';
+        //this.$state.go('events');
         this.socket.syncUpdates('offer', this.$scope.offers);
       });
     }
@@ -62,6 +63,7 @@ class OffersEditController {
         //set visual state
         this.cancelled = true;
         this.$scope.fm.status = 'cancelled';
+        //this.$state.go('events');
         this.socket.syncUpdates('offer', this.$scope.offers);
       });
     }
@@ -103,7 +105,7 @@ class OffersEditController {
         if (offerModel) {
           this.$http.post('/api/offers/' + this.$scope.fm._id, offerModel).then(response => {
             this.sent = true;
-            this.$state.go('events');
+            //this.$state.go('events');
             this.$scope.fm = {};
           })
             .catch(err => {
@@ -114,6 +116,10 @@ class OffersEditController {
 
     }
 
+  }
+
+  backToList() {
+    this.$state.go('events');
   }
 
   saveDraft(form, redirect=true) {
@@ -127,7 +133,7 @@ class OffersEditController {
         .then(response => {
           this.saved = true;
           if (redirect) {
-            this.$state.go('events');
+            //this.$state.go('events');
           }
         })
       .catch(err => {

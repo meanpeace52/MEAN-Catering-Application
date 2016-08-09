@@ -82,7 +82,7 @@ class OffersNewController {
           };
           this.$http.post('/api/offers/new', offerModel).then(response => {
             this.sent = true;
-            this.$state.go('events');
+            //this.$state.go('events');
             //this.$scope.fm = {};
           })
             .catch(err => {
@@ -93,6 +93,10 @@ class OffersNewController {
       }
     }
 
+  }
+
+  backToList() {
+    this.$state.go('events');
   }
 
   saveDraft(form, redirect=true) {
