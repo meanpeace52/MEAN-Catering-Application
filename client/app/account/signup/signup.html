@@ -33,20 +33,25 @@
               {{ vm.errors.password }}
             </p>
           </div>
+          <div class="form-group" ng-class="{ 'has-success': form.email.$valid && vm.submitted,
+                                              'has-error': form.email.$invalid && vm.submitted }">
+            <label>Email</label>
 
-          <div class="form-group" ng-class="{ 'has-success': form.confirmPassword.$valid && vm.submitted,
-                                              'has-error': form.confirmPassword.$invalid && vm.submitted }">
-            <label>Confirm Password</label>
-            <input type="password" name="confirmPassword" class="form-control" ng-model="vm.user.confirmPassword"
-                   match="vm.user.password"
-                   ng-minlength="3" required/>
-            <p class="help-block"
-               ng-show="form.confirmPassword.$error.match && vm.submitted">
-              Passwords must match.
+            <input tooltip-placement="top" uib-tooltip='Your email is your user name to login' type="email" name="email" class="form-control" ng-model="vm.user.email"
+                   required
+                   mongoose-error/>
+            <p class="help-block" ng-show="form.email.$error.email && vm.submitted">
+              Doesn't look like a valid email.
+            </p>
+            <p class="help-block" ng-show="form.email.$error.required && vm.submitted">
+              What's your email address?
+            </p>
+            <p class="help-block" ng-show="form.email.$error.mongoose">
+              {{ vm.errors.email }}
             </p>
           </div>
           <div class="form-group">
-              <label><input type="checkbox" name="role" ng-model="vm.user.role"/> I'm a Caterer</label>
+              <label><input tooltip-placement="top" uib-tooltip='If you are a caterer please check this box to register' type="checkbox" name="role" ng-model="vm.user.role"/> I'm a Caterer</label>
           </div>
         </div>
         <div class="col-sm-6">
@@ -60,23 +65,18 @@
               A name is required
             </p>
           </div>
-          <div class="form-group" ng-class="{ 'has-success': form.email.$valid && vm.submitted,
-                                              'has-error': form.email.$invalid && vm.submitted }">
-            <label>Email</label>
-
-            <input type="email" name="email" class="form-control" ng-model="vm.user.email"
-                   required
-                   mongoose-error/>
-            <p class="help-block" ng-show="form.email.$error.email && vm.submitted">
-              Doesn't look like a valid email.
-            </p>
-            <p class="help-block" ng-show="form.email.$error.required && vm.submitted">
-              What's your email address?
-            </p>
-            <p class="help-block" ng-show="form.email.$error.mongoose">
-              {{ vm.errors.email }}
+          <div class="form-group" ng-class="{ 'has-success': form.confirmPassword.$valid && vm.submitted,
+                                              'has-error': form.confirmPassword.$invalid && vm.submitted }">
+            <label>Confirm Password</label>
+            <input type="password" name="confirmPassword" class="form-control" ng-model="vm.user.confirmPassword"
+                   match="vm.user.password"
+                   ng-minlength="3" required/>
+            <p class="help-block"
+               ng-show="form.confirmPassword.$error.match && vm.submitted">
+              Passwords must match.
             </p>
           </div>
+
           <div class="form-group" ng-class="{ 'has-success': form.confirmemail.$valid && vm.submitted,
                                               'has-error': form.confirmemail.$invalid && vm.submitted }">
             <label>Confirm Email</label>
@@ -115,7 +115,7 @@
           <div class="col-sm-12">
             <div class="form-group" ng-if="vm.user.role">
               <label>Description</label>
-              <input type="text" name="description" class="form-control" ng-model="vm.user.description"/>
+              <input tooltip-placement="top" uib-tooltip='A short description about your business' type="text" name="description" class="form-control" ng-model="vm.user.description"/>
             </div>
           </div>
         </div>
@@ -123,7 +123,7 @@
           <div class="col-sm-6">
             <div class="form-group" ng-if="vm.user.role">
               <label>Location</label>
-              <input type="text" name="location" class="form-control" data-location="location" ng-model="vm.user.location"/>
+              <input tooltip-placement="top" uib-tooltip='Start to type in your address and google should autofill the rest.  If it does not find the correct one, call us so we can fix it.' type="text" name="location" class="form-control" data-location="location" ng-model="vm.user.location"/>
               <div class="form-group has-error" ng-if="vm.addressValidationError">
                 {{ vm.addressValidationError }}
               </div>
@@ -140,13 +140,13 @@
           <div class="col-sm-6">
             <div class="form-group" ng-if="vm.user.role">
               <label>Admin Email</label>
-              <input type="text" name="contact_email" class="form-control" ng-model="vm.user.contact_email" />
+              <input tooltip-placement="top" uib-tooltip='This is the email for the Administrator who will be the main contact for Catering Ninja to work with.  It can be the same as the user email to login.' type="text" name="contact_email" class="form-control" ng-model="vm.user.contact_email" />
             </div>
           </div>
           <div class="col-sm-6">
             <div class="form-group" ng-if="vm.user.role">
               <label>Admin Phone</label>
-              <input type="text" name="contact_phone" class="form-control" ng-model="vm.user.contact_phone" />
+              <input tooltip-placement="top" uib-tooltip='The phone number Catering Ninja should use to contact you' type="text" name="contact_phone" class="form-control" ng-model="vm.user.contact_phone" />
             </div>
           </div>
         </div>
@@ -154,28 +154,28 @@
           <div class="col-sm-3">
             <div class="form-group" ng-if="vm.user.role">
               <label>Min Price per person</label>
-              <input type="text" name="minprice" class="form-control" ng-model="vm.user.minprice"/>
+              <input tooltip-placement="top" uib-tooltip='This is the minimum priced events that you want to view, this filters events you see.' type="text" name="minprice" class="form-control" ng-model="vm.user.minprice"/>
             </div>
           </div>
           <div class="col-sm-3">
             <div class="form-group" ng-if="vm.user.role">
               <label>Have Vegetarian Options</label>
-              <input type="checkbox" name="veganOffers" class="form-control" ng-model="vm.user.veganOffers" />
+              <input tooltip-placement="top" uib-tooltip='Only select this option if you offer Vegetarian meals.'  type="checkbox" name="veganOffers" class="form-control" ng-model="vm.user.veganOffers" />
             </div>
           </div>
         </div>
       </div>
-      <label ng-if="vm.user.role">Customer Contact Information</label>
+      <label tooltip-placement="top" uib-tooltip='Enter the contact that customers can reach out to with questions'  ng-if="vm.user.role">Customer Contact Information</label>
       <div style="border: 3px solid transparent; padding: 10px; border-radius: 4px; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05); border-color: #ddd;" ng-if="vm.user.role">
         <div class="row">
           <div class="col-sm-6">
             <div class="form-group" ng-if="vm.user.role">
-              <label>First Name</label>
+              <label tooltip-placement="top" uib-tooltip='Enter the contact that customers can reach out to with questions' >First Name</label>
               <input type="text" name="ninja_firstname" class="form-control" ng-model="vm.user.ninja_firstname" />
             </div>
             <div class="form-group" ng-if="vm.user.role">
               <label>Contact Email</label>
-              <input type="text" name="ninja_email" class="form-control" ng-model="vm.user.ninja_email" />
+              <input tooltip-placement="top" uib-tooltip='Enter the email that customers can reach out to with questions'  type="text" name="ninja_email" class="form-control" ng-model="vm.user.ninja_email" />
             </div>
           </div>
           <div class="col-sm-6">
@@ -185,7 +185,7 @@
             </div>
             <div class="form-group" ng-if="vm.user.role">
               <label>Contact Phone</label>
-              <input type="text" name="ninja_phone" class="form-control" ng-model="vm.user.ninja_phone" />
+              <input tooltip-placement="top" uib-tooltip='Enter the contact phone that customers can reach out to with questions' type="text" name="ninja_phone" class="form-control" ng-model="vm.user.ninja_phone" />
             </div>
           </div>
         </div>
@@ -193,7 +193,7 @@
       <div class="row">
         <div class="col-sm-6">
           <div class="form-group" ng-if="vm.user.role">
-            <label>Select Food types</label>
+            <label tooltip-placement="top" uib-tooltip='Enter one or more food types that represent your food.' >Select Food types</label>
             <div class="panel panel-default" style="padding: 10px; background-color: #e7e7e7 ">
               <div class="checkbox" ng-repeat="type in foodTypes">
                 <label>
@@ -205,7 +205,7 @@
         </div>
         <div class="col-sm-6">
           <div class="form-group" ng-if="vm.user.role">
-            <label>Select Service types</label>
+            <label tooltip-placement="top" uib-tooltip='Enter one or more service types that represent what you provide.' >Select Service types</label>
             <div class="panel panel-default" style="padding: 10px; background-color: #e7e7e7 ">
               <div class="checkbox" ng-repeat="type in serviceTypes">
                 <label>
