@@ -41,9 +41,13 @@ module.exports = {
       REFRESH_TOKEN: 'QNE9juhsyxEOYV9LyMM5OuxAWQIHmcxm6jlt8Eo5fiMxjXJiOw'
     },
     STRIPE: {
+      SECRET_KEY: 'sk_live_psBPsSZ7ccO1bampVWlVNdMk',
+      PUBLIC_KEY: 'pk_live_Zpopr6NDYNJ45SpUVLu2c5hq'
+    }
+    /*STRIPE: {
       SECRET_KEY: 'sk_test_FgAfCdq6QKhuGwWsHuk0yz7h',
       PUBLIC_KEY: 'pk_test_sPCubetxhsItqcr1nkZOHQfM'
-    }
+    }*/
   }
 
   /*payments: {
