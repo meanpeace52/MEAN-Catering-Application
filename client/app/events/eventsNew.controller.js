@@ -321,6 +321,9 @@ class EventsNewController {
 
   }
 
+
+
+
   saveDraft(form) {
     this.verifyCard = false;
     let eventModel = this.$scope.fm;
