@@ -77,12 +77,13 @@ function _auth(offerId) {
   return _getData(offerId).then(data => {
     "use strict";
     let paymentData = {
-      amount: data.offer.invoice.total * 100, // amount should be in cents
+      amount: Math.ceil(data.offer.invoice.total * 100), // amount should be in cents
       currency: "usd",
       customer: data.user.payableAccountId,
       description: "Sample Checkout",
       capture: false
     };
+    console.log('paymentData', paymentData);
     return stripe.charges.create(paymentData).then(payment => {
       if (payment.status === "succeeded") {
         data.offer.paymentId = payment.id;

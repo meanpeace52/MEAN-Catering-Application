@@ -154,7 +154,7 @@ var mailer = {
     nodemailerMailgun.sendMail({
       from: config.mailgun.from,
       to: user.email,
-      subject: 'Catering-ninja: verify your email',
+      subject: 'Catering-ninja: reset your password',
       html: message,
     }, function (err, info) {
       if (err) {
