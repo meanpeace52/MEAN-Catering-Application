@@ -259,7 +259,7 @@
           <button class="btn btn-default" type="submit" ng-if="fm.status == 'draft'" ng-click="vm.saveDraft(form)">
             Save Changes
           </button>
-          <button class="btn btn-primary" type="submit" ng-if="fm.status !== 'draft'" ng-click="vm.sendRequest(form)">
+          <button class="btn btn-primary" type="submit" ng-click="vm.sendRequest(form)">
             Send Updated Changes
           </button>
           <button class="btn btn-danger" ng-click="vm.cancel()">
