@@ -24,6 +24,18 @@ angular.module('cateringApp')
         controller: 'SignupController',
         controllerAs: 'vm'
       })
+      .state('reset', {
+        url: '/reset',
+        templateUrl: 'app/account/reset/reset.html',
+        controller: 'ResetController',
+        controllerAs: 'vm'
+      })
+      .state('verify', {
+        url: '/verify/:id',
+        templateUrl: 'app/account/verify/verify.html',
+        controller: 'VerifyController',
+        controllerAs: 'vm'
+      })
       .state('settings', {
         url: '/settings',
         templateUrl: 'app/account/settings/settings.html',

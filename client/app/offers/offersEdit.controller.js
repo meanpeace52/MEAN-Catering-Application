@@ -75,14 +75,14 @@ class OffersEditController {
 
   sendRequest(form) {
 
-    if (!this.user.payableAccount) {
+    /*if (!this.user.payableAccount) {
       let saving = this.saveDraft(form, false);
       if (saving) {
         saving.then(() => {
           this.$state.go('dwolla');
         });
       }
-    } else {
+    } else {  */
       let offerModel = this.$scope.fm;
       offerModel.catererId = this.user._id;
       offerModel.status = 'sent';
@@ -92,7 +92,7 @@ class OffersEditController {
         total -= offerModel.counter;
       }
       this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
-
+        if (!tax) tax = 0;
         offerModel.invoice = {
           pricePerPerson: event.pricePerPerson,
           people: event.people,
@@ -114,7 +114,7 @@ class OffersEditController {
         }
       });
 
-    }
+    //}
 
   }
 

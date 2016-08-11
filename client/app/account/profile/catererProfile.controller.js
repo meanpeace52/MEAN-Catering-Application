@@ -137,7 +137,7 @@ class CatererProfileController {
 
     if (userModel) {
       //this.payments.verifyAddress(userModel.address).then(address => {
-        userModel.address = address;
+        //userModel.address = address;
         this.$http.post(url, userModel)
           .then(response => {
             let root = this;

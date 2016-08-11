@@ -6,8 +6,8 @@ module.exports = {
 
   // MongoDB connection options
   mongo: {
-    //uri: 'mongodb://localhost/catering'
-    uri: 'mongodb://ninja_root:ninja3141@130.211.148.121:27017/catering'
+    uri: 'mongodb://localhost/catering'
+    //uri: 'mongodb://ninja_root:ninja3141@130.211.148.121:27017/catering'
   },
 
   // Seed database on startup

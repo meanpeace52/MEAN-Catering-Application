@@ -180,10 +180,11 @@
                 <uib-accordion-heading>
                   Food Types <i class="pull-right fa" ng-class="{'fa-chevron-down': status.open, 'fa-chevron-right': !status.open}"></i>
                 </uib-accordion-heading>
+                <label><input ng-click="vm.toggleAllFT()" ng-model="filter.allFt" type="checkbox"> All</label>
                 <div class="category-container">
                   <div class="checkbox" ng-repeat="type in foodTypes">
                     <label>
-                      <input type="checkbox" checklist-model="fm.foodTypes" checklist-value="type._id" ng-click="vm.toggleCat()"> {{type.name}}
+                      <input type="checkbox" checklist-model="fm.foodTypes" checklist-value="type._id" ng-click="vm.toggleCatOnclick('ft')"> {{type.name}}
                     </label>
                   </div>
                 </div>
@@ -192,10 +193,11 @@
                 <uib-accordion-heading>
                   Service Types <i class="pull-right fa" ng-class="{'fa-chevron-down': status.open, 'fa-chevron-right': !status.open}"></i>
                 </uib-accordion-heading>
+                <label><input ng-click="vm.toggleAllST()" ng-model="filter.allSt" type="checkbox"> All</label>
                 <div class="category-container">
                   <div class="checkbox" ng-repeat="type in serviceTypes">
                     <label>
-                      <input type="checkbox" checklist-model="fm.serviceTypes" checklist-value="type._id" ng-click="vm.toggleCat()"> {{type.name}}
+                      <input type="checkbox" checklist-model="fm.serviceTypes" checklist-value="type._id" ng-click="vm.toggleCatOnclick('st')"> {{type.name}}
                     </label>
                   </div>
                 </div>
@@ -207,7 +209,8 @@
             <div class="select-all-header">
               <div class="checkbox">
                 <label>
-                  <input type="checkbox" name="selectAll" ng-model="selectAll" ng-click="vm.toggleAll()"> Select All Caterers
+                  <!--<input type="checkbox" name="selectAll" ng-model="filter.selectAll" ng-click="vm.toggleAll()"> Select All Caterers-->
+                  <input type="checkbox" name="selectAll" ng-model="filter.selectAll"> Select All Caterers
                 </label>
               </div>
             </div>
@@ -229,7 +232,7 @@
               <div class="panel-body">
                 <div class="ft-panel-fixed-height">
                   <div class="selectedRest" ng-repeat="caterer in caterers" ng-if="caterer.showByEdit">
-                    <button class="btn btn-default btn-xs" ng-click="vm.watchForEdit(caterer._id)"><i class="fa fa-times"></i></button> <strong>{{caterer.name}}</strong> <span ng-repeat="ft in foodTypes" class="label label-default m-3" ng-if="vm.checkFT(ft._id, caterer)">{{ft.name}}</span> <span ng-repeat="st in serviceTypes" class="label label-default m-3" ng-if="vm.checkST(st._id, caterer)">{{st.name}}</span>
+                    <button class="btn btn-default btn-xs" ng-click="vm.watchForEdit(caterer._id)"><i class="fa fa-times"></i></button> <strong>{{caterer.companyName}}</strong> <span ng-repeat="ft in foodTypes" class="label label-default m-3" ng-if="vm.checkFT(ft._id, caterer)">{{ft.name}}</span> <span ng-repeat="st in serviceTypes" class="label label-default m-3" ng-if="vm.checkST(st._id, caterer)">{{st.name}}</span>
                   </div>
                 </div>
               </div>

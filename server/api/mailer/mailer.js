@@ -133,8 +133,37 @@ function createSummary(user) {    //user is caterer
 }
 
 var mailer = {
-  completeRegistration: function(user) {
-
+  verifyUser: function(user) {
+    let message = '<h1>Hello,</h1><p>Please follow the link below to verify your email. If it is not you who signed up to Catering Ninja, just ignore this message.</p><p><a href="http://localhost:8080/verify/' + user._id + '">Please verify email address</a></p>';
+    nodemailerMailgun.sendMail({
+      from: config.mailgun.from,
+      to: user.email,
+      subject: 'Catering-ninja: verify your email',
+      html: message,
+    }, function (err, info) {
+      if (err) {
+        console.log('Error: ' + err);
+      }
+      else {
+        console.log('Response: ' + info);
+      }
+    });
+  },
+  reset: function(user) {
+    let message = '<h1>Hello,</h1><p>Here is your new password. Please change it as soon as you will be able to log in</p><h3>' + user.password + '</h3>';
+    nodemailerMailgun.sendMail({
+      from: config.mailgun.from,
+      to: user.email,
+      subject: 'Catering-ninja: verify your email',
+      html: message,
+    }, function (err, info) {
+      if (err) {
+        console.log('Error: ' + err);
+      }
+      else {
+        console.log('Response: ' + info);
+      }
+    });
   },
   breakAuth: (user, caterer) => {
     let promises = [];

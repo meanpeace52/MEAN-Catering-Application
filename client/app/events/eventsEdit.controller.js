@@ -23,44 +23,70 @@ class EventsEditController {
     this.getCurrentUser = Auth.getCurrentUser;
     this.user = this.getCurrentUser();
 
+    this.$scope.selectionOccured = true;
+
+    this.$scope.fm = {};
+    this.$scope.fm.foodTypes = [];
+    this.$scope.foodTypes = [];
+    this.$scope.fm.serviceTypes = [];
+    this.$scope.serviceTypes = [];
     this.$scope.caterers = [];
-    this.$scope.selectionOccured = false;
+    this.$scope.fm.includedInPrice = [];
+    this.$scope.fm.selectedCaterers = [];
+
+    this.$scope.filter = {
+      allFt: false,
+      allSt: false,
+      selectAll: false
+    }
 
     this.eventId = this.$state.params.id;
-    this.$scope.fm = EventsService.getEventById(this.eventId).then((data) => {
+
+    EventsService.getEventById(this.eventId).then((data) => {
       this.$scope.fm = data;
       this.$scope.fm.date = this.$scope.date = new Date(this.$scope.fm.date);
       this.$scope.fm.time = this.$scope.time = new Date(this.$scope.fm.time);
       this.$scope.fm.pricePerPerson = +this.$scope.fm.pricePerPerson;
-      if (!this.$scope.fm.includedInPrice) {
-        this.$scope.fm.includedInPrice = [];
+    })
+    .then(() => {
+      return this.getCaterers();
+    })
+    .then((caterers) => {
+      this.$scope.caterers = caterers;
+      if (this.$scope.fm.selectedCaterers.length) {
+        _.each(this.$scope.caterers, (item, i) => {
+          item.showByEdit = (_.indexOf(this.$scope.fm.selectedCaterers, item._id) > -1);
+        });
       }
-
-      if (!this.$scope.fm.selectedCaterers) {
-        this.$scope.fm.selectedCaterers = [];
-      } else {
-        this.$scope.selectionOccured = true;
-      }
-      this.$scope.caterers = this.getCaterers();
-    });
-
-    this.$scope.foodTypes = this.ftService.getFoodTypes().then((data)=> {
-      this.$scope.foodTypes = data;
-    });
-
-    this.$scope.serviceTypes = this.sService.getServiceTypes().then((data)=> {
-      this.$scope.serviceTypes = data;
+    })
+    .then(() => {
+      return this.ftService.getFoodTypes();
+    })
+    .then((ftdata)=> {
+      this.$scope.foodTypes = ftdata;
+    })
+    .then(() => {
+      return this.sService.getServiceTypes();
+    })
+    .then((stdata)=> {
+      this.$scope.serviceTypes = stdata;
+    })
+    .then(() => {
+      this.toggleCat();
+      this.$scope.$watch('filter.selectAll', () => {
+        this.toggleAll();
+      });
     });
 
     this.$scope.includedInPrice = this.incService.getIncludedInPrice().then((data)=> {
       this.$scope.includedInPrice = _.map(data, (item, i) => {
         if (_.indexOf(this.$scope.fm.includedInPrice, item._id) < 0) {
-      item.checked = false;
-    } else {
-      item.checked = true;
-    }
-    return item;
-    });
+          item.checked = false;
+        } else {
+          item.checked = true;
+        }
+        return item;
+      });
     });
 
     this.required = {
@@ -96,6 +122,28 @@ class EventsEditController {
   //  checked
   //  showByEdit
 
+  toggleAllFT() {
+    if (this.$scope.filter.allFt) {
+      this.$scope.fm.foodTypes = _.map(this.$scope.foodTypes, (ft) => {
+          return ft._id;
+    });
+  } else {
+    this.$scope.fm.foodTypes = [];
+  }
+  this.toggleCat();
+  }
+
+  toggleAllST() {
+    if (this.$scope.filter.allSt) {
+      this.$scope.fm.serviceTypes = _.map(this.$scope.serviceTypes, (st) => {
+          return st._id;
+    });
+  } else {
+    this.$scope.fm.serviceTypes = [];
+  }
+  this.toggleCat();
+  }
+
   checkFT(id, caterer) {
     if (_.indexOf(caterer.foodTypes, id) > -1) {
       return true;
@@ -112,45 +160,49 @@ class EventsEditController {
     }
   }
 
+  toggleCatOnclick(t) {
+    if (t == 'ft') {
+      this.$scope.filter.allFt = false;
+    } else if (t == 'st') {
+      this.$scope.filter.allSt = false;
+    }
+
+    this.toggleCat();
+
+  }
+
   toggleCat() {
     let selectedFT = this.$scope.fm.foodTypes,
       selectedST = this.$scope.fm.serviceTypes;
 
-    //this.$scope.foodTypesAll = true;
-
     _.each(this.$scope.caterers, (item, i) => {
       if (!selectedFT.length && !selectedST.length) {
-      this.$scope.caterers[i].showByCat = true;
-    } else {
-      let intersectFT = _.intersection(item.foodTypes, selectedFT),
-        intersectST = _.intersection(item.serviceTypes, selectedST);
-
-      //if (intersectFT.length && intersectST.length) {
-      this.$scope.caterers[i].showByCat = !!(intersectFT.length && intersectST.length);
-      //}
-
-      if (_.indexOf(this.$scope.fm.selectedCaterers, item._id) < 0) {
-        this.$scope.caterers[i].showByEdit = false;
-        this.$scope.caterers[i].checked = false;
-
+        //this.$scope.caterers[i].showByCat = true;
       } else {
-        this.$scope.caterers[i].showByEdit = true;
-        this.$scope.caterers[i].checked = true;
-      }
-    }
+        let intersectFT = _.intersection(item.foodTypes, selectedFT),
+          intersectST = _.intersection(item.serviceTypes, selectedST);
 
-  });
+        this.$scope.caterers[i].showByCat = !!(intersectFT.length && intersectST.length);
+
+        if (_.indexOf(this.$scope.fm.selectedCaterers, item._id) < 0) {
+          this.$scope.caterers[i].showByEdit = false;
+
+        } else {
+          this.$scope.caterers[i].showByEdit = true;
+        }
+      }
+    });
+    console.log(this.$scope.caterers);
   }
 
   watchForEdit(id) {
     this.$scope.selectionOccured = true;
-    this.$scope.selectAll = false;
+    //this.$scope.filter.selectAll = false;
     if (_.indexOf(this.$scope.fm.selectedCaterers, id) < 0) {
       this.addToSelected(id);
       _.each(this.$scope.caterers, (item, i) => {
         if (item._id === id) {
         this.$scope.caterers[i].showByEdit = true;
-        this.$scope.caterers[i].checked = true;
       }
     });
   } else {
@@ -158,7 +210,6 @@ class EventsEditController {
     _.each(this.$scope.caterers, (item, i) => {
       if (item._id === id) {
       this.$scope.caterers[i].showByEdit = false;
-      this.$scope.caterers[i].checked = false;
     }
   });
   }
@@ -173,37 +224,103 @@ class EventsEditController {
   }
 
   toggleAll() {
-    let selectedFT = this.$scope.fm.foodTypes,
-      selectedST = this.$scope.fm.serviceTypes;
-
     _.each(this.$scope.caterers, (item, i) => {
-      let intersectFT = _.intersection(item.foodTypes, selectedFT),
-      intersectST = _.intersection(item.serviceTypes, selectedST);
-    if (intersectFT.length && intersectST.length) {  //foodtype matches
-      if (this.$scope.selectAll) {
-        this.$scope.caterers[i].showByEdit = true;
-        this.$scope.caterers[i].checked = true;
+      if (this.$scope.filter.selectAll) {
         this.addToSelected(item._id);
-      } else {
-        this.$scope.caterers[i].showByEdit = false;
-        this.$scope.caterers[i].checked = false;
-        this.removeFromSelected(item._id);
+        this.$scope.caterers[i].showByEdit = true;
       }
-    }
-  });
-  }
-
-
-  getCaterers() {
-    this.$http.get('/api/users/caterers').then(response => {
-      this.$scope.caterers = response.data;
-      this.toggleCat();
-    })
-    .catch(err => {
-      this.errors = err.message;
+      if (!this.$scope.filter.selectAll) {
+        this.removeFromSelected(item._id);
+        this.$scope.caterers[i].showByEdit = false;
+      }
     });
   }
 
+  /*  checkFT(id, caterer) {
+   if (_.indexOf(caterer.foodTypes, id) > -1) {
+   return true;
+   } else {
+   return false;
+   }
+   }
+
+   verifyUser(data) {
+   console.log(12, data);
+   }
+
+   toggleFT() {
+   let selectedFT = this.$scope.fm.foodTypes;
+
+   //this.$scope.foodTypesAll = true;
+
+   _.each(this.$scope.caterers, (item, i) => {
+   let intersect = _.intersection(item.foodTypes, selectedFT);
+   this.$scope.caterers[i].showByFT = !!intersect.length;
+   if (_.indexOf(this.$scope.fm.selectedCaterers, item._id) < 0) {
+   this.$scope.caterers[i].showByEdit = false;
+   this.$scope.caterers[i].checked = false;
+
+   } else {
+   this.$scope.caterers[i].showByEdit = true;
+   this.$scope.caterers[i].checked = true;
+   }
+   });
+   }
+
+   watchForEdit(id) {
+   this.$scope.selectionOccured = true;
+   this.$scope.foodTypesAll = false;
+   if (_.indexOf(this.$scope.fm.selectedCaterers, id) < 0) {
+   this.addToSelected(id);
+   _.each(this.$scope.caterers, (item, i) => {
+   if (item._id === id) {
+   this.$scope.caterers[i].showByEdit = true;
+   this.$scope.caterers[i].checked = true;
+   }
+   });
+   } else {
+   this.removeFromSelected(id);
+   _.each(this.$scope.caterers, (item, i) => {
+   if (item._id === id) {
+   this.$scope.caterers[i].showByEdit = false;
+   this.$scope.caterers[i].checked = false;
+   }
+   });
+   }
+   }
+
+   removeFromSelected(id) {
+   _.pull(this.$scope.fm.selectedCaterers, id);
+   }
+
+   addToSelected(id) {
+   this.$scope.fm.selectedCaterers.push(id);
+   }
+
+   toggleAll() {
+   let selectedFT = this.$scope.fm.foodTypes;
+
+   _.each(this.$scope.caterers, (item, i) => {
+   let intersect = _.intersection(item.foodTypes, selectedFT);
+   if (intersect.length) {  //foodtype matches
+   if (this.$scope.foodTypesAll) {
+   this.$scope.caterers[i].showByEdit = true;
+   this.$scope.caterers[i].checked = true;
+   this.addToSelected(item._id);
+   } else {
+   this.$scope.caterers[i].showByEdit = false;
+   this.$scope.caterers[i].checked = false;
+   this.removeFromSelected(item._id);
+   }
+   }
+   });
+   } */
+
+  getCaterers() {
+    return this.$http.get('/api/users/caterers').then(response => {
+      return response.data;
+    });
+  }
   sendRequest(form) {
 
     if (!this.user.payableAccountId) {
@@ -225,8 +342,8 @@ class EventsEditController {
       if (this.$scope.fm.status = 'sent') eventModel.isUpdated = true;
 
       if (eventModel && form.$valid) {
-        this.payments.verifyAddress(eventModel.address).then(address => {
-          eventModel.address = address;
+        //this.payments.verifyAddress(eventModel.address).then(address => {
+          //eventModel.address = address;
           this.$http.post(url, eventModel)
             .then(response => {
               this.sent = true;
@@ -235,9 +352,9 @@ class EventsEditController {
             .catch(err => {
               this.errors.other = err.message;
             });
-        }).catch(result => {
-          this.addressValidationError = result.ErrDescription;
-        });
+        //}).catch(result => {
+        //  this.addressValidationError = result.ErrDescription;
+        //});
 
       }
     }

@@ -3,17 +3,13 @@
 class SignupController {
   //end-non-standard
 
-  constructor(Auth, $state, $scope, FoodTypesService, PaymentService) {
+  constructor(Auth, $state, $scope, PaymentService) {
     this.Auth = Auth;
     this.payments = PaymentService;
     this.$state = $state;
     this.$scope = $scope;
-    this.ftService = FoodTypesService;
     this.user = {};
     this.addressValidationError = null;
-    this.$scope.foodTypes = this.ftService.getFoodTypes().then((data)=> {
-      this.user.foodTypes = data;
-    });
   }
     //start-non-standard
 
@@ -33,7 +29,6 @@ class SignupController {
       request.role = 'caterer';
       request.contactInfo = this.user.contactInfo;
       request.companyName = this.user.companyName;
-      request.foodTypes = this.user.foodTypes;
       request.location = this.user.location;
       request.address = this.user.address;
     }

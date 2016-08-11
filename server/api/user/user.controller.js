@@ -5,10 +5,9 @@ import passport from 'passport';
 import config from '../../config/environment';
 import jwt from 'jsonwebtoken';
 import _ from 'lodash';
+import TempUser from '../tempUser/tempUser.model';
 var fs = require('fs');
-//import * as mailer from '../mailer';
-
-//console.log('mailer', mailer);
+var  mailer = require('../mailer/mailer');
 
 function validationError(res, statusCode) {
   statusCode = statusCode || 422;
@@ -95,13 +94,50 @@ export function create(req, res, next) {
 }
 
 /**
+ * Creates a temp user
+ */
+export function createTemp(req, res, next) {
+  var newUser = new TempUser(req.body);
+  newUser.provider = 'local';
+  //newUser.role = 'user';
+  newUser.save()
+    .then(function (user) {
+      mailer.verifyUser(user);
+    })
+    .catch(validationError(res));
+}
+
+  /**
+ * Verifies a temp user
+ */
+export function verify(req, res, next) {
+  return TempUser.findById(req.params.id).exec()
+    .then((tempUser) => {
+      let tu = tempUser.toObject();
+      delete tu._id;
+      return tu;
+    })
+    .then((tu) => {
+      let newUser = new User(tu);
+      return newUser.save();
+    })
+    .then((user) => {
+      if (!user) {
+        return res.status(401).end();
+      } else {
+        TempUser.findByIdAndRemove(req.params.id).exec();
+        return res.status(200).end();
+      }
+    });
+}
+
+/**
  * Updates user
  */
 export function update(req, res) {
   if (req.body._id) {
     delete req.body._id;
   }
-  //mailer.sendMail();
   return User.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(saveUpdates(req.body))
@@ -155,6 +191,26 @@ export function changePassword(req, res, next) {
           .catch(validationError(res));
       } else {
         return res.status(403).end();
+      }
+    });
+}
+
+/**
+ * Change a users password
+ */
+export function reset(req, res, next) {
+  return User.findOne({email: req.body.email}).exec()
+    .then((user) => {
+      let pwd = _.split(user._id);
+      user.password = _.shuffle(pwd);
+      mailer.reset(user);
+      return user.save();
+    })
+    .then((user) => {
+      if (!user) {
+        return res.status(401).end();
+      } else {
+        return res.status(200).end();
       }
     });
 }

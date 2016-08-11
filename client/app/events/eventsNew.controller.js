@@ -345,8 +345,8 @@ class EventsNewController {
       if (this.$scope.fm.status = 'sent') eventModel.isUpdated = true;
 
       if (eventModel && form.$valid) {
-        this.payments.verifyAddress(eventModel.address).then(address => {
-          eventModel.address = address;
+        //this.payments.verifyAddress(eventModel.address).then(address => {
+          //eventModel.address = address;
           this.$http.post(url, eventModel)
             .then(response => {
               this.sent = true;
@@ -355,9 +355,9 @@ class EventsNewController {
             .catch(err => {
               this.errors.other = err.message;
             });
-        }).catch(result => {
-          this.addressValidationError = result.ErrDescription;
-        });
+        //}).catch(result => {
+        //  this.addressValidationError = result.ErrDescription;
+        //});
 
       }
     }
@@ -376,8 +376,8 @@ class EventsNewController {
     eventModel.status = 'draft';
 
     if (eventModel && form.$valid) {
-      return this.payments.verifyAddress(eventModel.address).then(address => {
-        eventModel.address = address;
+      //return this.payments.verifyAddress(eventModel.address).then(address => {
+        //eventModel.address = address;
         this.$http.post('/api/events/new', eventModel)
           .then(response => {
             this.saved = true;
@@ -386,9 +386,9 @@ class EventsNewController {
           .catch(err => {
             this.errors.other = err.message;
           })
-      }).catch(result => {
-        this.addressValidationError = result.ErrDescription;
-      });
+      //}).catch(result => {
+      //  this.addressValidationError = result.ErrDescription;
+      //});
 
     }
   }

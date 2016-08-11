@@ -45,6 +45,25 @@
       },
 
       /**
+       * Reset user password
+       *
+       * @param  {Object}   user     - login info
+       * @param  {Function} callback - optional, function(error, user)
+       * @return {Promise}
+       */
+      reset({
+        email
+      }, callback) {
+        return $http.post('/api/users/reset', {
+            email: email
+        });
+      },
+
+      verify(token, callback) {
+        return $http.get('/api/users/verify/' + token);
+      },
+
+      /**
        * Delete access token and user info
        */
       logout() {
@@ -60,6 +79,24 @@
        * @return {Promise}
        */
       createUser(user, callback) {
+        return User.save(user, function(data) {
+            $cookies.put('token', data.token);
+            currentUser = User.get();
+            return safeCb(callback)(null, user);
+          }, function(err) {
+            Auth.logout();
+            return safeCb(callback)(err);
+          })
+          .$promise;
+      },
+      /**
+       * Create a temp user
+       *
+       * @param  {Object}   user     - user info
+       * @param  {Function} callback - optional, function(error, user)
+       * @return {Promise}
+       */
+      createTempUser(user, callback) {
         return User.save(user, function(data) {
             $cookies.put('token', data.token);
             currentUser = User.get();
