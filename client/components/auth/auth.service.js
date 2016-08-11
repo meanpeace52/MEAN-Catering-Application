@@ -2,7 +2,7 @@
 
 (function() {
 
-  function AuthService($location, $http, $cookies, $q, appConfig, Util, User) {
+  function AuthService($location, $state, $http, $cookies, $q, appConfig, Util, User) {
     var safeCb = Util.safeCb;
     var currentUser = {};
     var userRoles = appConfig.userRoles || [];
@@ -60,7 +60,21 @@
       },
 
       verify(token, callback) {
-        return $http.get('/api/users/verify/' + token);
+        return $http.get('/api/users/verify/' + token)
+          .then(res => {
+            $cookies.put('token', res.data.token);
+            currentUser = User.get();
+            return currentUser.$promise;
+          })
+          .then(user => {
+            safeCb(callback)(null, user);
+            return user;
+          })
+          .catch(err => {
+            Auth.logout();
+            safeCb(callback)(err.data);
+            return $q.reject(err.data);
+          });
       },
 
       /**
@@ -97,15 +111,12 @@
        * @return {Promise}
        */
       createTempUser(user, callback) {
-        return User.save(user, function(data) {
-            $cookies.put('token', data.token);
-            currentUser = User.get();
-            return safeCb(callback)(null, user);
-          }, function(err) {
-            Auth.logout();
-            return safeCb(callback)(err);
-          })
-          .$promise;
+        return User.save(user, (data) => {
+          $state.go('login');
+        }, (err) => {
+          console.log('Error: ', err);
+        })
+        .$promise;
       },
 
       /**

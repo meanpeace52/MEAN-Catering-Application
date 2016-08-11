@@ -138,17 +138,20 @@ TempUserSchema
     // Make salt with a callback
     this.makeSalt((saltErr, salt) => {
       if (saltErr) {
-      return next(saltErr);
-    }
-    this.salt = salt;
-    /*this.encryptPassword(this.password, (encryptErr, hashedPassword) => {
-      if (encryptErr) {
-        return next(encryptErr);
+        return next(saltErr);
       }
-      this.password = hashedPassword; *
+      this.salt = salt;
+
       next();
-    }); */
-  });
+      /*this.encryptPassword(this.password, (encryptErr, hashedPassword) => {
+        if (encryptErr) {
+          return next(encryptErr);
+        }
+        this.password = hashedPassword; *
+        next();
+      }); */
+    });
+    console.log('presave', this);
 });
 
 /**

@@ -101,8 +101,9 @@ export function createTemp(req, res, next) {
   newUser.provider = 'local';
   //newUser.role = 'user';
   newUser.save()
-    .then(function (user) {
+    .then((user) => {
       mailer.verifyUser(user);
+      res.status(200).end();
     })
     .catch(validationError(res));
 }
@@ -126,7 +127,10 @@ export function verify(req, res, next) {
         return res.status(401).end();
       } else {
         TempUser.findByIdAndRemove(req.params.id).exec();
-        return res.status(200).end();
+        let token = jwt.sign({ _id: user._id }, config.secrets.session, {
+            expiresIn: 60 * 60 * 5
+          });
+        return res.status(200).json({token});
       }
     });
 }

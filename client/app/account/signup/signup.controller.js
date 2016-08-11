@@ -33,14 +33,14 @@ class SignupController {
       request.address = this.user.address;
     }
 
-    if (this.user.role && form.$valid) {
-      this.payments.verifyAddress(request.address).then(address => {
-        request.address = address;
-        _register.call(this, request, form);
-      }).catch(result => {
-        this.addressValidationError = result.ErrDescription;
-      });
-    } else if (!this.user.role && form.$valid) {
+    if (/*this.user.role && */ form.$valid) {
+    //  /his.payments.verifyAddress(request.address).then(address => {
+    //    request.address = address;
+    //    _register.call(this, request, form);
+    //  }).catch(result => {
+    //    this.addressValidationError = result.ErrDescription;
+    //  });
+    //} else if (!this.user.role && form.$valid) {
       _register.call(this, request, form);
     }
 
@@ -48,13 +48,13 @@ class SignupController {
 }
 
 function _register(request, form) {
-  return this.Auth.createUser(request)
+  return this.Auth.createTempUser(request)
     .then(() => {
       // Account created, redirect to home
       if (request.role === 'caterer') {
         this.$state.go('caterer-profile');
       } else {
-        this.$state.go('main');
+        this.$state.go('events');
       }
     })
     .catch(err => {
