@@ -9,7 +9,7 @@ angular.module('cateringApp')
           placeSearch, geolocation, circle,
           autocomplete = new google.maps.places.Autocomplete(el);
 
-      if (navigator.geolocation) {
+      /*if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
           geolocation = {
             lat: position.coords.latitude,
@@ -21,7 +21,7 @@ angular.module('cateringApp')
           });
           defaultBounds = circle.getBounds();
         });
-      }
+      }*/
 
       autocomplete.addListener('place_changed', () => {
         let place = autocomplete.getPlace(),

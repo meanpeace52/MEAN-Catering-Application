@@ -134,7 +134,7 @@ function createSummary(user) {    //user is caterer
 
 var mailer = {
   verifyUser: function(user) {
-    let message = '<h1>Hello,</h1><p>Please follow the link below to verify your email. If it is not you who signed up to Catering Ninja, just ignore this message.</p><p><a href="http://localhost:8080/verify/' + user._id + '">Please verify email address</a></p>';
+    let message = '<h1>Hello,</h1><p>Please follow the link below to verify your email. If it is not you who signed up to Catering Ninja, just ignore this message.</p><p><a href="' + config.domain + 'verify/' + user._id + '">Please verify email address</a></p>';
     nodemailerMailgun.sendMail({
       from: config.mailgun.from,
       to: user.email,
