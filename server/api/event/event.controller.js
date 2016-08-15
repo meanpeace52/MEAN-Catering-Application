@@ -27,12 +27,15 @@ function respondWithResult(res, statusCode) {
 
 function saveUpdates(updates) {
   return function(entity) {
+    let isBrandNew = (entity.status == 'draft' && updates.status == 'sent');
+
     for (let key in updates) {
       entity[key] = updates[key];
       delete updates[key];
     }
     var updated = _.mergeWith(entity, updates);
-    if (updated.showToCaterers) mailer.notifyEvent(updated, 'updated');
+    if (updated.showToCaterers && !isBrandNew) mailer.notifyEvent(updated, 'updated');
+    if (isBrandNew) mailer.notifyEvent(updated, 'created');
     return updated.save()
       .then(updated => {
         return updated;
