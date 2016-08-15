@@ -339,7 +339,7 @@ class EventsEditController {
       eventModel.sentTo = eventModel.selectedCaterers;
       eventModel.status = 'sent';
 
-      if (this.$scope.fm.status = 'sent') eventModel.isUpdated = true;
+      if (this.$scope.fm.status == 'sent') eventModel.isUpdated = true;
 
       if (eventModel && form.$valid) {
         //this.payments.verifyAddress(eventModel.address).then(address => {

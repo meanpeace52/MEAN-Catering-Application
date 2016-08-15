@@ -8,7 +8,7 @@
     </div>
     <div class="col-sm-12" redirect="/events/new" ng-if="vm.user.payableAccountId || !vm.verifyCard">
       <h1>New event</h1>
-      <ng-form class="form-fluid" name="form" novalidate>
+      <form class="form-fluid" name="form" novalidate>
         <div class="row">
           <div class="col-sm-5">
             <div class="form-group" ng-class="{'has-error': (form.name.$touched && form.name.$error.required || form.$submitted && form.name.$untouched) }">
