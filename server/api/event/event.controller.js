@@ -218,7 +218,7 @@ export function show(req, res) {
 export function create(req, res) {
   return Event.create(req.body)
     .then((res) => {
-      // if (req.body.showToCaterers) mailer.notifyEvent(req.body, 'created');
+      if (req.body.showToCaterers) mailer.notifyEvent(req.body, 'created');
       return res;
     })
     .then(respondWithResult(res, 201))
