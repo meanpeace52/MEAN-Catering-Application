@@ -3,7 +3,7 @@
     <div class="col-sm-12">
       <h1>Sign up</h1>
     </div>
-    <div class="col-sm-12">
+    <div class="col-sm-12" ng-if="signupProcess">
       <form class="form" name="form" ng-submit="vm.register(form)" novalidate>
 
         <div class="form-group" ng-class="{ 'has-success': form.name.$valid && vm.submitted,
@@ -125,6 +125,9 @@
         </div>
 
       </form>
+    </div>
+    <div class="col-sm-12" ng-if="signupSuccess">
+      <div class="alert alert-success">We sent you email to verify your address. Please check your mail list.</div>
     </div>
   </div>
   <hr>

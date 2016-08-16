@@ -26,7 +26,7 @@ var UserSchema = new Schema({
   contactInfo: String,
   name: String,
   companyName: String,
-  minprice: String,
+  minprice: Number,
   location: String,
   website: String,
   phone: String,

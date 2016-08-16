@@ -112,7 +112,8 @@
        */
       createTempUser(user, callback) {
         return User.save(user, (data) => {
-          $state.go('login');
+          //$state.go('login');
+          return data;
         }, (err) => {
           console.log('Error: ', err);
         })

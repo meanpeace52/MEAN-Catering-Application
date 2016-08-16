@@ -131,6 +131,8 @@ export function dataset(req, res) {
 
   if (!req.body.status) query.status = { $not: /(cancelled)/};
 
+  console.log('dataset', query);
+
   return Event.find(query).exec().then((events) => {
     let eventPromises = [];
     events.forEach((event, i) => {
@@ -178,6 +180,33 @@ export function dataset(req, res) {
       .catch(handleError(res));
 
  });
+}
+
+export function payments(req, res) {
+  let query = {
+    $or:[{"paymentStatus":"hold"},{"paymentStatus": "paid"}],
+    userId: req.body.userId
+  };
+
+  return Event.find(query).exec().then((events) => {
+    let eventPromises = [];
+
+    events.forEach((event, i) => {
+      events[i] = events[i].toObject();
+      eventPromises.push(Offer.findById(event.offerId).exec()
+        .then((offer) => {
+          events[i].offer = offer;
+          console.log(offer);
+          return events[i];
+        }));
+    });
+
+    return Promise.all(eventPromises).then(() => {
+      return events;
+    })
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+  })
 }
 
 // Gets a list of Events

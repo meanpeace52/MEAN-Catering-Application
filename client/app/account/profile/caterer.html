@@ -7,182 +7,179 @@
       <uib-tabset active="active">
         <uib-tab index="0" heading="Profile">
           <br />
-          <form class="form" name="form" novalidate>
-        <div class="row">
-          <div class="col-sm-8">
+          <form class="form" name="profileForm" novalidate>
             <div class="row">
-              <div class="col-sm-6">
-                <div class="form-group">
-                  <label>Company Name</label>
-                  <input type="text" name="companyName" class="form-control" ng-model="vm.user.companyName" />
+              <div class="col-sm-8">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group" ng-class="{ 'has-success': profileForm.companyName.$valid && vm.profileSubmitted, 'has-error': profileForm.companyName.$invalid && vm.profileSubmitted }">
+                      <label>Company Name</label>
+                      <input type="text" name="companyName" class="form-control" ng-model="vm.user.companyName" required />
+                      <p class="help-block" ng-show="profileForm.companyName.$error.required && vm.profileSubmitted">A company name name is required</p>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label>Description</label>
+                      <input type="text" name="description" class="form-control" ng-model="vm.user.description"/>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group">
-                  <label>Description</label>
-                  <input type="text" name="description" class="form-control" ng-model="vm.user.description"/>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group" ng-class="{ 'has-success': profileForm.firstname.$valid && vm.profileSubmitted, 'has-error': profileForm.firstname.$invalid && vm.profileSubmitted }">
+                      <label>First Name</label>
+                      <input type="text" name="firstname" class="form-control" ng-model="vm.user.firstname" required/>
+                      <p class="help-block" ng-show="profileForm.firstname.$error.required && vm.submitted">A first name is required</p>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group" ng-class="{ 'has-success': profileForm.lastname.$valid && vm.profileSubmitted, 'has-error': profileForm.lastname.$invalid && vm.profileSubmitted }">
+                      <label>Last Name</label>
+                      <input type="text" name="lastname" class="form-control" ng-model="vm.user.lastname" required/>
+                      <p class="help-block" ng-show="profileForm.lastname.$error.required && vm.profileSubmitted">A last name is required</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-6">
-                <div class="form-group" ng-class="{ 'has-success': form.name.$valid && vm.submitted, 'has-error': form.name.$invalid && vm.submitted }">
-                  <label>First Name</label>
-                  <input type="text" name="firstname" class="form-control" ng-model="vm.user.firstname" required/>
-                  <p class="help-block" ng-show="form.name.$error.required && vm.submitted">A name is required</p>
+                <div class="row">
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label>Contact Info</label>
+                      <textarea name="contactInfo" class="form-control" ng-model="vm.user.contactInfo"></textarea>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label>Phone</label>
+                      <input type="text" name="phone" class="form-control" ng-model="vm.user.phone"/>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label>Website</label>
+                      <input type="text" name="website" class="form-control" ng-model="vm.user.website"/>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="form-group" ng-class="{ 'has-success': form.name.$valid && vm.submitted, 'has-error': form.name.$invalid && vm.submitted }">
-                  <label>Last Name</label>
-                  <input type="text" name="lastname" class="form-control" ng-model="vm.user.lastname" required/>
-                  <p class="help-block" ng-show="form.name.$error.required && vm.submitted">A name is required</p>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-4">
-                <div class="form-group">
-                  <label>Contact Info</label>
-                  <textarea name="contactInfo" class="form-control" ng-model="vm.user.contactInfo"></textarea>
-                </div>
-              </div>
-              <div class="col-sm-4">
-                <div class="form-group">
-                  <label>Phone</label>
-                  <input type="text" name="phone" class="form-control" ng-model="vm.user.phone"/>
-                </div>
-              </div>
-              <div class="col-sm-4">
-                <div class="form-group">
-                  <label>Website</label>
-                  <input type="text" name="website" class="form-control" ng-model="vm.user.website"/>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="form-group has-error" ng-if="vm.user.role && vm.addressValidationError">
-                {{ vm.addressValidationError }}
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-6">
-                <div class="form-group">
-                  <label>Location</label>
-                  <input type="text" name="location" class="form-control" data-location="location" ng-model="vm.user.location"/>
-                  <div class="form-group has-error" ng-if="vm.addressValidationError">
-                    {{ vm.addressValidationError }}
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-group" ng-class="{ 'has-success': profileForm.location.$valid && vm.profileSubmitted, 'has-error': profileForm.location.$invalid && vm.profileSubmitted }">
+                      <label>Location</label>
+                      <input type="text" name="location" class="form-control" data-location="location" ng-model="vm.user.location" required/>
+                      <p class="help-block" ng-show="profileForm.location.$error.required && vm.profileSubmitted">Location is required</p>
+                      <div class="form-group has-error" ng-if="vm.addressValidationError">
+                        {{ vm.addressValidationError }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label>Min Price per person</label>
+                      <input type="text" name="minprice" class="form-control" ng-model="vm.user.minprice"/>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label><input type="checkbox" name="veganOffers" ng-model="vm.user.veganOffers"/> Have vegan offers</label>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="col-sm-3">
+              <div class="col-sm-4">
+                <div class="img-thumbnail" ng-draw="{file: vm.user.logo, width: 300, userId: vm.user._id}">
+                </div>
+                <br />
+                <br />
                 <div class="form-group">
-                  <label>Min Price per person</label>
-                  <input type="text" name="minprice" class="form-control" ng-model="vm.user.minprice"/>
+                  <!--<input type="file" class="form-control" name="logo" nv-file-select uploader="FileUploader" options="faOptions" ng-model="vm.user.logo"/>-->
+                  <input type="file" name="logo" ng-model="vm.user.logo" nv-file-select uploader="uploader" options="faOptions"/>
+                </div>
+
+                <ul ng-if="uploadButtonShow">
+                  <li ng-repeat="item in uploader.queue">
+                    <span ng-bind="item.file.name"></span> <button class="btn btn-default" ng-disable="!uploadButtonReady" ng-click="vm.saveImage()">Upload</button><br />
+                    <!--<div ng-show="uploader.isHTML5" class="img-thumbnail" ng-thumb="{ file: item._file, height: 100 }"></div>-->
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label>Select food types</label>
+                  <div class="checkbox" ng-repeat="type in foodTypes">
+                    <label>
+                      <!--<button class="btn btn-default btn-xs" ng-if="vm.checkRights(type)" ng-click="vm.deleteFoodType(type)"><i class="fa fa-times"></i></button>-->
+                      <input type="checkbox" checklist-model="vm.user.foodTypes" checklist-value="type._id" checked="{{type.checked}}"> {{type.name}}
+                      <!--<span class="label label-info" ng-if="type.approved">approved</span>-->
+                      <!--<span class="label label-info" ng-if="!type.approved">not approved</span>-->
+                    </label>
+                  </div>
+                  <!--<label>Add custom foodtype. <span class="muted">Note, that it needs to be approved by admin</span></label>-->
+                  <!--<div class="input-group" style="width: 250px;">-->
+                    <!--<input class="form-control" type="text" ng-model="ft.newFoodType" />-->
+                    <!--<span class="input-group-btn">-->
+                      <!--<a class="btn btn-default" ng-click="vm.addFoodType()"><span class="fa fa-plus"></span></a>-->
+                    <!--</span>-->
+                  <!--</div>-->
                 </div>
               </div>
-              <div class="col-sm-3">
+              <div class="col-sm-4">
                 <div class="form-group">
-                  <label><input type="checkbox" name="veganOffers" ng-model="vm.user.veganOffers"/> Have vegan offers</label>
+                  <label>Select service types</label>
+                  <div class="checkbox" ng-repeat="type in serviceTypes">
+                    <label>
+                      <input type="checkbox" checklist-model="vm.user.serviceTypes" checklist-value="type._id" checked="{{type.checked}}"> {{type.name}}
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group">
+                  <label>Payment Info</label>
+                  <input type="text" name="paymentInfo" class="form-control" ng-model="vm.user.paymentInfo" />
                 </div>
               </div>
             </div>
-          </div>
-          <div class="col-sm-4">
-            <div class="img-thumbnail" ng-draw="{file: vm.user.logo, width: 300, userId: vm.user._id}">
-            </div>
-            <br />
-            <br />
-            <div class="form-group">
-              <!--<input type="file" class="form-control" name="logo" nv-file-select uploader="FileUploader" options="faOptions" ng-model="vm.user.logo"/>-->
-              <input type="file" name="logo" ng-model="vm.user.logo" nv-file-select uploader="uploader" options="faOptions"/>
-            </div>
 
-            <ul ng-if="uploadButtonShow">
-              <li ng-repeat="item in uploader.queue">
-                <span ng-bind="item.file.name"></span> <button class="btn btn-default" ng-disable="!uploadButtonReady" ng-click="vm.saveImage()">Upload</button><br />
-                <!--<div ng-show="uploader.isHTML5" class="img-thumbnail" ng-thumb="{ file: item._file, height: 100 }"></div>-->
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-4">
-            <div class="form-group">
-              <label>Select food types</label>
-              <div class="checkbox" ng-repeat="type in foodTypes">
-                <label>
-                  <!--<button class="btn btn-default btn-xs" ng-if="vm.checkRights(type)" ng-click="vm.deleteFoodType(type)"><i class="fa fa-times"></i></button>-->
-                  <input type="checkbox" checklist-model="vm.user.foodTypes" checklist-value="type._id" checked="{{type.checked}}"> {{type.name}}
-                  <!--<span class="label label-info" ng-if="type.approved">approved</span>-->
-                  <!--<span class="label label-info" ng-if="!type.approved">not approved</span>-->
-                </label>
-              </div>
-              <!--<label>Add custom foodtype. <span class="muted">Note, that it needs to be approved by admin</span></label>-->
-              <!--<div class="input-group" style="width: 250px;">-->
-                <!--<input class="form-control" type="text" ng-model="ft.newFoodType" />-->
-                <!--<span class="input-group-btn">-->
-                  <!--<a class="btn btn-default" ng-click="vm.addFoodType()"><span class="fa fa-plus"></span></a>-->
-                <!--</span>-->
-              <!--</div>-->
-            </div>
-          </div>
-          <div class="col-sm-4">
-            <div class="form-group">
-              <label>Select service types</label>
-              <div class="checkbox" ng-repeat="type in serviceTypes">
-                <label>
-                  <input type="checkbox" checklist-model="vm.user.serviceTypes" checklist-value="type._id" checked="{{type.checked}}"> {{type.name}}
-                </label>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-4">
-            <div class="form-group">
-              <label>Payment Info</label>
-              <input type="text" name="paymentInfo" class="form-control" ng-model="vm.user.paymentInfo" />
-            </div>
-          </div>
-        </div>
+            <!--<div class="form-group" ng-class="{ 'has-success': form.confirmemail.$valid && vm.submitted,-->
+            <!--'has-error': form.confirmemail.$invalid && vm.submitted }">-->
+            <!--<label>Confirm Email</label>-->
 
-        <!--<div class="form-group" ng-class="{ 'has-success': form.confirmemail.$valid && vm.submitted,-->
-        <!--'has-error': form.confirmemail.$invalid && vm.submitted }">-->
-        <!--<label>Confirm Email</label>-->
-
-        <!--<input type="email" name="confirmemail" class="form-control" ng-model="vm.user.confirmemail"-->
-        <!--required-->
-        <!--mongoose-error/>-->
-        <!--<p class="help-block" ng-show="form.confirmemail.$error.confirmemail && vm.submitted">-->
-        <!--Email must match.-->
-        <!--</p>-->
-        <!--<p class="help-block" ng-show="form.confirmemail.$error.required && vm.submitted">-->
-        <!--Repeat your email.-->
-        <!--</p>-->
-        <!--<p class="help-block" ng-show="form.confirmemail.$error.mongoose">-->
-        <!--{{ vm.errors.confirmemail }}-->
-        <!--</p>-->
-        <!--</div>-->
-        <div ng-if="vm.saved" class="alert alert-success">Changes are sucessfully saved.</div>
-        <div>
-          <button class="btn btn-primary btn-lg btn-register" ng-click="vm.save(form)" type="submit">
-            Save changes
-          </button>
-        </div>
-      </form>
+            <!--<input type="email" name="confirmemail" class="form-control" ng-model="vm.user.confirmemail"-->
+            <!--required-->
+            <!--mongoose-error/>-->
+            <!--<p class="help-block" ng-show="form.confirmemail.$error.confirmemail && vm.submitted">-->
+            <!--Email must match.-->
+            <!--</p>-->
+            <!--<p class="help-block" ng-show="form.confirmemail.$error.required && vm.submitted">-->
+            <!--Repeat your email.-->
+            <!--</p>-->
+            <!--<p class="help-block" ng-show="form.confirmemail.$error.mongoose">-->
+            <!--{{ vm.errors.confirmemail }}-->
+            <!--</p>-->
+            <!--</div>-->
+            <div ng-if="vm.saved" class="alert alert-success">Changes are successfully saved.</div>
+            <div>
+              <button class="btn btn-primary btn-lg btn-register" ng-click="vm.save(profileForm)" type="submit">
+                Save changes
+              </button>
+            </div>
+          </form>
         </uib-tab>
         <uib-tab index="1" heading="OffersTemplates">
           <templatesprofile></templatesprofile>
         </uib-tab>
         <uib-tab index="2" heading="Change password">
           <br />
-          <form class="form" name="form" ng-submit="vm.changePassword(form)" novalidate>
+          <form class="form" name="cpForm" ng-submit="vm.changePassword(cpForm)" novalidate>
 
             <div class="form-group">
               <label>Current Password</label>
 
               <input type="password" name="password" class="form-control" ng-model="vm.user.oldPassword"
                      mongoose-error/>
-              <p class="help-block" ng-show="form.password.$error.mongoose">
+              <p class="help-block" ng-show="cpForm.password.$error.mongoose">
                 {{ vm.errors.other }}
               </p>
             </div>
@@ -194,7 +191,7 @@
                      ng-minlength="3"
                      required/>
               <p class="help-block"
-                 ng-show="(form.newPassword.$error.minlength || form.newPassword.$error.required) && (form.newPassword.$dirty || vm.submitted)">
+                 ng-show="(cpForm.newPassword.$error.minlength || cpForm.newPassword.$error.required) && (cpForm.newPassword.$dirty || vm.submitted)">
                 Password must be at least 3 characters.
               </p>
             </div>
@@ -207,7 +204,7 @@
                      ng-minlength="3"
                      required=""/>
               <p class="help-block"
-                 ng-show="form.confirmPassword.$error.match && vm.submitted">
+                 ng-show="cpForm.confirmPassword.$error.match && vm.submitted">
                 Passwords must match.
               </p>
 

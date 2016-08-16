@@ -9,6 +9,7 @@ router.get('/', controller.index);
 router.get('/:id', controller.show);
 router.post('/', controller.index);
 router.post('/dataset', controller.dataset);
+router.post('/payments', controller.payments);
 router.post('/new', controller.create);
 router.put('/:id', controller.update);
 router.post('/:id', controller.update);

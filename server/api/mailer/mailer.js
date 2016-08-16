@@ -40,7 +40,16 @@ function getEventMailList(event) {
 
   return User.find(query).exec()
     .then((users) => {
-      return _.map(users, (user) => {
+
+      let fltUsers = _.filter(users, (user) => {
+        if (user.minprice) {
+          return +user.minprice >= +event.pricePerPerson;
+        } else {
+          return true;
+        }
+      });
+
+      return _.map(fltUsers, (user) => {
           return user.email;
         });
     });

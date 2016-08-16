@@ -88,7 +88,10 @@ function _auth(offerId) {
       if (payment.status === "succeeded") {
         data.offer.paymentId = payment.id;
         data.offer.paymentStatus = 'hold';
+        data.offer.paymentHoldDate = new Date();
         data.event.paymentStatus = 'hold';
+        data.event.paymentHoldDate = new Date();
+        data.event.offerId = offerId;
         return data.event.save().then(() => data.offer.save());
       }
 
@@ -103,7 +106,10 @@ function _capture(offerId) {
     return stripe.charges.capture(data.offer.paymentId).then(payment => {
       if (payment.status === "succeeded") {
         data.offer.paymentStatus = 'paid';
+        data.offer.paymentPaidDate = new Date();
         data.event.paymentStatus = 'paid';
+        data.event.paymentPaidDate = new Date();
+        data.event.offerId = offerId;
         return data.event.save().then(() => data.offer.save());
       }
       return _breakOffer(data.user, data.offer, mailer.breakCapture);

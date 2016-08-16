@@ -1,7 +1,7 @@
 'use strict';
 
 class CustomerProfileController {
-  constructor(Auth, $state, $scope) {
+  constructor(Auth, $state, $scope, $http) {
     this.user = {};
     this.errors = {};
     this.submitted = false;
@@ -9,10 +9,19 @@ class CustomerProfileController {
     this.Auth = Auth;
     this.$state = $state;
     this.$scope = $scope;
+    this.$http = $http;
     this.getCurrentUser = Auth.getCurrentUser;
     this.isLoggedIn = Auth.isLoggedIn;
     this.user = this.getCurrentUser();
     this.$scope.ft = {};
+
+    this.getPayments().then(response => {
+      this.$scope.events = response.data;
+    });
+  }
+
+  getPayments() {
+    return this.$http.post('/api/events/payments', {userId: this.user._id});
   }
 
   changePassword(form) {

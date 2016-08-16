@@ -10,6 +10,9 @@ class SignupController {
     this.$scope = $scope;
     this.user = {};
     this.addressValidationError = null;
+
+    this.$scope.signupProcess = true;
+    this.$scope.signupSuccess = false;
   }
     //start-non-standard
 
@@ -50,12 +53,9 @@ class SignupController {
 function _register(request, form) {
   return this.Auth.createTempUser(request)
     .then(() => {
-      // Account created, redirect to home
-      if (request.role === 'caterer') {
-        this.$state.go('caterer-profile');
-      } else {
-        this.$state.go('events');
-      }
+      let root = this;
+      this.$scope.signupProcess = false;
+      this.$scope.signupSuccess = true;
     })
     .catch(err => {
       err = err.data;

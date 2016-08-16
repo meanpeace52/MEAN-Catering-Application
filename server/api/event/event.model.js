@@ -22,13 +22,16 @@ var EventSchema = new mongoose.Schema({
   time: String,
   acceptedDate: Date,
   confirmedDate: Date,
+  paymentPaidDate: Date,
+  paymentHoldDate: Date,
   selectedCaterers: Object,
   sentTo: Array,
   rejectedBy: Array,
   confirmedBy: String,
   isUpdated: Boolean,
   address: Object,
-  paymentStatus: String
+  paymentStatus: String,
+  offerId: String
 });
 
 export default mongoose.model('Event', EventSchema);

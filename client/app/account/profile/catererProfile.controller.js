@@ -3,7 +3,10 @@
 class CatererProfileController {
   constructor(Auth, $cookies, $state, $http, FoodTypesService, ServiceTypesService, $scope, FileUploader, $rootScope, $timeout, PaymentService) {
     this.errors = {};
-    this.submitted = false;
+    this.profileSubmitted = false;
+    this.profileSaved = false;
+    this.cpSubmitted = false;
+    this.cpSaved = false;
 
     this.Auth = Auth;
     this.$state = $state;
@@ -110,11 +113,13 @@ class CatererProfileController {
   }
 
   changePassword(form) {
-    this.submitted = true;
+    this.cpSubmitted = true;
 
     if (form.$valid) {
       this.Auth.changePassword(this.user.oldPassword, this.user.newPassword)
         .then(() => {
+        this.cpSaved = true;
+        this.cpSubmitted = true;
         this.message = 'Password successfully changed.';
     })
     .catch(() => {
@@ -133,15 +138,17 @@ class CatererProfileController {
       delete userModel.logo;
     }
 
+    this.profileSubmitted = true;
     console.log(form);
 
-    if (userModel) {
+    if (userModel && form.$valid) {
       //this.payments.verifyAddress(userModel.address).then(address => {
         //userModel.address = address;
         this.$http.post(url, userModel)
           .then(response => {
             let root = this;
-            this.saved = true;
+            this.profileSaved = true;
+            this.profileSubmitted = false;
             this.$timeout(function() {
               root.saved = false;
             }, 3000);

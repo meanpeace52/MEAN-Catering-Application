@@ -5,7 +5,39 @@
     </div>
     <div class="col-sm-12">
       <uib-tabset active="active">
-        <uib-tab index="0" heading="Profile">
+        <uib-tab index="0" heading="Payments">
+          <br />
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <table class="table table-condensed">
+                <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Total</th>
+                  <th>Event</th>
+                  <th>Caterer</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="event in events">
+                  <td>
+                    <span class="label label-info">{{event.paymentStatus}}</span>
+                  </td>
+                  <td>
+                    <span ng-if="event.paymentStatus == 'paid'">{{event.paymentPaidDate | date: "longDate" }}</span>
+                    <span ng-if="event.paymentStatus == 'hold'">{{event.paymentHoldDate | date: "longDate" }}</span>
+                  </td>
+                  <td>{{event.offer.invoice.total}}</td>
+                  <td>{{event.name}}</td>
+                  <td>{{event.offer.catererName}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </uib-tab>
+        <uib-tab index="1" heading="Profile">
           <br />
           <form class="form" name="form" ng-submit="vm.register(form)" novalidate>
 
@@ -57,7 +89,7 @@
 
           </form>
         </uib-tab>
-        <uib-tab index="1" heading="Change password">
+        <uib-tab index="2" heading="Change password">
           <br />
           <form class="form" name="form" ng-submit="vm.changePassword(form)" novalidate>
 

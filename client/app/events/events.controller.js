@@ -80,22 +80,20 @@ class EventsController {
 
         //$scope.events = events;
 
-        $scope.events = _.map(events, (o) => {
-          if (!o.drafted) {
-            if (o.status == 'confirmed') $scope.confirmedEventsCount++;
+        $scope.events = _.filter(events, (o) => {
+          if (o.status == 'confirmed') $scope.confirmedEventsCount++;
 
-            if ($scope.filter.dateFilter == '24') {
-              if (Date.parse(o.createDate) > $scope.start24) {
-                $scope.newEventsCount++;
-              }
-            } else if ($scope.filter.dateFilter == '1') {
-              if (Date.parse(o.createDate) > $scope.start1) {
-                $scope.newEventsCount++;
-              }
+          if ($scope.filter.dateFilter == '24') {
+            if (Date.parse(o.createDate) > $scope.start24) {
+              $scope.newEventsCount++;
             }
-
-            return o;
+          } else if ($scope.filter.dateFilter == '1') {
+            if (Date.parse(o.createDate) > $scope.start1) {
+              $scope.newEventsCount++;
+            }
           }
+
+          return !o.drafted;
         });
 
         let filtered = $scope.tableState.search.predicateObject ? $filter('filter')($scope.events, $scope.tableState.search.predicateObject) : $scope.events,
