@@ -2,10 +2,11 @@
 
 class CreditCardController {
 
-  constructor($scope, $http, $window, $location) {
+  constructor($scope, $http, $window, $location, $state) {
     this.$http = $http;
     this.$scope = $scope;
     this.$location = $location;
+    this.$state = $state;
     this.error = null;
 
     $scope.stripeCallback = this.stripeCallback.bind(this);
@@ -48,6 +49,28 @@ class CreditCardController {
           this.$http.post(`/api/users/${this.user._id}`, {
             payableAccountId: result.data.id
           });
+
+          let eventModel = this.event,
+          url = '/api/events/' + eventModel._id;
+
+          eventModel.showToCaterers = true;
+          eventModel.sentTo = eventModel.selectedCaterers;
+          eventModel.status = 'sent';
+          eventModel.userId = this.user._id;
+          eventModel.createDate = new Date();
+
+          if (eventModel.status == 'sent') eventModel.isUpdated = true;
+
+          if (eventModel) {
+              this.$http.post(url, eventModel)
+                .then(response => {
+                  //this.$state.go('events');
+                })
+                .catch(err => {
+                  this.errors.other = err.message;
+                });
+          }
+          this.$state.go('events');
         });
       }
 

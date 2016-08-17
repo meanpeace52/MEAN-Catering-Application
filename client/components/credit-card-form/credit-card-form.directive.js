@@ -7,7 +7,8 @@ angular.module('cateringApp')
       restrict: 'E',
       scope: {
         verifier: '=?',
-        user: '='
+        user: '=',
+        event: '='
       },
       link: (scope) => {
         scope.$watch('vm.user', (value) => {

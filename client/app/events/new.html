@@ -3,7 +3,8 @@
     <div class="col-sm-12" ng-if="!vm.user.payableAccountId && vm.verifyCard">
       <h1>Verify your credit card</h1>
       <div class="row">
-        <credit-card-form verifier="true" user="vm.user"></credit-card-form>
+        <!--<credit-card-form verifier="true" user="vm.user"></credit-card-form>-->
+        <credit-card-form verifier="true" user="vm.user" event="fm"></credit-card-form>
       </div>
     </div>
     <div class="col-sm-12" redirect="/events/new" ng-if="vm.user.payableAccountId || !vm.verifyCard">
