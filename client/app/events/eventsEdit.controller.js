@@ -108,6 +108,13 @@ class EventsEditController {
       opened: false
     };
 
+    $scope.$watch('fm.people', updateValue3);
+    $scope.$watch('fm.vegetarianMeals', updateValue3);
+
+    function updateValue3() {
+      $scope.fm.totalMeals = +$scope.fm.people - +$scope.fm.vegetarianMeals;
+    }
+
     $scope.open1 = function() {
       $scope.popup1.opened = true;
     };
