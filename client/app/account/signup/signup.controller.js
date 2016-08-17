@@ -18,11 +18,14 @@ class SignupController {
     this.stService = ServiceTypesService;
     this.user = {};
     this.addressValidationError = null;
-    this.$scope.foodTypes = this.ftService.getFoodTypes().then((data)=> {
-      this.user.foodTypes = data;
+    this.$scope.foodTypes = [];
+    this.$scope.serviceTypes = [];
+
+    this.ftService.getFoodTypes().then((data)=> {
+      this.$scope.foodTypes = data;
     });
-    this.$scope.serviceTypes = this.stService.getServiceTypes().then((data)=> {
-      this.user.serviceTypes = data;
+    this.stService.getServiceTypes().then((data)=> {
+      this.$scope.serviceTypes = data;
     });
 
   }
