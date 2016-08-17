@@ -51,8 +51,10 @@ var j = schedule.scheduleJob(rule, function(){
 
 var paymentJobs = schedule.scheduleJob('*/30 * * * *', function() {
   var moment = +Date.now();
-  var next72h = new Date(moment + 72 * 60 * 60 * 1000);
-  var next24h = new Date(moment + 24 * 60 * 60 * 1000);
+  //var next72h = new Date(moment + 72 * 60 * 60 * 1000);
+  //var next24h = new Date(moment + 24 * 60 * 60 * 1000);
+  var next72h = new Date(moment + 10 * 60 * 1000);
+  var next24h = new Date(moment + 5 * 60 * 1000);
   var promises = [];
   promises.push(mongoose.model('Event').find({
     status: 'confirmed',
@@ -92,39 +94,6 @@ var paymentJobs = schedule.scheduleJob('*/30 * * * *', function() {
   }));
   return Promise.all(promises);
 });
-
-/*verify emails
-var User = require('./api/user/user.model');
-var nev = require('email-verification')(mongoose);
-
-nev.configure({
-  verificationURL: 'http://myawesomewebsite.com/email-verification/${URL}',
-  persistentUserModel: User,
-  tempUserCollection: 'tempUsers',
-
-  transportOptions: {
-    service: 'Mailgun',
-    auth: {
-      api_key: config.mailgun.api_key,
-      domain: config.mailgun.domain
-    }
-  },
-  verifyMailOptions: {
-    from: 'Do Not Reply ' + config.mailgun.from,
-    subject: 'Please confirm account',
-    html: 'Click the following link to confirm your account:</p><p>${URL}</p>',
-    text: 'Please confirm your account by clicking the following link: ${URL}'
-  }
-});
-
-nev.generateTempUserModel(User);
-var TempUser = require('./api/user/tempUser.model');
-
-nev.configure({
-  tempUserModel: TempUser
-});
-*/
-
 
 function startServer() {
   app.angularFullstack = server.listen(config.port, config.ip, function() {
