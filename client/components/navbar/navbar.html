@@ -34,7 +34,7 @@
       <div class="btn-group nav navbar-nav navbar-right menu" role="group">
         <!--<a ui-sref="events" ng-show="nav.isLoggedIn()" class="btn btn-default">Draft</a>-->
         <a ui-sref="events" ng-show="nav.isLoggedIn()"  class="btn btn-default">Active Events</a>
-        <!--<a ui-sref="events" ng-show="nav.isLoggedIn()"  class="btn btn-default">Past Events</a>-->
+        <!--<a ui-sref="events/past" ng-show="nav.isLoggedIn()"  class="btn btn-default">Past Events</a>-->
       </div>
 
       <a class="btn btn-primary pull-right" ng-if="nav.getCurrentUser().role === 'user'" ui-sref="newEvent">Create new event</a>

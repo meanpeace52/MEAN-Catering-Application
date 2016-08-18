@@ -89,6 +89,7 @@ export function index(req, res) {
 }
 
 export function dataset(req, res) {
+  console.log('req', req.body);
   let query = {},
     isUser = (req.body.userId ? true : false),
     isCaterer = (req.body.catererId ? true : false),
@@ -99,6 +100,7 @@ export function dataset(req, res) {
     query = {
       userId: req.body.userId
     }
+    if (!req.body.status) query.status = { $nin: ['cancelled', 'deleted']};
   } else if (isCaterer) {
     query = {
       showToCaterers: req.body.showToCaterers /*, selectedCaterers: {$elemMatch: {$eq: req.body.sentTo } }*/
@@ -109,9 +111,15 @@ export function dataset(req, res) {
     if (req.body.serviceTypes && req.body.serviceTypes.length) {
       query.serviceTypes = { $in: req.body.serviceTypes }
     }
+
+    if (!req.body.status) query.status = { $nin: ['cancelled', 'draft', 'deleted']};
   }
 
-  if (!isAdmin) query.date = { $gte: today };
+  query.blocked = { $exists: false };
+
+  //if (!isAdmin) query.date = { $gte: today };
+  if (req.body.showFuture) query.date = { $gte: today };
+  if (req.body.showPast) query.date = { $lt: today };
 
   if (req.body.confirmedDate && req.body.createDate && req.body.status) {
     let newExpression = {},
@@ -129,48 +137,45 @@ export function dataset(req, res) {
     if (req.body.status) query.status = req.body.status;
   }
 
-  if (!req.body.status) query.status = { $not: /(cancelled)/};
-
   console.log('dataset', query);
 
   return Event.find(query).exec().then((events) => {
     let eventPromises = [];
+
+    events = _.filter(events, (event) => {
+      return !(isCaterer && !req.body.veganOffers && event.vegetarianMeals || isCaterer && event.selectedCaterers.length && _.indexOf(event.selectedCaterers, req.body.catererId) == -1);
+    });
+
     events.forEach((event, i) => {
       events[i] = events[i].toObject();
-      if (isCaterer && event.selectedCaterers.length && _.indexOf(event.selectedCaterers, req.body.catererId) == -1)
-      {
-        _.pull(events, event);
+      let total = { eventId: '' + event._id, status: { $nin: ['cancelled', 'draft']} },
+        catererQuery = { eventId: '' + event._id, catererId: req.body.catererId},
+        adminQuery = {eventId: '' + event._id, status: 'confirmed'};
+      if (isAdmin) {
+        eventPromises.push(Offer.find(adminQuery).exec().then((offers) => {
+          events[i].offers = offers;
+          //if (isAdmin) events[i].offer = offers[0];
+          return events[i];
+        }));
+      } else if (isCaterer) {
+        eventPromises.push(Offer.find(total).exec()
+          .then((offersTotal) => {
+            events[i].offersTotal = offersTotal.length;
+          })
+          .then(() => {
+            return Offer.find(catererQuery).exec();
+          })
+          .then((offers) => {
+            events[i].offers = offers;
+            //console.log(events[i]);
+            return events[i];
+          }));
+
       } else {
-        let total = { eventId: '' + event._id, status: { $not: /(draft)/} },
-          catererQuery = { eventId: '' + event._id, catererId: req.body.catererId},
-          adminQuery = {eventId: '' + event._id, status: 'confirmed'};
-        if (isAdmin) {
-          eventPromises.push(Offer.find(adminQuery).exec().then((offers) => {
-            events[i].offers = offers;
-            //if (isAdmin) events[i].offer = offers[0];
-            return events[i];
-          }));
-        } else if (isCaterer) {
-
-          eventPromises.push(Offer.find(total).exec()
-            .then((offersTotal) => {
-              events[i].offersTotal = offersTotal.length;
-            })
-            .then(() => {
-              return Offer.find(catererQuery).exec();
-            })
-            .then((offers) => {
-              events[i].offers = offers;
-              //console.log(events[i]);
-              return events[i];
-            }));
-
-        } else {
-          eventPromises.push(Offer.find(total).exec().then((offers) => {
-            events[i].offers = offers;
-            return events[i];
-          }));
-        }
+        eventPromises.push(Offer.find(total).exec().then((offers) => {
+          events[i].offers = offers;
+          return events[i];
+        }));
       }
     });
 
@@ -273,6 +278,22 @@ export function update(req, res) {
     .catch(handleError(res));
 }
 
+// Updates an existing Thing in the DB
+export function deleteEvent(req, res) {
+  if (req.body._id) {
+    delete req.body._id;
+  }
+
+  return Event.findById(req.params.id).exec()
+    .then(handleEntityNotFound(res))
+    .then(saveUpdates({ status: 'deleted' }))
+    .then((res) => {
+      return res;
+    })
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+}
+
 // Deletes a Thing from the DB
 export function destroy(req, res) {
   return Event.findById(req.params.id).exec()
@@ -280,3 +301,4 @@ export function destroy(req, res) {
     .then(removeEntity(res))
     .catch(handleError(res));
 }
+

@@ -64,31 +64,40 @@ class OffersController {
 
   prepareOffers() {
     let acceptedIndex = -1;
-    _.each(this.$scope.offers, (offer, i) => {
-      if (offer.status == 'accepted' || offer.status == 'confirmed') acceptedIndex = i;
-      if (offer.status == 'cancelled') this.$scope.offers[i].drafted = true;
-      if (offer.invoice) {
-        this.$scope.offers[i].priceWithCounter = offer.invoice.total;
-      } else if (offer.counter) {
-        this.$scope.offers[i].priceWithCounter = offer.pricePerPerson * this.event.people - offer.counter;
-      } else {
-        this.$scope.offers[i].priceWithCounter = offer.pricePerPerson * this.event.people;
-      }
-      this.$scope.offers[i].includedInPrice = this.convertIncludedInPrice(this.$scope.offers[i].includedInPrice);
+    let offers = _.filter(this.$scope.offers, (offer, i) => {
+      //if (offer.status == 'accepted' || offer.status == 'confirmed') acceptedIndex = i;
+      if (this.event.status !== 'accepted' && this.event.status !== 'confirmed') {
+        if (offer.status == 'cancelled') offer.drafted = true;
+        if (offer.invoice) {
+          offer.priceWithCounter = offer.invoice.total;
+        } else if (offer.counter) {
+          offer.priceWithCounter = offer.pricePerPerson * this.event.people - offer.counter;
+        } else {
+          offer.priceWithCounter = offer.pricePerPerson * this.event.people;
+        }
+        offer.includedInPrice = this.convertIncludedInPrice(offer.includedInPrice);
 
-      this.$http.get('/api/users/' + offer.catererId).then(response => {
-        this.$scope.offers[i].caterer = response.data;
-        this.$rootScope.$broadcast('imageLoaded');
-      })
-      .catch(err => {
-        this.errors = err.message;
-      });
+        this.$http.get('/api/users/' + offer.catererId).then(response => {
+          offer.caterer = response.data;
+          this.$rootScope.$broadcast('imageLoaded');
+        })
+        .catch(err => {
+          this.errors = err.message;
+        });
+        return offer;
+      }
+
+      if (this.event.status == 'accepted') return offer.status == 'accepted';
+      if (this.event.status == 'confirmed') return offer.status == 'confirmed';
     });
-    if (acceptedIndex > -1) {
-      _.each(this.$scope.offers, (offer, i) => {
-        if (i !== acceptedIndex) this.$scope.offers[i].drafted = true;
-      });
-    }
+
+    this.$scope.offers = offers;
+
+    //if (acceptedIndex > -1) {
+    //  _.each(this.$scope.offers, (offer, i) => {
+    //    if (i !== acceptedIndex) this.$scope.offers[i].drafted = true;
+    //  });
+    //}
   }
 
   decline(id) {

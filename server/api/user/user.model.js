@@ -42,7 +42,7 @@ var UserSchema = new Schema({
   ninja_phone: String,
   salt: String,
   logo: String,
-  status: String, //active, pending
+  status: String, //active, pending, deleted
   //logo: { data: Buffer, contentType: String }
   payableAccount: Object, // for a caterer
   payableAccountId: String, // for an user

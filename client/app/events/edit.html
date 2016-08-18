@@ -131,55 +131,6 @@
             </div>
           </div>
         </div>
-        <!--<div class="row">-->
-          <!--<div class="col-sm-8">-->
-            <!--<label>Select Food Types</label>-->
-            <!--<div class="panel panel-default">-->
-              <!--<div class="panel-body">-->
-                <!--<div class="row">-->
-                  <!--<div class="col-sm-5">-->
-                    <!--<div class="ft-panel-fixed-height">-->
-                      <!--<div class="checkbox" ng-repeat="type in foodTypes">-->
-                        <!--<label>-->
-                          <!--<input type="checkbox" checklist-model="fm.foodTypes" checklist-value="type._id" checked="type.checked" ng-click="vm.toggleFT()"> {{type.name}}-->
-                        <!--</label>-->
-                      <!--</div>-->
-                    <!--</div>-->
-                  <!--</div>-->
-                  <!--<div class="col-sm-7">-->
-                    <!--<div class="select-all-header">-->
-                      <!--<div class="checkbox">-->
-                        <!--<label>-->
-                          <!--<input type="checkbox" name="foodTypesAll" ng-model="foodTypesAll" ng-click="vm.toggleAll()"> Select All Restaurants-->
-                        <!--</label>-->
-                      <!--</div>-->
-                    <!--</div>-->
-                    <!--<div class="select-rest-block">-->
-                      <!--<div class="checkbox" ng-repeat="caterer in caterers" ng-if="caterer.showByFT">-->
-                        <!--<label>-->
-                          <!--<input type="checkbox" checklist-model="fm.selectedCaterers" ng-change="vm.watchForEdit(caterer._id)" checklist-value="caterer._id" > {{caterer.companyName}}-->
-                          <!--<span ng-repeat="ft in foodTypes" class="label label-default m-3" ng-if="vm.checkFT(ft._id, caterer)">{{ft.name}}</span>-->
-                        <!--</label>-->
-                      <!--</div>-->
-                    <!--</div>-->
-                  <!--</div>-->
-                <!--</div>-->
-              <!--</div>-->
-            <!--</div>-->
-          <!--</div>-->
-          <!--<div class="col-sm-4" ng-show="selectionOccured">-->
-            <!--<label>Selected Restaurants</label>-->
-            <!--<div class="panel panel-default">-->
-              <!--<div class="panel-body">-->
-                <!--<div class="ft-panel-fixed-height">-->
-                  <!--<div class="selectedRest" ng-repeat="caterer in caterers" ng-if="caterer.showByEdit">-->
-                    <!--<button class="btn btn-default btn-xs" ng-click="vm.watchForEdit(caterer._id)"><i class="fa fa-times"></i></button> <strong>{{caterer.companyName}}</strong> <span ng-repeat="ft in foodTypes" class="label label-default m-3" ng-if="vm.checkFT(ft._id, caterer)">{{ft.name}}</span>-->
-                  <!--</div>-->
-                <!--</div>-->
-              <!--</div>-->
-            <!--</div>-->
-          <!--</div>-->
-        <!--</div>-->
         <div class="row">
           <div class="col-sm-4">
             <label>Filter Caterers by category</label>
@@ -201,7 +152,6 @@
                 <uib-accordion-heading>
                   Service Types <i class="pull-right fa" ng-class="{'fa-chevron-down': status.open, 'fa-chevron-right': !status.open}"></i>
                 </uib-accordion-heading>
-                <label><input ng-click="vm.toggleAllST()" ng-model="filter.allSt" type="checkbox"> All</label>
                 <div class="category-container">
                   <div class="checkbox" ng-repeat="type in serviceTypes">
                     <label>
@@ -255,26 +205,28 @@
         </div>
         <div ng-if="vm.saved" class="alert alert-success">Event is successfully saved as draft</div>
         <div ng-if="vm.sent" class="alert alert-success">Event is successfully sent to restaurants.</div>
-        <div ng-if="fm.status == 'cancelled'">
-          <button class="btn btn-default disabled" type="submit">
-            Save Changes
-          </button>
-          <button class="btn btn-primary disabled" type="submit">
-            Send Request
-          </button>
+        <div ng-if="!fm.blocked">
+          <div ng-if="fm.status == 'cancelled'">
+            <button class="btn btn-default disabled" type="submit">
+              Save Changes
+            </button>
+            <button class="btn btn-primary disabled" type="submit">
+              Send Request
+            </button>
+          </div>
+          <div ng-if="fm.status !== 'cancelled'">
+            <button class="btn btn-default" type="submit" ng-if="fm.status == 'draft'"  tooltip-placement="top" uib-tooltip='Allows you to save changes and return later to send' ng-click="vm.saveDraft(form)">
+              Save Changes
+            </button>
+            <button class="btn btn-primary" tooltip-placement="top" uib-tooltip='When you are ready, click send and the event will be sent to all filtered or selected caterers. They will then review and send back offers.' type="submit" ng-click="vm.sendRequest(form)">
+              Send Updated Changes
+            </button>
+            <button class="btn btn-danger" ng-click="vm.cancel()">
+              Cancel changes
+            </button>
+          </div>
         </div>
-        <div ng-if="fm.status !== 'cancelled'">
-          <button class="btn btn-default" type="submit" ng-if="fm.status == 'draft'"  tooltip-placement="top" uib-tooltip='Allows you to save changes and return later to send' ng-click="vm.saveDraft(form)">
-            Save Changes
-          </button>
-          <button class="btn btn-primary" tooltip-placement="top" uib-tooltip='When you are ready, click send and the event will be sent to all filtered or selected caterers. They will then review and send back offers.' type="submit" ng-click="vm.sendRequest(form)">
-            Send Updated Changes
-          </button>
-          <button class="btn btn-danger" ng-click="vm.cancel()">
-            Cancel changes
-          </button>
-        </div>
-        <div></div>
+
       </form>
     </div>
   </div>

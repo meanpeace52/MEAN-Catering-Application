@@ -52,7 +52,7 @@ class EventsAdminController {
 
       if (selectedEvents.length) {
         this.$http.post('/api/payments/pay', {
-          items: selectedEvents.map(event => event.offer._id)
+          items: selectedEvents.map(event => event.offers[0]._id)
         }).then(response => {
           $scope.$emit('eventUpdated');
         });
@@ -88,11 +88,11 @@ class EventsAdminController {
           };
 
           $scope.ok = () => {
-            console.log(this.$scope.eventActive.offer.invoice, $scope.updatedInvoice);
-            angular.merge(this.$scope.eventActive.offer.invoice, $scope.updatedInvoice);
+            console.log('invoice', root.$scope.eventActive.offers[0].invoice, $scope.updatedInvoice);
+            angular.merge(root.$scope.eventActive.offers[0].invoice, $scope.updatedInvoice);
 
-            this.$http.post('/api/offers/' + this.$scope.eventActive.offer._id, this.$scope.eventActive.offer).then(response => {
-              this.$http.post('/api/events/' + this.$scope.eventActive._id, this.$scope.eventActive).then(response => {
+            $http.post('/api/offers/' + root.$scope.eventActive.offers[0]._id, root.$scope.eventActive.offers[0]).then(response => {
+              $http.post('/api/events/' + root.$scope.eventActive._id, root.$scope.eventActive).then(response => {
                 $uibModalInstance.close();
               })
             });
@@ -168,7 +168,7 @@ class EventsAdminController {
 
     $scope.setActiveEvent = function(event) {
       $scope.eventActive = event;
-      console.log('event', event);
+
       _.each($scope.events, (item, i) => {
         $scope.events[i].active = false;
         if (item._id == event._id) {

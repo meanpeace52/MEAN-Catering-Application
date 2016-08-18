@@ -31,7 +31,10 @@ var EventSchema = new mongoose.Schema({
   isUpdated: Boolean,
   address: Object,
   paymentStatus: String,
-  offerId: String
+  offerId: String,
+  blocked: Boolean,
+  dateAccepted: Date,
+  dateConfirmed: Date
 });
 
 export default mongoose.model('Event', EventSchema);

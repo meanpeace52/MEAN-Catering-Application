@@ -8,23 +8,12 @@ import errors from './components/errors';
 import path from 'path';
 
 var bodyParser = require("body-parser");
-//var multer = require("multer");
-//var upload = multer({ dest: '/uploads/' }).single("logo");
-//var lusca = require('lusca');
 
 export default function(app) {
 
   app.use(bodyParser.json({limit: '50mb'}));
   app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
-  // Insert routes below
-  //app.use("/api/upload", function(req, res) {
-  //  console.log('upload1', req.body, req.file, req._file);
-  //  upload(req, res, function (err) {
-  //    res.send(req.file);
-  //    console.log('upload', req.file);
-  //    res.send(req.file);
-  //  });
-  //});
+
 
   app.use('/api/things', require('./api/thing'));
   app.use('/api/events', require('./api/event'));

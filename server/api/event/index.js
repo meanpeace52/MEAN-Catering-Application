@@ -19,6 +19,7 @@ router.post('/:id/isSentTo', controller.isSentTo);
 router.post('/:id/decline', controller.update);
 router.post('/:id/cancel', controller.update);
 router.patch('/:id', controller.update);
-router.delete('/:id', controller.destroy);
+router.delete('/:id', controller.deleteEvent);
+//router.delete('/:id', controller.destroy);
 
 module.exports = router;

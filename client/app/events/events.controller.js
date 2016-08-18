@@ -19,8 +19,8 @@ class EventsController {
     this.socket = socket;
     this.OffersService = OffersService;
     this.getCurrentUser = Auth.getCurrentUser;
+    this.user = this.getCurrentUser().$promise;
     this.isLoggedIn = Auth.isLoggedIn;
-    this.user = this.$scope.user = this.getCurrentUser();
     this.$scope.eventActive = null;
     this.$scope.events = [];
     this.$scope.displayed = [];
@@ -37,68 +37,92 @@ class EventsController {
     $scope.start24 = Date.parse(now) - (24 * 60 * 60 * 1000);
     $scope.start1 = Date.parse(now) - (60 * 60 * 1000);
 
-    this.$scope.query = ($scope.user.role == 'caterer' ? {showToCaterers: true, catererId: $scope.user._id, foodTypes: $scope.user.foodTypes, serviceTypes: $scope.user.serviceTypes} :  {userId: $scope.user._id});
+    this.getCurrentUser().$promise.then((user) => {
+      this.user = $scope.user = user;
+      if (user.role == 'caterer') {
+        $scope.query = {
+          showToCaterers: true,
+          catererId: user._id,
+          showFuture: true
+        }
+        if (user.foodTypes) $scope.query.foodTypes = user.foodTypes;
+        if (user.serviceTypes) $scope.query.serviceTypes = user.serviceTypes;
+        if (user.veganOffers) $scope.query.veganOffers = true;
+        else $scope.query.veganOffers = false;
+      } else {
+        $scope.query = {
+          userId: user._id,
+          showFuture: true
+        }
+      }
 
-    console.log('query', this.$scope.query);
+      console.log('query', $scope.query)
+
+    });
 
     this.pipe = function(tableState) {
-      $scope.tableState = (angular.isObject(tableState) && tableState ? tableState : $scope.tableState);
+      if ($scope.query) {
+        $scope.tableState = (angular.isObject(tableState) && tableState ? tableState : $scope.tableState);
+        $http.post('/api/events/dataset', $scope.query)
+        .then(response => {
+          let events = response.data;
+          $scope.newEventsCount = 0;
+          $scope.confirmedEventsCount = 0;
 
-      $http.post('/api/events/dataset', $scope.query).then(response => {
-        let events = response.data;
-        $scope.newEventsCount = 0;
-        $scope.confirmedEventsCount = 0;
-        console.log('events', events);
-        _.each(events, (event, i) => {
-          if (event.status == "cancelled" ||
-              ($scope.user.role == 'caterer' && _.indexOf(event.rejectedBy, $scope.user._id) >= 0) ||
-              ($scope.user.role == 'caterer' && event.status == 'confirmed' && event.confirmedBy !== $scope.user._id) ||
-              ($scope.user.role == 'caterer' && $scope.user.minprice && event.pricePerPerson < $scope.user.minprice )
-          ) {
-            events[i].drafted = true;
-          }
+          console.log('events', events);
 
-          let offersNumber = event.offers ? event.offers.length : 0;
-
-          if ($scope.user.role == 'caterer') {
-            let offerUrl = (event.offers && event.offers.length ? '/offers/' + event.offers[0]._id : '/offers/new'),
-              status = (event.offers && event.offers.length ? event.offers[0].status : null);
-
-            events[i].offerUrl = offerUrl;
-            events[i].offerStatus = (status !== 'declined' ? status : null);
-            events[i].offersNumber = offersNumber;
-          } else {
-            let offersInfo = '';
-            _.each(event.offers, (offer, j) => {
-              let status = offer.status;
-              offersInfo += '<div>' + offer.catererName + ' <span class="label label-info">' + status + '</span></div><hr class="popover-divider" />';
-              events[i].offersInfo = $sce.trustAsHtml(offersInfo);
-            });
-            events[i].offersNumber = offersNumber;
-          }
-        });
-
-        //$scope.events = events;
-
-        $scope.events = _.filter(events, (o) => {
-          if (o.status == 'confirmed') $scope.confirmedEventsCount++;
-
-          if ($scope.filter.dateFilter == '24') {
-            if (Date.parse(o.createDate) > $scope.start24) {
-              $scope.newEventsCount++;
+          _.each(events, (event, i) => {
+            if ($scope.user.role == 'caterer') {
+              if ((_.indexOf(event.rejectedBy, $scope.user._id) >= 0) ||
+                (event.status == 'confirmed' && event.confirmedBy !== $scope.user._id) ||
+                ($scope.user.minprice && event.pricePerPerson < $scope.user.minprice )) {
+                events[i].drafted = true;
+              }
             }
-          } else if ($scope.filter.dateFilter == '1') {
-            if (Date.parse(o.createDate) > $scope.start1) {
-              $scope.newEventsCount++;
+
+            let offersNumber = event.offers ? event.offers.length : 0;
+
+            if ($scope.user.role == 'caterer') {
+              let offerUrl = (event.offers && event.offers.length ? '/offers/' + event.offers[0]._id : '/offers/new'),
+                status = (event.offers && event.offers.length ? event.offers[0].status : null);
+
+              events[i].offerUrl = offerUrl;
+              events[i].offerStatus = (status !== 'declined' ? status : null);
+              events[i].offersNumber = offersNumber;
+            } else {
+              let offersInfo = '';
+              _.each(event.offers, (offer, j) => {
+                let status = offer.status;
+                offersInfo += '<div>' + offer.catererName + ' <span class="label label-info">' + status + '</span></div><hr class="popover-divider" />';
+                events[i].offersInfo = $sce.trustAsHtml(offersInfo);
+              });
+              events[i].offersNumber = offersNumber;
             }
-          }
+          });
 
-          return !o.drafted;
-        });
+          //$scope.events = events;
 
-        let filtered = $scope.tableState.search.predicateObject ? $filter('filter')($scope.events, $scope.tableState.search.predicateObject) : $scope.events,
-            start = $scope.tableState.pagination.start,
-            number = $scope.tableState.pagination.number;
+          $scope.events = _.filter(events, (o) => {
+            if (!o.drafted) {
+
+              if (o.status == 'confirmed') $scope.confirmedEventsCount++;
+
+              if ($scope.filter.dateFilter == '24') {
+                if (Date.parse(o.createDate) > $scope.start24) {
+                  $scope.newEventsCount++;
+                }
+              } else if ($scope.filter.dateFilter == '1') {
+                if (Date.parse(o.createDate) > $scope.start1) {
+                  $scope.newEventsCount++;
+                }
+              }
+              return o;
+            }
+          });
+
+          let filtered = $scope.tableState.search.predicateObject ? $filter('filter')($scope.events, $scope.tableState.search.predicateObject) : $scope.events,
+              start = $scope.tableState.pagination.start,
+              number = $scope.tableState.pagination.number;
 
           if ($scope.tableState.sort.predicate) {
             filtered = $filter('orderBy')(filtered, $scope.tableState.sort.predicate, $scope.tableState.sort.reverse);
@@ -107,7 +131,8 @@ class EventsController {
           $scope.displayed = filtered.slice(start, start + number);
           $scope.tableState.pagination.numberOfPages = Math.ceil(filtered.length / number);
           if ($rootScope.eventActive) $rootScope.$broadcast('eventActive', $rootScope.eventActive);
-      });
+        });
+      }
     }
 
     $scope.$watchGroup(['filter.dateFilter', 'filter.newEvents', 'filter.confirmedEvents'], () => {
@@ -115,37 +140,36 @@ class EventsController {
         $scope.start24 = Date.parse(now) - (24 * 60 * 60 * 1000);
         $scope.start1 = Date.parse(now) - (60 * 60 * 1000);
 
-      if ($scope.filter.newEvents) {
-        if ($scope.filter.dateFilter == 'All') {
+      if ($scope.query) {
+        if ($scope.filter.newEvents) {
+          if ($scope.filter.dateFilter == 'All') {
+            delete $scope.query.createDate;
+          } else if ($scope.filter.dateFilter == '24') {
+            $scope.query.createDate = $scope.start24;
+          } else if ($scope.filter.dateFilter == '1') {
+            $scope.query.createDate = $scope.start1;
+          }
+        } else {
           delete $scope.query.createDate;
-        } else if ($scope.filter.dateFilter == '24') {
-          $scope.query.createDate = $scope.start24;
-        } else if ($scope.filter.dateFilter == '1') {
-          $scope.query.createDate = $scope.start1;
         }
-      } else {
-        delete $scope.query.createDate;
-      }
 
-      if ($scope.filter.confirmedEvents) {
-        if ($scope.filter.dateFilter == 'All') {
+        if ($scope.filter.confirmedEvents) {
+          if ($scope.filter.dateFilter == 'All') {
+            delete $scope.query.confirmedDate;
+            $scope.query.status = 'confirmed';
+          } else if ($scope.filter.dateFilter == '24') {
+            $scope.query.confirmedDate = $scope.start24;
+            $scope.query.status = 'confirmed';
+          } else if ($scope.filter.dateFilter == '1') {
+            $scope.query.confirmedDate = $scope.start1;
+            $scope.query.status = 'confirmed';
+          }
+        } else {
           delete $scope.query.confirmedDate;
-          $scope.query.status = 'confirmed';
-        } else if ($scope.filter.dateFilter == '24') {
-          $scope.query.confirmedDate = $scope.start24;
-          $scope.query.status = 'confirmed';
-        } else if ($scope.filter.dateFilter == '1') {
-          $scope.query.confirmedDate = $scope.start1;
-          $scope.query.status = 'confirmed';
+          delete $scope.query.status;
         }
-      } else {
-        delete $scope.query.confirmedDate;
-        delete $scope.query.status;
+        root.pipe();
       }
-
-      console.log('query', $scope.query);
-
-      root.pipe();
     });
 
     var sync = $interval(root.pipe, (1000 * 60));

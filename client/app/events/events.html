@@ -32,6 +32,7 @@
                 <th st-sort="name">Name</th>
                 <th st-sort="pricePerPerson">Price</th>
                 <th st-sort="people">People</th>
+                <th>Veg</th>
                 <th st-sort="location" ng-if="vm.user.role == 'caterer'" style="width: 150px;">Location</th>
                 <th style="width: 150px;">Description</th>
                 <th st-sort="offerStatus" ng-if="vm.user.role == 'caterer'">Offer</th>
@@ -52,6 +53,7 @@
                 <th>
                   <input st-search="people" style="width: 50px;" class="input-sm form-control" type="search"/>
                 </th>
+                <th></th>
                 <th ng-if="vm.user.role == 'caterer'"  style="width: 150px;">
                   <input st-search="location" class="input-sm form-control" type="search"/>
                 </th>
@@ -74,6 +76,7 @@
                 <td style="max-width: 100px;">{{event.name}}</td>
                 <td>{{event.pricePerPerson}}</td>
                 <td>{{event.people}}</td>
+                <td>{{event.vegetarianMeals}}</td>
                 <td ng-if="vm.user.role == 'caterer'" style="width: 180px;"><a target="_blank" href="http://maps.google.com/?q={{event.location}}">{{event.location}}</a></td>
                 <td style="max-width: 180px;">{{event.description}}</td>
                 <td ng-if="vm.user.role == 'caterer'">

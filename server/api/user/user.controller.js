@@ -60,7 +60,7 @@ function handleEntityNotFound(res) {
  * restriction: 'admin'
  */
 export function index(req, res) {
-  return User.find({}, '-salt -password -provider').exec()
+  return User.find({ status: { $nin: ['pending', 'deleted'] } }, '-salt -password -provider').exec()
     .then(users => {
       res.status(200).json(users);
     })
@@ -69,7 +69,7 @@ export function index(req, res) {
 
 export function caterers(req, res) {
   //console.log('cc', req);
-  return User.find({'role': 'caterer'}, '-salt -password -provider').exec()
+  return User.find({role: 'caterer', status: { $nin: ['pending', 'deleted'] } }, '-salt -password -provider').exec()
     .then(users => {
       res.status(200).json(users);
     })
@@ -123,7 +123,7 @@ export function verify(req, res, next) {
       return newUser.save();
     })
     .then((user) => {
-      if (!user) {
+      if (!user || user.status == 'deleted') {
         return res.status(401).end();
       } else {
         TempUser.findByIdAndRemove(req.params.id).exec();
@@ -148,6 +148,20 @@ export function update(req, res) {
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
+
+/**
+ * Delete user
+ */
+export function deleteUser(req, res) {
+  if (req.body._id) {
+    delete req.body._id;
+  }
+  return User.findById(req.params.id).exec()
+    .then(handleEntityNotFound(res))
+    .then(saveUpdates({status: 'deleted'}))
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+}
 /**
  * Get a single user
  */
@@ -156,7 +170,7 @@ export function show(req, res, next) {
 
   return User.findById(userId).exec()
     .then(user => {
-      if (!user) {
+      if (!user || user.status == 'deleted') {
         return res.status(404).end();
       }
       res.json(user.profile);
@@ -211,7 +225,7 @@ export function reset(req, res, next) {
       return user.save();
     })
     .then((user) => {
-      if (!user) {
+      if (!user || user.status == 'deleted') {
         return res.status(401).end();
       } else {
         return res.status(200).end();
@@ -227,7 +241,7 @@ export function me(req, res, next) {
 
   return User.findOne({ _id: userId }, '-salt -password').exec()
     .then(user => { // don't ever give out the password or salt
-      if (!user) {
+      if (!user || user.status == 'deleted') {
         return res.status(401).end();
       }
       res.json(user);

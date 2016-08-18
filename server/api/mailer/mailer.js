@@ -42,11 +42,10 @@ function getEventMailList(event) {
     .then((users) => {
 
       let fltUsers = _.filter(users, (user) => {
-        if (user.minprice) {
-          return +user.minprice >= +event.pricePerPerson;
-        } else {
-          return true;
-        }
+        let count = 0;
+        if (!user.veganOffers && event.vegetarianMeals) count++;
+        if (user.minprice && +user.minprice > +event.pricePerPerson) count++;
+        return count > 0;
       });
 
       return _.map(fltUsers, (user) => {
