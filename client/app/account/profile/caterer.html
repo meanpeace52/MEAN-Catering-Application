@@ -28,9 +28,10 @@
 
                 <div class="row">
                   <div class="col-sm-4">
-                    <div class="form-group">
+                    <div class="form-group" ng-class="{ 'has-success': profileForm.phone.$valid && vm.profileSubmitted, 'has-error': profileForm.phone.$invalid && vm.profileSubmitted }">
                       <label>Phone</label>
-                      <input type="text" name="phone" class="form-control" ng-model="vm.user.phone"/>
+                      <input type="text" name="phone" class="form-control" ng-model="vm.user.phone" required />
+                      <p class="help-block" ng-show="profileForm.phone.$error.required && vm.profileSubmitted">A phone number is required</p>
                     </div>
                   </div>
                   <div class="col-sm-4">
@@ -40,9 +41,10 @@
                     </div>
                   </div>
                   <div class="col-sm-3">
-                    <div class="form-group">
+                    <div class="form-group" ng-class="{ 'has-success': profileForm.minprice.$valid && vm.profileSubmitted, 'has-error': profileForm.minprice.$invalid && vm.profileSubmitted }">
                       <label>Min Price per person</label>
-                      <input tooltip-placement="top" uib-tooltip='This is the minimum priced events that you want to view, this filters events you see.' type="text" name="minprice" class="form-control" ng-model="vm.user.minprice"/>
+                      <input tooltip-placement="top" uib-tooltip='This is the minimum priced events that you want to view, this filters events you see.' type="text" name="minprice" class="form-control" ng-model="vm.user.minprice" required />
+                      <p class="help-block" ng-show="profileForm.minprice.$error.required && vm.profileSubmitted">A minimum price is required</p>
                     </div>
                   </div>
                 </div>
@@ -85,7 +87,7 @@
                   </div>
                   <div class="row">
                     <div class="col-sm-6">
-                      <div class="form-group" ng-class="{ 'has-success': profileForm.contact_email.$valid && vm.profileSubmitted, 'has-error': profileForm.email.$invalid && vm.profileSubmitted }">
+                      <div class="form-group" ng-class="{ 'has-success': profileForm.contact_email.$valid && vm.profileSubmitted, 'has-error': profileForm.contact_email.$invalid && vm.profileSubmitted }">
                         <label>Email</label>
                         <input tooltip-placement="top" uib-tooltip='This is the email for the Administrator who will be the main contact for Catering Ninja to work with.  It can be the same as the user email to login.' type="text" name="contact_email" class="form-control" ng-model="vm.user.contact_email" required/>
                         <p class="help-block" ng-show="profileForm.contact_email.$error.required && vm.profileSubmitted">An email is required</p>
@@ -111,23 +113,23 @@
                       </div>
                     </div>
                     <div class="col-sm-6">
-                      <div class="form-group" ng-class="{ 'has-success': profileFrom.ninja_lastname.$valid && vm.profileSubmitted, 'has-error': profileFrom.ninja_lastname.$invalid && vm.profileSubmitted }">
+                      <div class="form-group" ng-class="{ 'has-success': profileForm.ninja_lastname.$valid && vm.profileSubmitted, 'has-error': profileForm.ninja_lastname.$invalid && vm.profileSubmitted }">
                         <label>Last Name</label>
                         <input type="text" name="ninja_lastname" class="form-control" ng-model="vm.user.ninja_lastname" required/>
-                        <p class="help-block" ng-show="profileFrom.name.$error.required && vm.profileSubmitted">A last name is required</p>
+                        <p class="help-block" ng-show="profileForm.ninja_lastname.$error.required && vm.profileSubmitted">A last name is required</p>
                       </div>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-sm-6">
-                      <div class="form-group" ng-class="{ 'has-success': profileFrom.ninja_email.$valid && vm.profileSubmitted, 'has-error': profileFrom.ninja_email.$invalid && vm.profileSubmitted }">
+                      <div class="form-group" ng-class="{ 'has-success': profileForm.ninja_email.$valid && vm.profileSubmitted, 'has-error': profileForm.ninja_email.$invalid && vm.profileSubmitted }">
                         <label>Email</label>
                         <input tooltip-placement="top" uib-tooltip='Enter the email that customers can reach out to with questions'  type="text" name="ninja_email" class="form-control" ng-model="vm.user.ninja_email" required/>
                         <p class="help-block" ng-show="profileFrom.ninja_email.$error.required && vm.profileSubmitted">An email is required</p>
                       </div>
                     </div>
                     <div class="col-sm-6">
-                      <div class="form-group" ng-class="{ 'has-success': profileFrom.ninja_phone.$valid && vm.profileSubmitted, 'has-error': profileFrom.ninja_phone.$invalid && vm.profileSubmitted }">
+                      <div class="form-group" ng-class="{ 'has-success': profileForm.ninja_phone.$valid && vm.profileSubmitted, 'has-error': profileForm.ninja_phone.$invalid && vm.profileSubmitted }">
                         <label>Phone</label>
                         <input tooltip-placement="top" uib-tooltip='Enter the contact phone that customers can reach out to with questions' type="text" name="ninja_phone" class="form-control" ng-model="vm.user.ninja_phone" required/>
                         <p class="help-block" ng-show="profileFrom.ninja_phone.$error.required && vm.profileSubmitted">A phone number is required</p>

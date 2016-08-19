@@ -48,18 +48,21 @@
                 </div>
 
                 <p ng-if="offer.counter"><b>Price per person:</b> ${{offer.pricePerPerson}}</p>
-                <p ng-if="offer.counter"><b>Counter:</b> ${{offer.counter}}, Total with counter: <b><mark>${{offer.invoice.total}}</mark></b> </p>
-                <p ng-if="!offer.counter">Total: <b><mark>${{offer.priceWithCounter}}</mark></b> </p>
+                <p ng-if="offer.counter"><b>Counter:</b> ${{offer.counter}}, Total with counter: <b><mark>${{offer.priceWithCounter}}</mark></b> </p>
+                <p ng-if="!offer.counter">Subtotal: <b><mark>${{offer.invoice.service}}</mark></b> </p>
+                <p ng-if="!offer.counter">Tax: <b><mark>${{offer.invoice.tax}}</mark></b> </p>
+                <p ng-if="!offer.counter">Total: <b><mark>${{offer.invoice.total}}</mark></b> </p>
                 <p ng-if="offer.counterReason"><b>Counter Reason:</b> {{offer.counterReason}}</p>
                 <p ng-if="offer.contactInfo"><b>Contact Info:</b> {{offer.contactInfo}}</p>
                 <p ng-if="offer.offerDescription"><b>Offer Description:</b> <pre>{{offer.offerDescription}}</pre></p>
 
               </div>
               <div class="col-sm-6">
-                <div ng-if="offer.caterer.logo" class="img-thumbnail" width="300" ng-draw="{file: offer.caterer.logo, width: 300}">
-                <p ng-if="offer.caterer.website"><b>Website:</b> {{offer.caterer.website}}</p>
-                <p ng-if="offer.caterer.location"><b>Location:</b> {{offer.caterer.location}}</p>
-                <p ng-if="offer.caterer.description"><b>Description:</b> {{offer.caterer.description}}</p>
+                <div ng-if="offer.caterer.logo" class="img-thumbnail" width="300" ng-draw="{file: offer.caterer.logo, width: 300}"></div>
+                  <p ng-if="offer.caterer.website"><b>Website:</b> {{offer.caterer.website}}</p>
+                  <p ng-if="offer.caterer.location"><b>Location:</b> {{offer.caterer.location}}</p>
+                  <p ng-if="offer.caterer.description"><b>Description:</b> {{offer.caterer.description}}</p>
+
               </div>
             </div>
           </div>

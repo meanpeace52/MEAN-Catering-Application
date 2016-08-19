@@ -6,7 +6,7 @@
           <div class="filter-events">
             <div class="row">
               <div class="col-sm-3">
-                <label>Filter By</label>
+                <label tooltip-placement="top" uib-tooltip='Shows only events from the last 24hr or last hour. Once you select the filter you must check the box to the right to turn it on or off.'>Filter By</label>
                 <select class="input-sm form-control" ng-model="filter.dateFilter">
                   <option value="All" selected >All</option>
                   <option value="24">Last 24 Hr</option>
@@ -14,10 +14,10 @@
                 </select>
               </div>
               <div class="col-sm-4">
-                <label>Select to Filter</label>
+                <label tooltip-placement="top" uib-tooltip='Click the check box to turn on and off the filters'>Select to Filter</label>
                 <div class="form-group">
-                  <label><input type="checkbox" name="role" ng-model="filter.newEvents" /> <span ng-if="newEventsCount > 0" class="label label-warning">{{newEventsCount}}</span> # New of events</label>
-                  <label><input type="checkbox" name="role" ng-model="filter.confirmedEvents" /> <span ng-if="confirmedEventsCount > 0" class="label label-success">{{confirmedEventsCount}}</span> # Confirmed events</label>
+                  <label tooltip-placement="top" uib-tooltip='If you select the filter on the left, a yellow box will show how many events fit that filter. Click the check box to filter only these results.'><input type="checkbox" name="role" ng-model="filter.newEvents" /> <span ng-if="newEventsCount > 0" class="label label-warning">{{newEventsCount}}</span> # New of events</label>
+                  <label tooltip-placement="top" uib-tooltip='The green box will quickly let you know how many confirmed events you have. To filter only those, click the check box.'><input type="checkbox" name="role" ng-model="filter.confirmedEvents" /> <span ng-if="confirmedEventsCount > 0" class="label label-success">{{confirmedEventsCount}}</span> # Confirmed events</label>
                 </div>
               </div>
             </div>
