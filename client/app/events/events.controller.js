@@ -292,7 +292,7 @@ class EventsController {
     this.$scope.isInvoiceMode = true;
     this.$scope.eventForInvoice = angular.copy(event);
     this.$scope.eventForInvoice.offer = this.$scope.eventForInvoice.offers.filter((offer) => {
-      console.log(this.$scope.eventForInvoice);
+      console.log('this.$scope.eventForInvoice', this.$scope.eventForInvoice);
       return (this.user.role === 'user' && offer.paymentStatus === 'paid') || offer.status === 'completed';
     })[0];
     $event.stopPropagation();

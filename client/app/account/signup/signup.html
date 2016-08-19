@@ -104,9 +104,10 @@
       <div class="panel panel-default" style="padding: 10px; background-color: #e7e7e7 " ng-if="vm.user.role">
         <div class="row">
           <div class="col-sm-6">
-            <div class="form-group"  ng-if="vm.user.role" >
+            <div class="form-group" ng-class="{ 'has-success': form.companyName.$valid && vm.submitted, 'has-error': form.companyName.$invalid && vm.submitted }" ng-if="vm.user.role">
               <label>Company Name</label>
-              <input type="text" name="companyName" class="form-control" ng-model="vm.user.companyName" />
+              <input type="text" name="companyName" class="form-control" ng-model="vm.user.companyName" required />
+              <p class="help-block" ng-show="form.companyName.$error.required && vm.submitted">A company name is required</p>
             </div>
           </div>
           <div class="col-sm-6">

@@ -8,7 +8,7 @@
   <div class="row">
     <div class="offers-pills">
       <uib-tabset active="activePill" vertical="true" type="pills">
-        <uib-tab ng-repeat="offer in offers" heading="{{offer.caterer.companyName}}">
+        <uib-tab ng-repeat="offer in offers" heading="{{offer.catererName}}">
           <h3><small>Offer from</small> <b>{{offer.catererName}}</b>, <small>Total price:</small> <b><mark>${{offer.invoice.total}}</mark></b> <span class="label label-info">{{offer.paymentStatus || offer.status}}</span></h3>
           <div ng-if="offer.status == 'sent' && !offer.drafted">
             <hr>
