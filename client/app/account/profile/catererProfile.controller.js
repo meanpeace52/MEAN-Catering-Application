@@ -69,8 +69,6 @@ class CatererProfileController {
     this.$scope.foodTypes = this.ftService.getFoodTypes().then((data)=> {
       this.$scope.foodTypes = data;
     });
-
-    this.$scope.ft = {};
   }
 
   addFoodType() {
@@ -139,7 +137,6 @@ class CatererProfileController {
     }
 
     this.profileSubmitted = true;
-    console.log(form);
 
     if (userModel && form.$valid) {
       //this.payments.verifyAddress(userModel.address).then(address => {

@@ -80,7 +80,8 @@ UserSchema
       'veganOffers': this.veganOffers,
       'role': this.role,
       'status': this.status,
-      'logo': this.logo
+      'logo': this.logo,
+      'address': this.address
     };
   });
 

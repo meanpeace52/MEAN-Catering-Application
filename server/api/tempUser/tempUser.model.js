@@ -26,7 +26,7 @@ var TempUserSchema = new Schema({
   contactInfo: String,
   name: String,
   companyName: String,
-  minprice: String,
+  minprice: Number,
   location: String,
   website: String,
   phone: String,
@@ -34,10 +34,19 @@ var TempUserSchema = new Schema({
   description: String,
   veganOffers: Boolean,
   provider: String,
+  contact_email: String,
+  contact_phone: String,
+  ninja_firstname: String,
+  ninja_lastname: String,
+  ninja_email: String,
+  ninja_phone: String,
   salt: String,
   logo: String,
-  status: String //active, pending
+  status: String, //active, pending, deleted
   //logo: { data: Buffer, contentType: String }
+  payableAccount: Object, // for a caterer
+  payableAccountId: String, // for an user
+  address: Object
 });
 
 /**
@@ -52,10 +61,17 @@ TempUserSchema
       'firstname': this.firstname,
       'lastname': this.lastname,
       'foodTypes': this.foodTypes,
+      'serviceTypes': this.serviceTypes,
       'contactInfo': this.contactInfo,
       'companyName': this.companyName,
       'name': this.name,
       'minprice': this.minprice,
+      'contact_email' : this.contact_email,
+      'contact_phone' : this.contact_phone,
+      'ninja_firstname' : this.ninja_firstname,
+      'ninja_lastname' : this.ninja_lastname,
+      'ninja_email' : this.ninja_email,
+      'ninja_phone' : this.ninja_phone,
       'location': this.location,
       'website': this.website,
       'phone': this.phone,
@@ -64,7 +80,8 @@ TempUserSchema
       'veganOffers': this.veganOffers,
       'role': this.role,
       'status': this.status,
-      'logo': this.logo
+      'logo': this.logo,
+      'address': this.address
     };
   });
 

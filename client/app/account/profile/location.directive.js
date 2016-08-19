@@ -35,6 +35,7 @@ angular.module('cateringApp')
         if (scope.vm.user && scope.vm.user.location) {
           scope.vm.user.location = address;
           scope.vm.user.address = getAddress(place);
+          console.log('we here in user', scope.vm.user);
         }
         if (scope.fm && scope.fm.location) {
           scope.fm.location = address;
