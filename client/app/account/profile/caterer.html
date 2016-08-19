@@ -125,14 +125,14 @@
                       <div class="form-group" ng-class="{ 'has-success': profileForm.ninja_email.$valid && vm.profileSubmitted, 'has-error': profileForm.ninja_email.$invalid && vm.profileSubmitted }">
                         <label>Email</label>
                         <input tooltip-placement="top" uib-tooltip='Enter the email that customers can reach out to with questions'  type="text" name="ninja_email" class="form-control" ng-model="vm.user.ninja_email" required/>
-                        <p class="help-block" ng-show="profileFrom.ninja_email.$error.required && vm.profileSubmitted">An email is required</p>
+                        <p class="help-block" ng-show="profileForm.ninja_email.$error.required && vm.profileSubmitted">An email is required</p>
                       </div>
                     </div>
                     <div class="col-sm-6">
                       <div class="form-group" ng-class="{ 'has-success': profileForm.ninja_phone.$valid && vm.profileSubmitted, 'has-error': profileForm.ninja_phone.$invalid && vm.profileSubmitted }">
                         <label>Phone</label>
                         <input tooltip-placement="top" uib-tooltip='Enter the contact phone that customers can reach out to with questions' type="text" name="ninja_phone" class="form-control" ng-model="vm.user.ninja_phone" required/>
-                        <p class="help-block" ng-show="profileFrom.ninja_phone.$error.required && vm.profileSubmitted">A phone number is required</p>
+                        <p class="help-block" ng-show="profileForm.ninja_phone.$error.required && vm.profileSubmitted">A phone number is required</p>
                       </div>
                     </div>
                   </div>

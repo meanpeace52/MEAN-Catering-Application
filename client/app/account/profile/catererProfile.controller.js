@@ -150,7 +150,7 @@ class CatererProfileController {
             this.profileSaved = true;
             this.profileSubmitted = false;
             this.$timeout(function() {
-              root.saved = false;
+              root.profileSaved = false;
             }, 3000);
           })
           .catch(err => {
