@@ -71,7 +71,8 @@ class OffersController {
         if (offer.invoice) {
           offer.priceWithCounter = offer.invoice.total;
         } else if (offer.counter) {
-          offer.priceWithCounter = offer.pricePerPerson * this.event.people - offer.counter;
+          offer.priceWithCounter = offer.counter * this.event.people;
+          //offer.priceWithCounter = offer.pricePerPerson * this.event.people - offer.counter;
         } else {
           offer.priceWithCounter = offer.pricePerPerson * this.event.people;
         }
