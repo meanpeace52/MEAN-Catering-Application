@@ -73,8 +73,10 @@ class EventsEditController {
     })
     .then(() => {
       this.toggleCat();
-      this.$scope.$watch('filter.selectAll', () => {
-        this.toggleAll();
+      this.$scope.$watch('filter.selectAll', (newValue, oldValue) => {
+        if(newValue !== oldValue){
+          this.toggleAll();
+        }
       });
     });
 
