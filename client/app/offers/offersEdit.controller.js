@@ -74,14 +74,61 @@ class OffersEditController {
   }
 
   sendRequest(form) {
-
     if (!this.user.payableAccount) {
-      let saving = this.saveDraft(form, false);
+      /*let saving = this.saveDraft(form, false);
       if (saving) {
         saving.then(() => {
           this.$state.go('dwolla');
         });
       }
+
+      if (offerModel) {
+
+        return this.$http.put(url, offerModel)
+          .then(response => {
+            this.saved = true;
+            if (redirect) {
+
+            }
+          })
+        .catch(err => {
+          this.errors.other = err.message;
+        })
+      }*/
+
+      let offerModel = this.$scope.fm,
+      url = '/api/offers/' + this.$scope.fm._id;
+
+      offerModel.date = new Date();
+
+      if(!offerModel.status) offerModel.status = 'draft';
+
+      if (offerModel) {
+          let total = offerModel.pricePerPerson * this.event.people;
+          if (offerModel.counter) {
+            total = offerModel.counter * this.event.people;
+          }
+          //total = total.toFixed(2);
+          this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
+            offerModel.invoice = {
+              pricePerPerson: this.event.pricePerPerson,
+              people: this.event.people,
+              counter: offerModel.counter || 0,
+              service: total,
+              tax: tax,
+              total: total + tax
+            };
+
+            this.$http.put(url, offerModel).then(response => {
+              this.saved = true;
+              this.$state.go('dwolla',{offer: response.data});
+            })
+            .catch(err => {
+                this.errors.other = err.message;
+            });
+          });
+      }
+
     } else {
       let offerModel = this.$scope.fm;
       offerModel.catererId = this.user._id;
@@ -96,23 +143,23 @@ class OffersEditController {
         //total = total.toFixed(2);
         this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
           offerModel.invoice = {
-          pricePerPerson: event.pricePerPerson,
-          people: event.people,
-          counter: offerModel.counter || 0,
-          service: total,
-          tax: tax,
-          total: total + tax
-        };
-        this.$http.post('/api/offers/' + this.$scope.fm._id, offerModel).then(response => {
-          this.sent = true;
-        //this.$state.go('events');
-        //this.$scope.fm = {};
-      })
-      .catch(err => {
-          this.errors.other = err.message;
-      });
-      });
+            pricePerPerson: this.event.pricePerPerson,
+            people: this.event.people,
+            counter: offerModel.counter || 0,
+            service: total,
+            tax: tax,
+            total: total + tax
+          };
 
+          this.$http.post('/api/offers/' + this.$scope.fm._id, offerModel).then(response => {
+            this.sent = true;
+            //this.$state.go('events');
+            //this.$scope.fm = {};
+          })
+            .catch(err => {
+                this.errors.other = err.message;
+            });
+        });
       }
     }
 
@@ -125,22 +172,34 @@ class OffersEditController {
 
   saveDraft(form, redirect=true) {
     let offerModel = this.$scope.fm,
-      url = '/api/offers/' + this.$scope.fm._id;
+    url = '/api/offers/' + this.$scope.fm._id;
 
     if(!offerModel.status) offerModel.status = 'draft';
 
     if (offerModel) {
-      return this.$http.put(url, offerModel)
-        .then(response => {
+      let total = offerModel.pricePerPerson * this.event.people;
+      if (offerModel.counter) {
+        total = offerModel.counter * this.event.people;
+      }
+      //total = total.toFixed(2);
+      this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
+        offerModel.invoice = {
+          pricePerPerson: this.event.pricePerPerson,
+          people: this.event.people,
+          counter: offerModel.counter || 0,
+          service: total,
+          tax: tax,
+          total: total + tax
+        };
+
+        return this.$http.put(url, offerModel).then(response => {
           this.saved = true;
-          if (redirect) {
-            //this.$state.go('events');
-          }
         })
-      .catch(err => {
-        this.errors.other = err.message;
-      })
-    }
+        .catch(err => {
+            this.errors.other = err.message;
+        });
+      });
+    }    
   }
 }
 

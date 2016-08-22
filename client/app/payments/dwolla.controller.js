@@ -1,10 +1,7 @@
 'use strict';
 
 class DwollaController {
-
   constructor(authCode, $http, $state, $stateParams, $rootScope, Auth, PaymentService) {
-    //let user = Auth.getCurrentUser();
-
     this.user = Auth.getCurrentUser();
     this.PaymentService = PaymentService;
     this.offer = $stateParams.offer;
@@ -17,7 +14,6 @@ class DwollaController {
 
     // After Dwolla Auth
     if(!this.user.payableAccount && authCode){
-      console.log("authcode process...");
       this.isAuth = true;
 
       PaymentService.dwollaAuth(authCode).then(response => {
@@ -31,8 +27,9 @@ class DwollaController {
           .then(res => {
             let user = res.data;
             if (user.payableAccount) {
-              let offerModel = JSON.parse(localStorage.getItem('SAVING_OFFER'));
+              this.user.payableAccount = user.payableAccount;
 
+              let offerModel = JSON.parse(localStorage.getItem('SAVING_OFFER'));
               offerModel.status = 'sent';
 
               if (offerModel) {
