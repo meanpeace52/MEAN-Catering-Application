@@ -5,6 +5,9 @@ angular.module('cateringApp')
     $stateProvider
       .state('dwolla', {
         url: '/dwolla',
+        params: {
+          offer:{}
+        },
         templateUrl: 'app/payments/dwolla.html',
         controller: 'DwollaController',
         controllerAs: 'vm',
