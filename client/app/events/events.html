@@ -101,8 +101,8 @@
                     <a class="btn btn-xs btn-default delete-event" ng-click="vm.delete(event)" title="Delete event"><i class="fa fa-times"></i></a>
                   </div>
                   <div ng-if="(event.status === 'confirmed' && event.paymentStatus === 'paid') || event.status === 'completed'">
-                    <a class="btn btn-xs btn-success" ng-click="vm.showInvoice($event, event)" ng-if="vm.user.role == 'user">Invoice</a>
-                    <a class="btn btn-xs btn-success" ng-click="vm.showInvoice($event, event)" ng-if="vm.user.role == 'caterer">Payable</a>
+                    <a class="btn btn-xs btn-success" ng-click="vm.showInvoice($event, event)" ng-if="vm.user.role == 'user'">Invoice</a>
+                    <a class="btn btn-xs btn-success" ng-click="vm.showInvoice($event, event)" ng-if="vm.user.role == 'caterer'">Payable</a>
                   </div>
                 </td>
               </tr>
