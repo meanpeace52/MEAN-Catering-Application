@@ -141,8 +141,8 @@
           </p>
           <p class="help-block">{{ vm.errors.other }}</p>
         </div>
-        <div ng-if="vm.saved" class="alert alert-success">Event is successfully saved</div>
-        <div ng-if="vm.sent" class="alert alert-success">Event is successfully sent to restaurants</div>
+        <div ng-if="vm.saved" class="alert alert-success">Offer is successfully saved</div>
+        <div ng-if="vm.sent" class="alert alert-success">Offer is successfully sent to Customer</div>
         <div>
           <div>
             <button class="btn btn-primary" type="submit" ng-click="vm.sendRequest(form)"  ng-if="fm.status !== 'confirmed' && fm.status !== 'accepted' && fm.status !== 'cancelled' && !vm.sent">
