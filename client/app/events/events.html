@@ -88,8 +88,7 @@
                   </span>
                   <span ng-if="vm.user.role == 'caterer' && event.status !== 'completed'">
                     <a class="btn btn-xs btn-default" ng-if="event.offerStatus" href="{{event.offerUrl}}">Edit Offer</a>
-                    <!--<a class="btn btn-xs btn-default" ng-if="!event.offerStatus && !query.showPast" href="{{event.offerUrl}}">Create Offer</a>-->
-                    <a class="btn btn-xs btn-default" ng-if="!event.offerStatus" href="{{event.offerUrl}}">Create Offer</a>
+                    <a class="btn btn-xs btn-default" ng-if="!event.offerStatus && !query.showPast" href="{{event.offerUrl}}">Create Offer</a>
                   </span>
                 </td>
                 <td>
