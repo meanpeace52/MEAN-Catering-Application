@@ -120,6 +120,9 @@ export function dataset(req, res) {
   //if (!isAdmin) query.date = { $gte: today };
   if (req.body.showFuture) query.date = { $gte: today };
   if (req.body.showPast) query.date = { $lt: today };
+  if (req.body.date) query.date = req.body.date;
+
+  if (req.body.paymentStatus) query.paymentStatus = req.body.paymentStatus;
 
   if (req.body.confirmedDate && req.body.createDate && req.body.status) {
     let newExpression = {},
