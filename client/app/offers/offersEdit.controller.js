@@ -25,9 +25,12 @@ class OffersEditController {
       this.$scope.offer = data;
     });
 
+    this.$scope.isPast = false;
+
     this.eventId =  $rootScope.eventActive || $cookies.get('eventActive');
     this.event = EventsService.getEventById(this.eventId).then((data) => {
       this.event = data;
+      if (Date.parse(this.event.date) < Date.parse(new Date())) this.$scope.isPast = true;
     });
 
     $scope.$on('$destroy', function () {
@@ -70,7 +73,7 @@ class OffersEditController {
   }
 
   cancelChanges() {
-    this.$state.go('events');
+    this.$state.go('events', { time: 'active' });
   }
 
   sendRequest(form) {
@@ -115,12 +118,10 @@ class OffersEditController {
 
       }
     }
-
   }
 
-
   backToList() {
-    this.$state.go('events');
+    this.$state.go('events', { time: 'active' });
   }
 
   saveDraft(form, redirect=true) {

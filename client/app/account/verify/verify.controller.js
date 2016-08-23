@@ -22,7 +22,7 @@ class VerifyController {
         if (user.role === 'caterer') {
           root.$state.go('caterer-profile');
         } else {
-          root.$state.go('events');
+          root.$state.go('events', { time: 'active' });
         }
       }, 2000);
     })

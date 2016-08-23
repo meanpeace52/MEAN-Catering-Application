@@ -21,9 +21,14 @@ class OffersNewController {
 
     this.$scope.fm = {};
 
+    this.$scope.isPast = false;
+
     this.eventId =  $rootScope.eventActive || $cookies.get('eventActive');
     this.event = EventsService.getEventById(this.eventId).then((data) => {
       this.event = data;
+      if (Date.parse(this.event.date) < Date.parse(new Date())) {
+        this.$scope.isPast = true;
+      }
       this.$scope.includedInPrice = this.incService.getIncludedInPrice().then((data)=> {
         this.$scope.includedInPrice = _.map(data, (item, i) => {
           if (_.indexOf(this.event.includedInPrice, item._id) < 0) {
@@ -48,7 +53,7 @@ class OffersNewController {
   }
 
   cancelChanges() {
-    this.$state.go('events');
+    this.$state.go('events', { time: 'active' });
   }
 
   sendRequest(form) {
@@ -98,7 +103,7 @@ class OffersNewController {
   }
 
   backToList() {
-    this.$state.go('events');
+    this.$state.go('events', { time: 'active' });
   }
 
   saveDraft(form, redirect=true) {

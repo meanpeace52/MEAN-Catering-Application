@@ -37,7 +37,7 @@ class DwollaController {
 
               if (offerModel) {
                 $http.post('/api/offers/' + offerModel._id, offerModel).then(response => {
-                  $state.go('events');
+                  $state.go('events', { time: 'active' });
                 })
                 .catch(err => {
                   //this.errors.other = err.message;

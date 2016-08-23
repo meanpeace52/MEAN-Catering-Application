@@ -42,8 +42,7 @@ class EventsController {
       if (user.role == 'caterer') {
         $scope.query = {
           showToCaterers: true,
-          catererId: user._id,
-          showFuture: true
+          catererId: user._id
         }
         if (user.foodTypes) $scope.query.foodTypes = user.foodTypes;
         if (user.serviceTypes) $scope.query.serviceTypes = user.serviceTypes;
@@ -51,11 +50,14 @@ class EventsController {
         else $scope.query.veganOffers = false;
       } else {
         $scope.query = {
-          userId: user._id,
-          showFuture: true
+          userId: user._id
         }
       }
 
+      if (this.$state.params.time === 'active' || !this.$state.params.time) $scope.query.showFuture = true;
+      else if (this.$state.params.time === 'past') $scope.query.showPast = true;
+
+      console.log('params', this.$state.params)
       console.log('query', $scope.query)
 
     });

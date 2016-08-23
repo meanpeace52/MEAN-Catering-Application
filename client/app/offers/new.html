@@ -144,7 +144,7 @@
         <div ng-if="vm.saved" class="alert alert-success">Offer is successfully saved</div>
         <div ng-if="vm.sent" class="alert alert-success">Offer is successfully sent to Customer</div>
         <div>
-          <div>
+          <div ng-if="!isPast">
             <button class="btn btn-primary" type="submit" ng-click="vm.sendRequest(form)"  ng-if="fm.status !== 'confirmed' && fm.status !== 'accepted' && fm.status !== 'cancelled' && !vm.sent">
               Send Offer
             </button>

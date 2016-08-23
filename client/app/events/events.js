@@ -3,7 +3,7 @@
 angular.module('cateringApp')
   .config(function($stateProvider) {
     $stateProvider.state('events', {
-      url: '/events',
+      url: '/events/:time',
       templateUrl: 'app/events/events.html',
       controller: 'EventsController',
       controllerAs: 'vm',

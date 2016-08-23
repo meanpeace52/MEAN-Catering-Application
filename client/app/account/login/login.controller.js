@@ -25,7 +25,7 @@ class LoginController {
         .then((user) => {
           // Logged in, redirect to home
           if (user.role === 'admin') this.$state.go('admin');
-          else this.$state.go('events');
+          else this.$state.go('events', { time: 'active' });
         })
         .catch(err => {
           this.errors.other = err.message;

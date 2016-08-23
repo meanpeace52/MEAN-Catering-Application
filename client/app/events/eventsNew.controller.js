@@ -360,7 +360,7 @@ class EventsNewController {
           this.$http.post(url, eventModel)
             .then(response => {
               this.sent = true;
-              this.$state.go('events');
+              this.$state.go('events', { time: 'active' });
             })
             .catch(err => {
               this.errors.other = err.message;
@@ -375,7 +375,7 @@ class EventsNewController {
   }
 
   cancel() {
-    this.$state.go('events');
+    this.$state.go('events', { time: 'active' });
   }
 
   saveDraft(form) {
