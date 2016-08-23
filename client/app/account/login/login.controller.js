@@ -20,7 +20,12 @@ class LoginController {
         })
         .then(() => {
           // Logged in, redirect to home
-          this.$state.go('events');
+          return this.Auth.getCurrentUser();
+        })
+        .then((user) => {
+          // Logged in, redirect to home
+          if (user.role === 'admin') this.$state.go('admin');
+          else this.$state.go('events');
         })
         .catch(err => {
           this.errors.other = err.message;
