@@ -19,6 +19,16 @@ class StripeController {
       .catch(handleError(res));
   }
 
+  update(req, res){
+    return stripe.customers.update(req.body.id, {
+      card: req.body.card,
+      description: req.body.description,
+      email: req.body.email
+    })
+      .then(respondWithResult(res))
+      .catch(handleError(res));
+  }
+
   auth(req, res) {
     return _auth(req.body.offerId)
       .then(respondWithResult(res))

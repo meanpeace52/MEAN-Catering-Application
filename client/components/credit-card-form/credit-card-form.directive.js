@@ -7,6 +7,7 @@ angular.module('cateringApp')
       restrict: 'E',
       scope: {
         verifier: '=?',
+        ccupdate:'=',
         user: '=',
         event: '='
       },

@@ -389,6 +389,7 @@ class EventsNewController {
     if (eventModel && form.$valid) {
       //return this.payments.verifyAddress(eventModel.address).then(address => {
         //eventModel.address = address;
+
         return this.$http.post('/api/events/new', eventModel)
           .then(response => {
             this.saved = true;

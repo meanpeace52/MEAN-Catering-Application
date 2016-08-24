@@ -8,6 +8,7 @@ class CreditCardController {
     this.$location = $location;
     this.$state = $state;
     this.error = null;
+    this.ccupdateSuccess = false;
 
     $scope.stripeCallback = this.stripeCallback.bind(this);
 
@@ -32,7 +33,16 @@ class CreditCardController {
   bindCard(token) {
     return this.$http.post('/api/payments/card/verify', {
       card: token,
-      description: `Verified credit card for ${this.user.name} <${this.user.email}>`,
+      description: `Verified credit card for ${this.user.firstname} ${this.user.lastname} <${this.user.email}>`,
+      email: this.user.email
+    });
+  }
+
+  updateCard(token){
+    return this.$http.post('/api/payments/card/update', {
+      id: this.user.payableAccountId,
+      card: token,
+      description: `Updated credit card for ${this.user.firstname} ${this.user.lastname} <${this.user.email}>`,
       email: this.user.email
     });
   }
@@ -43,9 +53,11 @@ class CreditCardController {
       this.error = result.error.message ? result.error.message : result.error;
     } else {
       this.error = null;
+
       if (this.verifier) {
         this.bindCard(result.id).then(result => {
           this.user.payableAccountId = result.data.id;
+
           this.$http.post(`/api/users/${this.user._id}`, {
             payableAccountId: result.data.id
           });
@@ -71,6 +83,16 @@ class CreditCardController {
                 });
           }
           this.$state.go('events', { time: 'active' });
+        });
+      }
+
+      if(this.ccupdate){
+        this.updateCard(result.id).then(result => {
+          //this.$state.go('customer-profile');
+          this.ccupdateSuccess = true;
+        })                
+        .catch(err => {
+            this.errors.other = err.message;
         });
       }
 

@@ -12,6 +12,7 @@ router.post('/taxes/lookup', TaxesController.lookup);
 router.post('/card/auth', StripeController.auth);
 router.post('/card/capture', StripeController.capture);
 router.post('/card/verify', StripeController.verify);
+router.post('/card/update', StripeController.update);
 router.get('/card/token', StripeController.getToken);
 router.get('/dwolla/startAuth', DwollaController.startAuth);
 router.get('/dwolla/endAuth', DwollaController.endAuth);
