@@ -66,7 +66,8 @@ class OffersController {
     let acceptedIndex = -1;
     let offers = _.filter(this.$scope.offers, (offer, i) => {
       //if (offer.status == 'accepted' || offer.status == 'confirmed') acceptedIndex = i;
-      if (this.event.status !== 'accepted' && this.event.status !== 'confirmed') {
+      //if (this.event.status !== 'accepted' && this.event.status !== 'confirmed') {
+      if (this.event.status !== 'confirmed') {
         if (offer.status == 'cancelled') offer.drafted = true;
         if (offer.invoice) {
           offer.priceWithCounter = offer.invoice.total;
@@ -88,7 +89,7 @@ class OffersController {
         return offer;
       }
 
-      if (this.event.status == 'accepted') return offer.status == 'accepted';
+      //if (this.event.status == 'accepted') return offer.status == 'accepted';
       if (this.event.status == 'confirmed') return offer.status == 'confirmed';
     });
 

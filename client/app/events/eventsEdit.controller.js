@@ -73,8 +73,10 @@ class EventsEditController {
     })
     .then(() => {
       this.toggleCat();
-      this.$scope.$watch('filter.selectAll', () => {
-        this.toggleAll();
+      this.$scope.$watch('filter.selectAll', (newValue, oldValue) => {
+        if(newValue !== oldValue){
+          this.toggleAll();
+        }
       });
     });
 
@@ -274,7 +276,7 @@ class EventsEditController {
           this.$http.post(url, eventModel)
             .then(response => {
               this.sent = true;
-              this.$state.go('events');
+              this.$state.go('events', { time: 'active' });
             })
             .catch(err => {
               this.errors.other = err.message;

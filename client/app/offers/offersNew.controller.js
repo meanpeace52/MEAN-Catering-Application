@@ -21,9 +21,14 @@ class OffersNewController {
 
     this.$scope.fm = {};
 
+    this.$scope.isPast = false;
+
     this.eventId =  $rootScope.eventActive || $cookies.get('eventActive');
     this.event = EventsService.getEventById(this.eventId).then((data) => {
       this.event = data;
+      if (Date.parse(this.event.date) < Date.parse(new Date())) {
+        this.$scope.isPast = true;
+      }
       this.$scope.includedInPrice = this.incService.getIncludedInPrice().then((data)=> {
         this.$scope.includedInPrice = _.map(data, (item, i) => {
           if (_.indexOf(this.event.includedInPrice, item._id) < 0) {
@@ -48,18 +53,51 @@ class OffersNewController {
   }
 
   cancelChanges() {
-    this.$state.go('events');
+    this.$state.go('events', { time: 'active' });
   }
 
   sendRequest(form) {
 
   if (!this.user.payableAccount) {
-      let saving = this.saveDraft(form, false);
+      /*let saving = this.saveDraft(form, false);
       if (saving) {
         saving.then(() => {
           this.$state.go('dwolla');
         });
-      }
+      }*/
+    let offerModel = this.$scope.fm;
+    offerModel.catererId = this.user._id;
+    offerModel.catererName = this.user.companyName || this.user.name;
+    offerModel.date = new Date();
+    offerModel.status = 'draft';
+
+    /* invoice is correct, but return is undefined */
+    if (offerModel) {
+        let total = this.event.pricePerPerson * this.event.people;
+        if (offerModel.counter) {
+          total = offerModel.counter * this.event.people;
+        }
+
+        this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
+          offerModel.invoice = {
+            pricePerPerson: this.event.pricePerPerson,
+            people: this.event.people,
+            counter: offerModel.counter || 0,
+            service: total,
+            tax: tax,
+            total: total + tax
+          };
+
+          return this.$http.post('/api/offers/new', offerModel).then(response => {
+            this.saved = true;
+            this.$state.go('dwolla',{offer: response.data});
+          })
+            .catch(err => {
+              this.errors.other = err.message;
+            });
+        });
+    }
+
     } else {
       let offerModel = this.$scope.fm;
       offerModel.catererId = this.user._id;
@@ -75,13 +113,14 @@ class OffersNewController {
         //total = total.toFixed(2);
         this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
           offerModel.invoice = {
-            pricePerPerson: event.pricePerPerson,
-            people: event.people,
+            pricePerPerson: this.event.pricePerPerson,
+            people: this.event.people,
             counter: offerModel.counter || 0,
             service: total,
             tax: tax,
             total: total + tax
           };
+
           this.$http.post('/api/offers/new', offerModel).then(response => {
             this.sent = true;
             //this.$state.go('events');
@@ -96,25 +135,39 @@ class OffersNewController {
   }
 
   backToList() {
-    this.$state.go('events');
+    this.$state.go('events', { time: 'active' });
   }
 
   saveDraft(form, redirect=true) {
     let offerModel = this.$scope.fm;
     offerModel.catererId = this.user._id;
     offerModel.catererName = this.user.companyName || this.user.name;
+    offerModel.date = new Date();
     offerModel.status = 'draft';
+
     if (offerModel) {
-        return this.$http.post('/api/offers/new', offerModel).then(response => {
-          this.saved = true;
-          if (redirect) {
-            this.$state.go('events');
-          }
-          //this.$scope.fm = {};
-      })
-      .catch(err => {
-          this.errors.other = err.message;
-      })
+        let total = this.event.pricePerPerson * this.event.people;
+        if (offerModel.counter) {
+          total = offerModel.counter * this.event.people;
+        }
+
+        this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
+          offerModel.invoice = {
+            pricePerPerson: this.event.pricePerPerson,
+            people: this.event.people,
+            counter: offerModel.counter || 0,
+            service: total,
+            tax: tax,
+            total: total + tax
+          };
+
+          return this.$http.post('/api/offers/new', offerModel).then(response => {
+            this.saved = true;
+          })
+            .catch(err => {
+              this.errors.other = err.message;
+            });
+        });
     }
   }
 }

@@ -32,7 +32,6 @@
                 <th st-sort="name">Name</th>
                 <th st-sort="pricePerPerson">Price</th>
                 <th st-sort="people">People</th>
-                <th>Veg</th>
                 <th st-sort="location" ng-if="vm.user.role == 'caterer'" style="width: 150px;">Location</th>
                 <th style="width: 150px;">Description</th>
                 <th st-sort="offerStatus" ng-if="vm.user.role == 'caterer'">Offer</th>
@@ -53,7 +52,6 @@
                 <th>
                   <input st-search="people" style="width: 50px;" class="input-sm form-control" type="search"/>
                 </th>
-                <th></th>
                 <th ng-if="vm.user.role == 'caterer'"  style="width: 150px;">
                   <input st-search="location" class="input-sm form-control" type="search"/>
                 </th>
@@ -76,7 +74,6 @@
                 <td style="max-width: 100px;">{{event.name}}</td>
                 <td>{{event.pricePerPerson}}</td>
                 <td>{{event.people}}</td>
-                <td>{{event.vegetarianMeals}}</td>
                 <td ng-if="vm.user.role == 'caterer'" style="width: 180px;"><a target="_blank" href="http://maps.google.com/?q={{event.location}}">{{event.location}}</a></td>
                 <td style="max-width: 180px;">{{event.description}}</td>
                 <td ng-if="vm.user.role == 'caterer'">
@@ -85,24 +82,24 @@
                 </td>
                 <td>
                   <span ng-if="vm.user.role == 'user'">
-                    <a class="btn btn-xs btn-default" href="/events/{{event._id}}">Edit Event</a>
+                    <a class="btn btn-xs btn-default" ng-if="!query.showPast" href="/events/{{event._id}}">Edit Event</a>
                     <!--<a class="btn btn-xs btn-warning" ui-sref="offers" ng-click="vm.setActiveEvent(event)" >Offers ({{event.offersNumber}})</a>-->
                     <a class="btn btn-xs btn-warning" uib-popover-html="event.offersInfo" popover-trigger="mouseenter" popover-placement="right">Offers ({{event.offersNumber}})</a>
                   </span>
                   <span ng-if="vm.user.role == 'caterer' && event.status !== 'completed'">
                     <a class="btn btn-xs btn-default" ng-if="event.offerStatus" href="{{event.offerUrl}}">Edit Offer</a>
-                    <a class="btn btn-xs btn-default" ng-if="!event.offerStatus" href="{{event.offerUrl}}">Create Offer</a>
+                    <a class="btn btn-xs btn-default" ng-if="!event.offerStatus && !query.showPast" href="{{event.offerUrl}}">Create Offer</a>
                   </span>
                 </td>
                 <td>
-                  <a class="btn btn-xs btn-danger" ng-click="vm.decline(event._id)" ng-if="vm.user.role == 'caterer' && event.status !== 'accepted' && event.status !== 'confirmed' && event.status !== 'completed'">Decline Event</a>
-                  <div ng-if="vm.user.role == 'user' && event.status !== 'accepted' && event.status !== 'confirmed' && event.status !== 'completed'">
+                  <a class="btn btn-xs btn-danger" ng-click="vm.decline(event._id)" ng-if="vm.user.role == 'caterer' && event.status !== 'accepted' && event.status !== 'confirmed' && event.status !== 'completed' && !query.showPast">Decline Event</a>
+                  <div ng-if="vm.user.role == 'user' && event.status !== 'accepted' && event.status !== 'confirmed' && event.status !== 'completed' && !query.showPast">
                     <a class="btn btn-xs btn-danger" ng-click="vm.cancel(event._id)">Cancel</a>
                     <a class="btn btn-xs btn-default delete-event" ng-click="vm.delete(event)" title="Delete event"><i class="fa fa-times"></i></a>
                   </div>
                   <div ng-if="(event.status === 'confirmed' && event.paymentStatus === 'paid') || event.status === 'completed'">
-                    <a class="btn btn-xs btn-success" ng-click="vm.showInvoice($event, event)" ng-if="vm.user.role == 'user">Invoice</a>
-                    <a class="btn btn-xs btn-success" ng-click="vm.showInvoice($event, event)" ng-if="vm.user.role == 'caterer">Payable</a>
+                    <a class="btn btn-xs btn-success" ng-click="vm.showInvoice($event, event)" ng-if="vm.user.role == 'user'">Invoice</a>
+                    <a class="btn btn-xs btn-success" ng-click="vm.showInvoice($event, event)" ng-if="vm.user.role == 'caterer'">Payable</a>
                   </div>
                 </td>
               </tr>
@@ -214,7 +211,7 @@
   </div>
   <div class="row" ng-if="vm.user.role == 'user' && !isInvoiceMode">
     <div class="col-sm-12">
-      <offerslist></offerslist>
+      <offerslist past="query.showPast"></offerslist>
     </div>
   </div>
 </div>

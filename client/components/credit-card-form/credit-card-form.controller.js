@@ -70,7 +70,7 @@ class CreditCardController {
                   this.errors.other = err.message;
                 });
           }
-          this.$state.go('events');
+          this.$state.go('events', { time: 'active' });
         });
       }
 

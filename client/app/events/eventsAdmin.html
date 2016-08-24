@@ -3,10 +3,36 @@
     <div class="col-sm-12">
       <div class="panel panel-default">
         <div class="panel-body">
-          <!--<a class="btn btn-default" ng-click="showAccepted()">Accepted</a>-->
-          <!--<a class="btn btn-default" ng-click="showConfirmed()">Confirmed</a>-->
-          <!--<a class="btn btn-default active" ng-click="showPayed()">Payed</a>-->
-          <a class="btn btn-success" ng-click="paySelected()">Pay All Selected</a>
+          <div class="filter-events">
+            <div class="row">
+              <div class="col-sm-2">
+                <a class="btn btn-success" ng-click="paySelected()">Pay All Selected</a>
+              </div>
+              <div class="col-sm-3">
+                <select class="input-sm form-control" style="height: 34px;" ng-model="filter.paid">
+                  <option value="all">All</option>
+                  <option value="allPaid">All Paid</option>
+                  <option value="allUnpaid">All Unpaid</option>
+                </select>
+              </div>
+              <div class="col-sm-3">
+                <span class="input-group">
+                  <input type="text" class="form-control" uib-datepicker-popup="MMMM d, y" ng-model="filter.dateFrom" is-open="popup1.opened" datepicker-options="dateOptions" required close-text="Close"/>
+                    <span class="input-group-btn">
+                      <button type="button" class="btn btn-default" ng-click="open1()" style="height: 34px;"><i class="fa fa-calendar"></i></button>
+                    </span>
+                </span>
+              </div>
+              <div class="col-sm-3">
+                <span class="input-group">
+                  <input type="text" class="form-control" uib-datepicker-popup="MMMM d, y" ng-model="filter.dateTo" is-open="popup2.opened" datepicker-options="dateOptions" required close-text="Close"/>
+                    <span class="input-group-btn">
+                      <button type="button" class="btn btn-default" ng-click="open2()" style="height: 34px;"><i class="fa fa-calendar"></i></button>
+                    </span>
+                </span>
+              </div>
+            </div>
+          </div>
           <table st-table="events" st-pipe="eac.pipe" class="table table-hover table-condensed table-events">
             <thead>
             <tr>
@@ -16,7 +42,8 @@
               <th st-sort="name" st-sort-default="true">Name</th>
               <th st-sort="pricePerPerson">Price</th>
               <th st-sort="people">People</th>
-              <th>Caterer</th>
+              <th st-sort="">Caterer</th>
+              <th>Customer</th>
               <th>Total</th>
               <th>Commission</th>
               <th>Refund</th>
@@ -38,7 +65,8 @@
               <th>
                 <input st-search="people" style="width: 50px;" class="input-sm form-control" type="search"/>
               </th>
-              <th></th>
+              <th><input st-search="offers[0].catererName" style="width: 50px;" class="input-sm form-control" type="search"/></th>
+              <th><input st-search="customer" style="width: 50px;" class="input-sm form-control" type="search"/></th>
               <th></th>
               <th></th>
               <th></th>
@@ -55,6 +83,7 @@
               <td>{{event.pricePerPerson}}</td>
               <td>{{event.people}}</td>
               <td>{{event.offers[0].catererName}}</td>
+              <td>{{event.customer}}</td>
               <td>{{event.offers[0].invoice.total.toFixed(2)}}</td>
               <td>{{(event.offers[0].invoice.total * (event.offers[0].invoice.commission / 100)).toFixed(2)}}</td>
               <td>
