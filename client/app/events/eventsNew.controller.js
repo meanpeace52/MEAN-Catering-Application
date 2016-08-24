@@ -336,6 +336,7 @@ class EventsNewController {
 
     if (!this.user.payableAccountId) {
       let saving = this.saveDraft(form);
+
       if (saving) {
         saving.then(() => {
           this.verifyCard = true;
