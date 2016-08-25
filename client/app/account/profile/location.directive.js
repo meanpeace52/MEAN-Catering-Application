@@ -4,10 +4,17 @@ angular.module('cateringApp')
   .directive('location', ($rootScope) => ({
     restrict: 'A',
     link: (scope, element, attrs, $rootScope) => {
+      let locationOptions = {
+            types: ['geocode'],
+            //types: ['address'],
+            //types: ['(regions)'],
+            componentRestrictions: {country: "US"}
+      };
+
       let el = element.get(0),
           defaultBounds = new google.maps.LatLngBounds(new google.maps.LatLng(-33.8902, 151.1759), new google.maps.LatLng(-33.8474, 151.2631)),
           placeSearch, geolocation, circle,
-          autocomplete = new google.maps.places.Autocomplete(el);
+          autocomplete = new google.maps.places.Autocomplete(el, locationOptions);
 
       /*if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
@@ -41,7 +48,6 @@ angular.module('cateringApp')
           scope.fm.location = address;
           scope.fm.address = getAddress(place);
         }
-        console.log('address', address);
       });
 
       autocomplete.setBounds(defaultBounds);
