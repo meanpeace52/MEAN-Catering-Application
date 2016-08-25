@@ -62,7 +62,7 @@ class OffersEditController {
   }
   cancel(id) {
     if (this.user.role = 'caterer') {
-      this.$http.post('/api/offers/' + id + '/cancel', {status: 'cancelled', isUpdated: true}).then(response => {
+      this.$http.post('/api/offers/' + id + '/cancel', { eventId: this.eventId, status: 'cancelled'}).then(response => {
         //set visual state
         this.cancelled = true;
         this.$scope.fm.status = 'cancelled';

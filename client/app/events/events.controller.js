@@ -71,7 +71,7 @@ class EventsController {
           $scope.newEventsCount = 0;
           $scope.confirmedEventsCount = 0;
 
-          console.log('events', events);
+          console.log('events1', events);
 
           _.each(events, (event, i) => {
             if ($scope.user.role == 'caterer') {
@@ -81,19 +81,20 @@ class EventsController {
                 events[i].drafted = true;
               }
             }
-
-            let offersNumber = event.offers ? event.offers.length : 0;
+            let offers = _.filter(event.offers, (offer) => {
+              return (offer.status !== 'declined' && offer.status !== 'cancelled');
+            }),
+            offersNumber = offers ? offers.length : 0;
 
             if ($scope.user.role == 'caterer') {
-              let offerUrl = (event.offers && event.offers.length ? '/offers/' + event.offers[0]._id : '/offers/new'),
-                status = (event.offers && event.offers.length ? event.offers[0].status : null);
+              let offerUrl = (offers.length ? '/offers/' + offers[0]._id : '/offers/new');
 
               events[i].offerUrl = offerUrl;
-              events[i].offerStatus = (status !== 'declined' ? status : null);
+              events[i].offerStatus = (offers.length ? offers[0].status : null);
               events[i].offersNumber = offersNumber;
             } else {
               let offersInfo = '';
-              _.each(event.offers, (offer, j) => {
+              _.each(offers, (offer, j) => {
                 let status = offer.status;
                 offersInfo += '<div>' + offer.catererName + ' <span class="label label-info">' + status + '</span></div><hr class="popover-divider" />';
                 events[i].offersInfo = $sce.trustAsHtml(offersInfo);
@@ -121,6 +122,8 @@ class EventsController {
               return o;
             }
           });
+
+          console.log('events2', $scope.events)
 
           let filtered = $scope.tableState.search.predicateObject ? $filter('filter')($scope.events, $scope.tableState.search.predicateObject) : $scope.events,
               start = $scope.tableState.pagination.start,

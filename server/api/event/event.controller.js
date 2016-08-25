@@ -105,12 +105,12 @@ export function dataset(req, res) {
     query = {
       showToCaterers: req.body.showToCaterers /*, selectedCaterers: {$elemMatch: {$eq: req.body.sentTo } }*/
     }
-    if (req.body.foodTypes && req.body.foodTypes.length) {
+    /*if (req.body.foodTypes && req.body.foodTypes.length) {
       query.foodTypes = { $in: req.body.foodTypes }
     }
     if (req.body.serviceTypes && req.body.serviceTypes.length) {
       query.serviceTypes = { $in: req.body.serviceTypes }
-    }
+    }*/
 
     if (!req.body.status) query.status = { $nin: ['cancelled', 'draft', 'deleted']};
   }
@@ -145,9 +145,31 @@ export function dataset(req, res) {
   return Event.find(query).exec().then((events) => {
     let eventPromises = [];
 
-    events = _.filter(events, (event) => {
-      return !(isCaterer && !req.body.veganOffers && event.vegetarianMeals || isCaterer && event.selectedCaterers.length && _.indexOf(event.selectedCaterers, req.body.catererId) == -1);
-    });
+    if (isCaterer) {
+      events = _.filter(events, (event) => {
+        let catererft = req.body.foodTypes || [],
+          catererst = req.body.serviceTypes || [],
+          eventft = event.foodTypes || [],
+          eventst = event.serviceTypes || [],
+          intersectFT = _.intersection(eventft, catererft),
+          intersectST = _.intersection(eventst, catererst),
+          predicate = false;
+        if (!eventft.length && !eventst.length) {
+          predicate = true;
+        } else if (eventft.length && !eventst.length) {
+          predicate = !!(intersectFT.length);
+        } else if (!eventft.length && eventst.length) {
+          predicate = !!(intersectST.length);
+        } else if (eventft.length && eventst.length) {
+          predicate = !!(intersectFT.length && intersectST.length);
+        }
+
+        return !(
+            !req.body.veganOffers && event.vegetarianMeals ||
+            event.selectedCaterers.length && _.indexOf(event.selectedCaterers, req.body.catererId) === -1 ||
+            !predicate);
+      })
+    }
 
     events.forEach((event, i) => {
       events[i] = events[i].toObject();

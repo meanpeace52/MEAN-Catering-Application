@@ -86,7 +86,10 @@ function handleError(res, statusCode) {
 
 // Gets a list of Events
 export function index(req, res) {
-  let query = {eventId: req.body.eventId};
+  let query = {
+    eventId: req.body.eventId,
+    status: { $nin: ['cancelled', 'draft']}
+  };
   if (req.body.catererId) {
     query.catererId = req.body.catererId
   }
@@ -126,7 +129,7 @@ export function show(req, res) {
 }
 
 export function total(req, res) {
-  return Offer.find({eventId: req.body.eventId, status: { $not: /(draft)/}}).exec()
+  return Offer.find({eventId: req.body.eventId, status: { $nin: ['draft', 'cancelled']}}).exec()
     .then(handleEntityNotFound(res))
     .then((res) => {
       return { total: res.length }
@@ -153,7 +156,9 @@ export function update(req, res) {
     delete req.body._id;
   }
 
-  if (req.body.eventId && (req.body.status == 'accepted' || req.body.status == 'confirmed')) {
+  console.log('req.body', req.body)
+
+  if (req.body.eventId && (req.body.status == 'accepted' || req.body.status == 'confirmed' || req.body.status == 'cancelled')) {
 
     let eventUpdates = {status: req.body.status};
     if (eventUpdates.status == 'confirmed') {
@@ -164,6 +169,13 @@ export function update(req, res) {
     if (req.body.status == 'accepted') {
       eventUpdates.acceptedDate = req.body.acceptedDate;
     }
+
+    if (eventUpdates.status == 'cancelled') {
+      eventUpdates.status = 'sent';
+      eventUpdates.acceptedDate = null;
+    }
+
+    console.log('req.body', req.body, eventUpdates)
 
     Event.findById(req.body.eventId).exec()
       .then(saveEventUpdates(eventUpdates));

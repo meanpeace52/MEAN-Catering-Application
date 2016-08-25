@@ -73,11 +73,11 @@ class EventsEditController {
     })
     .then(() => {
       this.toggleCat();
-      this.$scope.$watch('filter.selectAll', (newValue, oldValue) => {
-        if(newValue !== oldValue){
-          this.toggleAll();
-        }
-      });
+      //this.$scope.$watch('filter.selectAll', (newValue, oldValue) => {
+      //  if(newValue !== oldValue){
+      //    this.toggleAll();
+      //  }
+      //});
     });
 
     this.$scope.includedInPrice = this.incService.getIncludedInPrice().then((data)=> {
@@ -185,23 +185,26 @@ class EventsEditController {
       selectedST = this.$scope.fm.serviceTypes;
 
     _.each(this.$scope.caterers, (item, i) => {
+      let intersectFT = _.intersection(item.foodTypes, selectedFT),
+        intersectST = _.intersection(item.serviceTypes, selectedST);
       if (!selectedFT.length && !selectedST.length) {
-        //this.$scope.caterers[i].showByCat = true;
-      } else {
-        let intersectFT = _.intersection(item.foodTypes, selectedFT),
-          intersectST = _.intersection(item.serviceTypes, selectedST);
-
+        this.$scope.caterers[i].showByCat = true;
+      } else if (selectedFT.length && !selectedST.length) {
+        this.$scope.caterers[i].showByCat = !!(intersectFT.length);
+      } else if (!selectedFT.length && selectedST.length) {
+        this.$scope.caterers[i].showByCat = !!(intersectST.length);
+      } else if (selectedFT.length && selectedST.length) {
         this.$scope.caterers[i].showByCat = !!(intersectFT.length && intersectST.length);
-
-        if (_.indexOf(this.$scope.fm.selectedCaterers, item._id) < 0) {
-          this.$scope.caterers[i].showByEdit = false;
-
-        } else {
-          this.$scope.caterers[i].showByEdit = true;
-        }
       }
+
+      if (_.indexOf(this.$scope.fm.selectedCaterers, item._id) < 0) {
+        this.$scope.caterers[i].showByEdit = false;
+      } else {
+        this.$scope.caterers[i].showByEdit = true;
+      }
+
     });
-    console.log(this.$scope.caterers);
+
   }
 
   watchForEdit(id) {

@@ -170,12 +170,9 @@
           <div class="col-sm-4">
             <label tooltip-placement="top" uib-tooltip='This is Optional, but you can manually select the caterers you event goes to. You can even select just one caterer if you know which one you want.'>Optional - Manually Select Caterers to Send Event</label>
             <div class="select-all-header">
-              <div class="checkbox">
-                <label>
-                  <!--<input type="checkbox" name="selectAll" ng-model="filter.selectAll" ng-click="vm.toggleAll()"> Select All Caterers-->
-                  <input ng-disabled="!(fm.status == 'draft' || fm.status == 'sent')" type="checkbox" name="selectAll" ng-model="filter.selectAll"> Select All Caterers
-                </label>
-              </div>
+              <label>
+                <a ng-disabled="!(fm.status == 'draft' || fm.status == 'sent')" class="btn btn-default btn-sm uncheck-filter-btn" ng-click="vm.toggleAll()">Uncheck list</a>
+              </label>
             </div>
             <div class="select-rest-block">
               <div class="checkbox" ng-repeat="caterer in caterers" ng-if="caterer.showByCat">

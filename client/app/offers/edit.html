@@ -84,7 +84,7 @@
         <div ng-if="fm.status !== 'confirmed'">
           <hr />
           <button class="btn btn-success" ng-if="fm.status == 'accepted'" ng-click="vm.confirm(fm._id)">Confirm</button>
-          <button class="btn btn-danger" ng-click="vm.cancel(fm._id)">Cancel Offer</button>
+          <button class="btn btn-danger" ng-if="fm.status !== 'cancelled'" ng-click="vm.cancel(fm._id)">Cancel Offer</button>
         </div>
         <div ng-if="vm.cancelled" class="alert alert-warning">Offer is cancelled.</div>
         <div ng-if="vm.confirmed" class="alert alert-success">Offer is confirmed.</div>
