@@ -16,6 +16,7 @@ router.post('/card/update', StripeController.update);
 router.get('/card/token', StripeController.getToken);
 router.get('/dwolla/startAuth', DwollaController.startAuth);
 router.get('/dwolla/endAuth', DwollaController.endAuth);
+router.get('/dwolla/loginUrl', DwollaController.loginUrl);
 router.post('/pay', AdminPayController.pay);
 
 module.exports = router;

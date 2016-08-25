@@ -52,7 +52,13 @@ angular.module('cateringApp')
             return JSON.parse(response.data);
           });
         }
+      },
+      dwollaLogin() {
+          return $http.get('/api/payments/dwolla/loginUrl').then((response) => {
+            $window.open(response.data.loginUrl, '_blank');
+          });
       }
+
     }
 
   });

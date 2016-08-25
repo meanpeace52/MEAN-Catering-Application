@@ -159,6 +159,10 @@ class CatererProfileController {
     }
 
   }
+
+  loginToDwolla() {
+    return this.payments.dwollaLogin();
+  }
 }
 
 angular.module('cateringApp')
