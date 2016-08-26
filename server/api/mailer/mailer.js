@@ -6,6 +6,7 @@ import _ from 'lodash';
 import mongoose from 'mongoose';
 import Event from '../event/event.model';
 import Offer from '../offer/offer.model';
+import Comment from '../comment/comment.model';
 import User from '../user/user.model';
 import config from '../../config/environment';
 var Promise = require('bluebird');
@@ -18,6 +19,46 @@ var auth = {
 }
 
 var nodemailerMailgun = nodemailer.createTransport(mg(auth));
+
+function getCommentOpponent(commentId, offerId, userId) {
+  let result = {
+    offer: {},
+    event: {},
+    author: {},
+    user: {}
+  }
+  return Offer.findById(offerId).exec()
+    .then((offer) => {
+      result.offer = offer;
+      return offer;
+    })
+    .then(() => {
+      return User.findById(userId, '-salt -password -provider');
+    })
+    .then((author) => {
+      result.author = author;
+      return author;
+    })
+    .then(() => {
+      return Event.findById(result.offer.eventId);
+    })
+    .then((event) => {
+      result.event = event;
+      if (userId == result.offer.catererId) {      //caterer wrote comment
+        return User.findById(event.userId, '-salt -password -provider');
+      } else {
+        return User.findById(result.offer.catererId, '-salt -password -provider');
+      }
+    })
+    .then((user) => {
+      result.user = user;
+      Comment.findById(commentId).exec().then((res) => {
+        res.target = user._id;
+        res.save();
+      })
+      return result;
+    });
+  }
 
 function getEventMailList(event) {
   let query = {};
@@ -141,6 +182,31 @@ function createSummary(user) {    //user is caterer
 }
 
 var mailer = {
+  notifyComment: function(comment) {
+    getCommentOpponent(comment._id, comment.offerId, comment.userId).then((data) => {
+      let date = new Date(comment.date),
+      message = '<h1>Hello,</h1><p>You\'ve got new comment</p>';
+      message += '<p>Event: ' + data.event.name + '</p>';
+      message += '<p>From: ' + comment.name + '</p>';
+      message += '<p>Date: ' + date.toDateString() + '</p>';
+      message += '<p>Comment: ' + comment.text + '</p>';
+
+      nodemailerMailgun.sendMail({
+        from: config.mailgun.from,
+        to: data.user.email,
+        subject: 'New comment',
+        html: message,
+      }, function (err, info) {
+        if (err) {
+          console.log('Error: ' + err);
+        }
+        else {
+          console.log('Response: ' + info);
+        }
+      });
+
+    });
+  },
   verifyUser: function(user) {
     let message = '<h1>Hello,</h1><p>Please follow the link below to verify your email. If it is not you who signed up to Catering Ninja, just ignore this message.</p><p><a href="' + config.domain + 'verify/' + user._id + '">Please verify email address</a></p>';
     nodemailerMailgun.sendMail({

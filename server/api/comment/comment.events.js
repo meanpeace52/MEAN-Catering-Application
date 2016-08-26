@@ -1,33 +1,33 @@
 /**
- * Events model events
+ * Events model comments
  */
 
 'use strict';
 
-import {EventEmitter} from 'events';
-import Event from './event.model';
-var EventEvents = new EventEmitter();
+import {EventEmitter} from 'comments';
+import Comment from './comment.model';
+var CommentEvents = new EventEmitter();
 
 // Set max event listeners (0 == unlimited)
-EventEvents.setMaxListeners(0);
+CommentEvents.setMaxListeners(0);
 
-// Model events
-var events = {
+// Model comments
+var comments = {
   'save': 'save',
   'remove': 'remove'
 };
 
-// Register the event emitter to the model events
-for (var e in events) {
-  var event = events[e];
-  Event.schema.post(e, emitEvent(event));
+// Register the event emitter to the model comments
+for (var e in comments) {
+  var event = comments[e];
+  Comment.schema.post(e, emitEvent(event));
 }
 
 function emitEvent(event) {
   return function(doc) {
-    EventEvents.emit(event + ':' + doc._id, doc);
-    EventEvents.emit(event, doc);
+    CommentEvents.emit(event + ':' + doc._id, doc);
+    CommentEvents.emit(event, doc);
   }
 }
 
-export default EventEvents;
+export default CommentEvents;

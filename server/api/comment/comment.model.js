@@ -10,7 +10,8 @@ var CommentSchema = new mongoose.Schema({
   profileUrl: String,
   parentId: String,
   offerId: String,
-  viewedBy: Array,
+  viewed: Boolean,
+  target: String,
   children: Array
 });
 

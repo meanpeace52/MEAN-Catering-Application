@@ -26,6 +26,7 @@ html, body {
 
 // Component styles are injected through grunt
 /* inject:scss */
+@import 'account/notifications/notifications';
 @import 'account/profile/profile';
 @import 'admin/admin';
 @import 'events/events';

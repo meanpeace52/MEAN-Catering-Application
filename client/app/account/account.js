@@ -43,6 +43,13 @@ angular.module('cateringApp')
         controllerAs: 'vm',
         authenticate: true
       })
+      /*.state('notifications', {
+        url: '/notifications',
+        templateUrl: 'app/account/notifications/notifications.html',
+        controller: 'NotificationsController',
+        controllerAs: 'vm',
+        authenticate: true
+      }) */
       .state('customer-profile', {
         url: '/profile/customer',
         templateUrl: 'app/account/profile/customer.html',

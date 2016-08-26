@@ -22,5 +22,12 @@ angular.module('cateringApp')
         controller: 'OffersEditController',
         controllerAs: 'vm',
         authenticate: 'caterer'
+      })
+      .state('publicOffer', {
+        url: '/offers/public/:id',
+        templateUrl: 'app/offers/public.html',
+        controller: 'OffersPublicController',
+        controllerAs: 'vm',
+        authenticate: true
       });
   });

@@ -11,6 +11,14 @@ angular.module('cateringApp')
           return [];
         });
       },
+      getNewComments(userId) {
+        return $http.post('/api/comments/new/', { target: userId, viewed: false }).then(response => {
+          return response.data;
+        })
+        .catch(err => {
+          return [];
+        });
+      },
       editComment(comment) {
         return $http.post('/api/comments/' + comment._id, comment).then(response => {
           return response.data;

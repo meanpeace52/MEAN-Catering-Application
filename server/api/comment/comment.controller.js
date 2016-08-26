@@ -15,6 +15,7 @@ import Offer from '../offer/offer.model';
 import User from '../user/user.model';
 var Promise = require('bluebird');
 var mongoose = require('mongoose');
+var  mailer = require('../mailer/mailer');
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -95,6 +96,12 @@ export function thread(req, res) {
      .catch(handleError(res));
 }
 
+export function newComments(req, res) {
+  return Comment.find({$query: req.body, $orderby: { date : -1 }}).exec()
+     .then(respondWithResult(res))
+     .catch(handleError(res));
+}
+
 // Gets a single Thing from the DB
 export function show(req, res) {
   return Comment.findById(req.params.id).exec()
@@ -107,6 +114,9 @@ export function show(req, res) {
 export function create(req, res) {
   return Comment.create(req.body)
     .then(respondWithResult(res, 201))
+    .then((res) => {
+      mailer.notifyComment(res);
+    })
     .catch(handleError(res));
 }
 

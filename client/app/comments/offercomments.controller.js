@@ -1,7 +1,7 @@
 'use strict';
 
 class OfferCommentsController {
-  constructor($http, $scope, $rootScope, socket, Auth, $cookies, CommentsService) {
+  constructor($http, $scope, $rootScope, socket, Auth, $cookies, CommentsService, $window, $uibPosition) {
     this.$scope = $scope;
     this.$rootScope = $rootScope;
     this.$http = $http;
@@ -15,9 +15,22 @@ class OfferCommentsController {
     this.CS = CommentsService;
     this.$scope.newComment = '';
 
+    $scope.$on('commentsUpdated', (commentId) => {
+      _.each($scope.comments, (comment, i) => {
+        if (comment._id === commentId) {
+          $scope.comments[i].showUnviewed = false;
+          $scope.comments[i].viewed = true;
+        }
+      });
+    });
+
     $scope.$watch('offer', () => {
       this.CS.getComments($scope.offer._id).then((res) => {
         $scope.comments = res;
+        _.each($scope.comments, (comment) => {
+          comment.layout = 'offer';
+          if (!comment.viewed && comment.userId !== this.user._id) comment.showUnviewed = true;
+        });
       });
     });
     /*this.deepSearch(function(item, array) {
@@ -25,18 +38,6 @@ class OfferCommentsController {
       item.toggled = true;
       item.new = '';
     });*/
-
-    //comment: {
-    //  _id,
-    //  date,
-    //  userId,
-    //  offerId //thread
-    //  parentId,
-    //  name,
-    //  text,
-    //  profileUrl,
-    //  children
-    //}
   }
 
   deepSearch(todo) {
@@ -76,6 +77,7 @@ class OfferCommentsController {
     }
     newComment.offerId = this.$scope.offer._id;
     newComment.text = this.$scope.newComment;
+    newComment.viewed = false;
     newComment.children = [];
     this.CS.addComment(newComment).then((comment) => {
       //comment.collapsed = false;
@@ -85,11 +87,12 @@ class OfferCommentsController {
       this.$scope.comments.push(comment);
     });
   }
+
 }
 
 
 class OfferCommentController {
-  constructor($http, $scope, $rootScope, socket, Auth, $cookies, CommentsService) {
+  constructor($http, $scope, $rootScope, socket, Auth, $cookies, CommentsService, $window, $uibPosition) {
     let root = this;
     this.$scope = $scope;
     this.$rootScope = $rootScope;
@@ -112,6 +115,31 @@ class OfferCommentController {
       if (comment.collapsed) comment.collapsed = false;
       else comment.collapsed = true;
     }
+
+    $scope.markAsRead = function(comment) {
+      comment.viewed = true;
+
+      CommentsService.editComment(comment).then((comment) => {
+          $scope.comment = comment;
+          $scope.comment.showUnviewed = false;
+          $rootScope.$emit('commentsUpdated', comment._id);
+        });
+      }
+
+    let $body = $window.document.body;
+
+    function checkRead() {
+      let $wrapper = $('#id' + $scope.comment._id),
+        ch = $body.clientHeight,
+        sh = $body.scrollHeight,
+        offset = $wrapper.offset();
+
+      if (ch + offset.top === sh) {
+        $scope.markAsRead($scope.comment);
+      }
+    }
+
+    if ($scope.comment.layout == 'offer' && !$scope.comment.viewed) $($window).on('scroll', _.throttle(checkRead, 300));
 
     /*$scope.add = function(comment) {
       let newComment = {};
