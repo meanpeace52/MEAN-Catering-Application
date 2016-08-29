@@ -17,11 +17,18 @@ class CustomerProfileController {
 
     this.getPayments().then(response => {
       this.$scope.events = response.data;
+      console.log(this.$scope.events);
     });
   }
 
   getPayments() {
     return this.$http.post('/api/events/payments', {userId: this.user._id});
+  }
+
+  showInvoice($event, event) {
+    this.$scope.isInvoiceMode = true;
+    this.$scope.eventForInvoice = angular.copy(event);
+    $event.stopPropagation();
   }
 
   changePassword(form) {
