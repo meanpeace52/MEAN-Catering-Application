@@ -88,7 +88,6 @@ $scope.open = (offer) => {
   };
 
   $scope.ok = () => {
-    console.log('invoice', root.$scope.eventActive.offers[0].invoice, $scope.updatedInvoice);
     angular.merge(root.$scope.eventActive.offers[0].invoice, $scope.updatedInvoice);
 
     $http.post('/api/offers/' + root.$scope.eventActive.offers[0]._id, root.$scope.eventActive.offers[0]).then(response => {
@@ -158,12 +157,10 @@ $scope.open2 = function() {
 
 
 this.pipe = function(tableState) {
-  console.log('pipe');
   $scope.tableState = (angular.isObject(tableState) && tableState ? tableState : $scope.tableState);
 
   $http.post('/api/events/dataset', $scope.query).then(response => {
     $scope.events = response.data;
-  console.log('events', $scope.events.length);
   _.each($scope.events, (event, i) => {
     $scope.events[i].includedInPrice = convertIncludedInPrice(event.includedInPrice);
   if ($scope.events[i].offers.length) {
@@ -192,56 +189,56 @@ if ($scope.eventActive) $scope.setActiveEvent($scope.eventActive);
 });
 }
 
-$scope.setActiveEvent = function(event) {
-  $scope.eventActive = event;
+  $scope.setActiveEvent = function(event) {
+    $scope.eventActive = event;
 
-  _.each($scope.events, (item, i) => {
-    $scope.events[i].active = false;
-  if (item._id == event._id) {
-    $scope.events[i].active = true;
+    _.each($scope.events, (item, i) => {
+      $scope.events[i].active = false;
+      if (item._id == event._id) {
+        $scope.events[i].active = true;
+      }
+    });
   }
-});
-}
 
-$scope.$watchGroup(['filter.paid', 'filter.dateTo', 'filter.dateFrom'], () => {
-  if ($scope.filter.paid === 'all') {
-    $scope.query.status = { $in: ['confirmed', 'completed'] };
-    $scope.query.paymentStatus = { $in: ['paid', 'hold', 'completed'] };
-} else if ($scope.filter.paid === 'allPaid') {
-  $scope.query.status = { $in: ['completed'] };
-  $scope.query.paymentStatus = { $in: ['completed'] };
-} else if ($scope.filter.paid === 'allUnpaid') {
-  $scope.query.status = { $in: ['confirmed'] };
-  $scope.query.paymentStatus = { $in: ['paid', 'hold'] };
-}
 
-if ($scope.filter.dateTo && !$scope.filter.dateFrom) {
-  $scope.query.date = { $lte: $scope.filter.dateTo };
-} else if ($scope.filter.dateTo && $scope.filter.dateFrom) {
-  $scope.query.date = { $lte: $scope.filter.dateTo, $gte: $scope.filter.dateFrom };
-} else if (!$scope.filter.dateTo && $scope.filter.dateFrom) {
-  $scope.query.date = { $gte: $scope.filter.dateFrom } ;
-} else if (!$scope.filter.dateTo && !$scope.filter.dateFrom) {
-  delete $scope.query.date;
-}
+    $scope.$watchGroup(['filter.paid', 'filter.dateTo', 'filter.dateFrom'], () => {
+      if ($scope.filter.paid === 'all') {
+        $scope.query.status = { $in: ['confirmed', 'completed'] };
+        $scope.query.paymentStatus = { $in: ['paid', 'hold', 'completed'] };
+    } else if ($scope.filter.paid === 'allPaid') {
+      $scope.query.status = { $in: ['completed'] };
+      $scope.query.paymentStatus = { $in: ['completed'] };
+    } else if ($scope.filter.paid === 'allUnpaid') {
+      $scope.query.status = { $in: ['confirmed'] };
+      $scope.query.paymentStatus = { $in: ['paid', 'hold'] };
+    }
 
-console.log('query', $scope.query);
+      if ($scope.filter.dateTo && !$scope.filter.dateFrom) {
+        $scope.query.date = { $lte: $scope.filter.dateTo };
+      } else if ($scope.filter.dateTo && $scope.filter.dateFrom) {
+        $scope.query.date = { $lte: $scope.filter.dateTo, $gte: $scope.filter.dateFrom };
+      } else if (!$scope.filter.dateTo && $scope.filter.dateFrom) {
+        $scope.query.date = { $gte: $scope.filter.dateFrom } ;
+      } else if (!$scope.filter.dateTo && !$scope.filter.dateFrom) {
+        delete $scope.query.date;
+      }
 
-this.pipe();
-});
 
-var sync = $interval(root.pipe, (1000 * 60));
+      this.pipe();
+    });
 
-$scope.$on('eventUpdated', () => {
-  root.pipe();
-});
+    var sync = $interval(root.pipe, (1000 * 60));
 
-$scope.$on('$destroy', function () {
-  socket.unsyncUpdates('event');
-  socket.unsyncUpdates('offer');
-  $interval.cancel(sync);
-});
-}
+    $scope.$on('eventUpdated', () => {
+      root.pipe();
+    });
+
+    $scope.$on('$destroy', function () {
+      socket.unsyncUpdates('event');
+      socket.unsyncUpdates('offer');
+      $interval.cancel(sync);
+    });
+  }
 }
 
 angular.module('cateringApp')

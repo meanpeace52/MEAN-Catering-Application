@@ -1,4 +1,12 @@
 .notification {
+  .btn-warning span {
+    color: #fff;
+  }
+
+  .btn-default span {
+    color: #333;
+  }
+
   .dropdown-menu {
     padding: 10px;
     min-width: 500px;
