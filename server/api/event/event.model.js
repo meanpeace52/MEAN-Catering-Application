@@ -34,7 +34,8 @@ var EventSchema = new mongoose.Schema({
   offerId: String,
   blocked: Boolean,
   dateAccepted: Date,
-  dateConfirmed: Date
+  dateConfirmed: Date,
+  datePaid: Date
 });
 
 export default mongoose.model('Event', EventSchema);

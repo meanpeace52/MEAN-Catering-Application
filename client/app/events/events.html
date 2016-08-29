@@ -12,6 +12,11 @@
                   <option value="24">Last 24 Hr</option>
                   <option value="1">Last Hr</option>
                 </select>
+                <select class="input-sm form-control" style="height: 34px;" ng-model="filter.paid">
+                  <option value="all">All (Paid/Unpaid)</option>
+                  <option value="allPaid">All Paid</option>
+                  <option value="allUnpaid">All Unpaid</option>
+                </select>
               </div>
               <div class="col-sm-4">
                 <label tooltip-placement="top" uib-tooltip='Click the check box to turn on and off the filters'>Select to Filter</label>
@@ -35,6 +40,7 @@
                 <th st-sort="location" ng-if="vm.user.role == 'caterer'" style="width: 150px;">Location</th>
                 <th style="width: 150px;">Description</th>
                 <th st-sort="offerStatus" ng-if="vm.user.role == 'caterer'">Offer</th>
+                <th ng-if="filter.paid === 'all' || filter.paid === 'allPaid'">Date Paid</th>
                 <th colspan="2"></th>
               </tr>
               <tr>
@@ -61,6 +67,7 @@
                 <th ng-if="vm.user.role == 'caterer'">
                   <input st-search="offerStatus" class="input-sm form-control" style="width: 100px;" type="search"/>
                 </th>
+                <th ng-if="filter.paid === 'all' || filter.paid === 'allPaid'"></th>
                 <th colspan="2"></th>
               </tr>
             </thead>
@@ -80,6 +87,7 @@
                   <span class="label label-default" uib-tooltip="Total amount of offers sent for this event">{{event.offersTotal}}</span>
                   <span class="label label-info" ng-if="event.offerStatus" >{{event.offerStatus}}</span>
                 </td>
+                <td ng-if="filter.paid === 'all' || filter.paid === 'allPaid'">{{!event.datePaid ? 'pending' : (event.datePaid | date)}}</td>
                 <td>
                   <span ng-if="vm.user.role == 'user'">
                     <a class="btn btn-xs btn-default" ng-if="!query.showPast" href="/events/{{event._id}}">Edit Event</a>
@@ -118,6 +126,28 @@
       </div>
     </div>
   </div>
+  <table class="col-sm-12" ng-if="detailedEvent">
+    <tr>
+      <th>Subtotal</th>
+      <th>Tax</th>
+      <th>Total</th>
+      <th>Commission</th>
+      <th>Refunds</th>
+      <th>House Adjust</th>
+      <th>Caterer Adjust</th>
+      <th>Net Caterer</th>
+    </tr>
+    <tr>
+      <td>{{detailedEvent.offers[0].invoice.service}}</td>
+      <td>{{detailedEvent.offers[0].invoice.tax.toFixed(2)}}</td>
+      <td>{{(detailedEvent.offers[0].invoice.service + detailedEvent.offers[0].invoice.tax).toFixed(2)}}</td>
+      <td>{{((detailedEvent.offers[0].invoice.service + detailedEvent.offers[0].invoice.tax) * detailedEvent.offers[0].invoice.commission / 100).toFixed(2)}}</td>
+      <td>{{detailedEvent.offers[0].invoice.refund}}</td>
+      <td>{{detailedEvent.offers[0].invoice.adjustment.chargeOff}}</td>
+      <td>{{detailedEvent.offers[0].invoice.adjustment.caterer}}</td>
+      <td>{{(((detailedEvent.offers[0].invoice.service + detailedEvent.offers[0].invoice.tax) * (100 - detailedEvent.offers[0].invoice.commission)/100) - detailedEvent.offers[0].invoice.adjustment.client).toFixed(2)}}</td>
+    </tr>
+  </table>
   <div class="row" ng-if="isInvoiceMode">
     <div class="col-sm-12">
       <header>Invoice</header>
