@@ -46,7 +46,8 @@ var UserSchema = new Schema({
   //logo: { data: Buffer, contentType: String }
   payableAccount: Object, // for a caterer
   payableAccountId: String, // for an user
-  address: Object
+  address: Object,
+  dwollaTokens: Object // admin only
 });
 
 /**

@@ -11,25 +11,17 @@ class AdminPayController {
 
   pay(req, res) {
 
-    console.log(1, req.body);
-
-    if (!req.body.items || req.body.items.length === 0) {
+    if (!req.user.dwollaTokens && !req.body.items || req.body.items.length === 0) {
       return Promise.reject({});
     }
 
-    console.log(2);
-
     return Promise.all(req.body.items.map(item => mongoose.model('Offer').findById(item))).then(offers => {
-
-      console.log(3, offers);
-
-      console.log(offers[0].catererId);
 
       return Promise.all(offers.map(item => mongoose.model('User').findById(item.catererId))).then(caterers => {
 
         let promises = [];
         let items = [];
-        console.log(4);
+
         offers.forEach((offer, index) => {
 
           if (offer.invoice.refund) {
@@ -53,10 +45,20 @@ class AdminPayController {
         });
 
         if (items.length) {
-          promises.push(dwollaController.pay(items));
+          promises.push(dwollaController.pay(items, req.user).catch((err) => {
+            return mongoose.model('User').findOne({_id: req.user._id}).then((user) => {
+              user.dwollaTokens = null;
+              return user.save().then(() => {
+                return Promise.reject(err);
+              });
+            });
+          }));
         }
 
         return Promise.all(promises).then(() => {
+          if (!promises.length) {
+            return Promise.reject({});
+          }
           return Promise.all(offers.map(offer => {
             offer.status = 'completed';
             offer.paymentStatus = 'completed';
@@ -71,7 +73,7 @@ class AdminPayController {
                  .catch(handleError(res));
             });
           });
-        });
+        }).catch(handleError(res));
 
       });
     })
