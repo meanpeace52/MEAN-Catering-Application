@@ -205,11 +205,14 @@ $scope.setActiveEvent = function(event) {
 
 $scope.$watchGroup(['filter.paid', 'filter.dateTo', 'filter.dateFrom'], () => {
   if ($scope.filter.paid === 'all') {
-  delete $scope.query.paymentStatus;
+    $scope.query.status = { $in: ['confirmed', 'completed'] };
+    $scope.query.paymentStatus = { $in: ['paid', 'hold', 'completed'] };
 } else if ($scope.filter.paid === 'allPaid') {
-  $scope.query.paymentStatus = { $in: ['paid', 'hold'] };
+  $scope.query.status = { $in: ['completed'] };
+  $scope.query.paymentStatus = { $in: ['completed'] };
 } else if ($scope.filter.paid === 'allUnpaid') {
-  $scope.query.paymentStatus = { $exists: false };
+  $scope.query.status = { $in: ['confirmed'] };
+  $scope.query.paymentStatus = { $in: ['paid', 'hold'] };
 }
 
 if ($scope.filter.dateTo && !$scope.filter.dateFrom) {

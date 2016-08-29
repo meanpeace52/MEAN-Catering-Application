@@ -29,9 +29,10 @@ class EventsController {
 
     this.$scope.filter = {
       dateFilter: 'All',
+      paid: 'all',
       newEvents: false,
       confirmedEvents: false
-    }
+    };
 
     let now = new Date();
     $scope.start24 = Date.parse(now) - (24 * 60 * 60 * 1000);
@@ -140,12 +141,24 @@ class EventsController {
       }
     }
 
-    $scope.$watchGroup(['filter.dateFilter', 'filter.newEvents', 'filter.confirmedEvents'], () => {
+    $scope.$watchGroup(['filter.dateFilter', 'filter.newEvents', 'filter.confirmedEvents', 'filter.paid'], () => {
       let now = new Date();
         $scope.start24 = Date.parse(now) - (24 * 60 * 60 * 1000);
         $scope.start1 = Date.parse(now) - (60 * 60 * 1000);
-
       if ($scope.query) {
+
+        delete $scope.query.status;
+        delete $scope.query.paymentStatus;
+
+        if ($scope.filter.paid === 'all') {
+          $scope.query.status = { $in: ['confirmed', 'draft', 'completed', 'sent'] };
+        } else if ($scope.filter.paid === 'allPaid') {
+          $scope.query.status = { $in: ['completed'] };
+          $scope.query.paymentStatus = { $in: ['completed'] };
+        } else if ($scope.filter.paid === 'allUnpaid') {
+          $scope.query.status = { $in: ['confirmed', 'draft', 'sent'] };
+        }
+
         if ($scope.filter.newEvents) {
           if ($scope.filter.dateFilter == 'All') {
             delete $scope.query.createDate;
@@ -171,7 +184,7 @@ class EventsController {
           }
         } else {
           delete $scope.query.confirmedDate;
-          delete $scope.query.status;
+          // delete $scope.query.status;
         }
         root.pipe();
       }
@@ -305,6 +318,7 @@ class EventsController {
   setActiveEvent(event) {
     this.$scope.isInvoiceMode = false;
     this.$scope.eventForInvoice = null;
+    this.$scope.detailedEvent = event;
     this.$scope.eventActive = event._id;
     this.$rootScope.eventActive = event._id;
     this.$cookies.put('eventActive', event._id);

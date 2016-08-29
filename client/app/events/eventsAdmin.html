@@ -49,6 +49,7 @@
               <th>Refund</th>
               <th>Net</th>
               <th>Offer</th>
+              <th ng-if="filter.paid === 'all' || filter.paid === 'allPaid'">Date Paid</th>
             </tr>
             <tr>
               <th></th>
@@ -72,6 +73,7 @@
               <th></th>
               <th></th>
               <th></th>
+              <th ng-if="filter.paid === 'all' || filter.paid === 'allPaid'"></th>
             </tr>
             </thead>
             <tbody>
@@ -101,6 +103,7 @@
                   <a class="btn btn-xs btn-success" ng-if="event.offers[0].paymentStatus === 'paid'" ng-click="pay(event.offers[0])">Pay</a>
                 </div>
               </td>
+              <td ng-if="filter.paid === 'all' || filter.paid === 'allPaid'">{{!event.datePaid ? 'pending' : (event.datePaid | date)}}</td>
             </tr>
             </tbody>
             <tfoot>
@@ -118,7 +121,29 @@
     <div class="col-sm-12">
       <h3>Offer from <b>{{eventActive.offers[0].catererName}}</b>, Total price: <b><mark>${{eventActive.offers[0].priceWithCounter}}</mark></b> <span class="label label-info">{{eventActive.offers[0].paymentStatus || eventActive.offers[0].status}}</span></h3>
       <hr />
-      <button class="btn btn-primary" ng-click="open(eventActive.offers[0])">Adjust Payment</button>
+      <button ng-if="eventActive.status !== 'completed' || eventActive.paymentStatus !== 'completed'" class="btn btn-primary" ng-click="open(eventActive.offers[0])">Adjust Payment</button>
+      <table class="col-sm-12"  ng-if="eventActive.status === 'completed' || eventActive.paymentStatus === 'completed'">
+        <tr>
+          <th>Subtotal</th>
+          <th>Tax</th>
+          <th>Total</th>
+          <th>Commission</th>
+          <th>Refunds</th>
+          <th>House Adjust</th>
+          <th>Caterer Adjust</th>
+          <th>Net Caterer</th>
+        </tr>
+        <tr>
+          <td>{{eventActive.offers[0].invoice.service}}</td>
+          <td>{{eventActive.offers[0].invoice.tax.toFixed(2)}}</td>
+          <td>{{(eventActive.offers[0].invoice.service + eventActive.offers[0].invoice.tax).toFixed(2)}}</td>
+          <td>{{((eventActive.offers[0].invoice.service + eventActive.offers[0].invoice.tax) * eventActive.offers[0].invoice.commission / 100).toFixed(2)}}</td>
+          <td>{{eventActive.offers[0].invoice.refund}}</td>
+          <td>{{eventActive.offers[0].invoice.adjustment.chargeOff}}</td>
+          <td>{{eventActive.offers[0].invoice.adjustment.caterer}}</td>
+          <td>{{(((eventActive.offers[0].invoice.service + eventActive.offers[0].invoice.tax) * (100 - eventActive.offers[0].invoice.commission)/100) - eventActive.offers[0].invoice.adjustment.client).toFixed(2)}}</td>
+        </tr>
+      </table>
       <hr />
       <div class="row">
         <div class="col-sm-6">

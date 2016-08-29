@@ -68,6 +68,7 @@ class AdminPayController {
               return Promise.all(events.map(event => {
                 event.status = 'completed';
                 event.paymentStatus = 'completed';
+                event.datePaid = new Date();
                 return event.save();
               })).then(respondWithResult(res))
                  .catch(handleError(res));
