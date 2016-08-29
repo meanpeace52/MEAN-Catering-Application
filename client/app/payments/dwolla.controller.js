@@ -13,36 +13,50 @@ class DwollaController {
     }
 
     // After Dwolla Auth
-    if(!this.user.payableAccount && authCode){
+    if((!this.user.payableAccount || !this.user.dwollaTokens) && authCode){
       this.isAuth = true;
 
       PaymentService.dwollaAuth(authCode).then(response => {
         if (response) {
-          $http.post(`/api/users/${this.user._id}`, {
-            payableAccount: {
-              id: response.account_id,
-              links: response._links
-            }
-          })
-          .then(res => {
-            let user = res.data;
-            if (user.payableAccount) {
-              this.user.payableAccount = user.payableAccount;
-
-              let offerModel = JSON.parse(localStorage.getItem('SAVING_OFFER'));
-              offerModel.status = 'sent';
-
-              if (offerModel) {
-                $http.post('/api/offers/' + offerModel._id, offerModel).then(response => {
-                  $state.go('events', { time: 'active' });
-                })
-                .catch(err => {
-                  //this.errors.other = err.message;
-                })
+          if (this.user.role === 'admin') {
+            console.log(response);
+            $http.post(`/api/users/${this.user._id}`, {
+              dwollaTokens: {
+                access_token: response.access_token,
+                refresh_token: response.refresh_token
               }
-            }
-          })
-          .catch(() => $state.go('dwolla'))
+            }).then(() => {
+              $state.go('admin');
+            }).catch(() => $state.go('dwolla'));
+            // $state.go('admin');
+          } else {
+            $http.post(`/api/users/${this.user._id}`, {
+              payableAccount: {
+                id: response.account_id,
+                links: response._links
+              }
+            })
+              .then(res => {
+                let user = res.data;
+                if (user.payableAccount) {
+                  this.user.payableAccount = user.payableAccount;
+
+                  let offerModel = JSON.parse(localStorage.getItem('SAVING_OFFER'));
+                  offerModel.status = 'sent';
+
+                  if (offerModel) {
+                    $http.post('/api/offers/' + offerModel._id, offerModel).then(response => {
+                      $state.go('events', { time: 'active' });
+                    })
+                      .catch(err => {
+                        //this.errors.other = err.message;
+                      })
+                  }
+                }
+              })
+              .catch(() => $state.go('dwolla'));
+          }
+
         }
       });
     }

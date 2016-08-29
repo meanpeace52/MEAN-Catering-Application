@@ -1,6 +1,7 @@
 let config = require('../../config/environment');
 let Promise = require('bluebird');
 let request = require('request-promise');
+let mongoose = require('mongoose');
 
 let dwolla = require('dwolla-v2');
 let dwollaOptions = {
@@ -12,36 +13,63 @@ let dwollaOptions = {
 //}
 let dwollaClient = new dwolla.Client(dwollaOptions);
 
-console.log(12, dwollaClient);
-
 class DwollaController {
 
-  pay(items) {
-    var accountToken = new dwollaClient.Token({
-      access_token: config.payments.DWOLLA.ACCESS_TOKEN,
-      refresh_token: config.payments.DWOLLA.REFRESH_TOKEN
-    });
+  requestAccessToken(user) {
 
-    console.log(JSON.stringify(items), accountToken);
-
-    if (items.length === 0 || !accountToken) {
+    if (!user.dwollaTokens) {
       return Promise.reject({});
     }
 
+    return request.post(dwollaClient.tokenUrl, {
+      headers: {
+        "accept": "application/json",
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({
+        "client_id": config.payments.DWOLLA.KEY,
+        "client_secret": config.payments.DWOLLA.SECRET,
+        "refresh_token": user.dwollaTokens.refresh_token,
+        "grant_type": "refresh_token"
+      })
+    }).then(response => {
+      response = JSON.parse(response);
+      return mongoose.model('User').findOne({
+        _id: user._id
+      }).then((dbUser) => {
+        dbUser.dwollaTokens = {
+          access_token: response.access_token,
+          refresh_token: response.refresh_token
+        };
+        return dbUser.save().then(() => response);
+      });
+    });
 
+  }
 
-    return accountToken.get(`https://api-uat.dwolla.com/accounts/${config.payments.DWOLLA.ACCOUNT_ID}/funding-sources`).then((response) => {
-      let fundingSources = response.body._embedded['funding-sources'];
-      let balance = fundingSources.filter(item => item.type === 'balance')[0];
-      console.log(11, balance._links.self.href);
-      var requestBody = {
-        _links: {
-          source: balance._links.self
-        },
-        items: items
-      };
-      return accountToken.post('mass-payments', requestBody).then(response => {
-        console.log(1000, response);
+  pay(items, user) {
+
+    return this.requestAccessToken(user).then((response) => {
+      
+      var accountToken = new dwollaClient.Token({
+        access_token: response.access_token,
+        refresh_token: response.refresh_token
+      });
+
+      if (items.length === 0 || !accountToken) {
+        return Promise.reject({});
+      }
+
+      return accountToken.get(`https://api-uat.dwolla.com/accounts/${config.payments.DWOLLA.ACCOUNT_ID}/funding-sources`).then((response) => {
+        let fundingSources = response.body._embedded['funding-sources'];
+        let balance = fundingSources.filter(item => item.type === 'balance')[0];
+        var requestBody = {
+          _links: {
+            source: balance._links.self
+          },
+          items: items
+        };
+        return accountToken.post('mass-payments', requestBody);
       });
     });
 
@@ -49,7 +77,6 @@ class DwollaController {
 
   endAuth(req, res) {
 
-    console.log(12, dwollaClient.tokenUrl);
     let options = {
       "client_id": config.payments.DWOLLA.KEY,
       "client_secret": config.payments.DWOLLA.SECRET,
@@ -57,7 +84,6 @@ class DwollaController {
       "grant_type": "authorization_code",
       "redirect_uri": '//' + req.headers.host + req.query.redirect /*"redirect_uri": request.headers.protocol + '://' + req.headers.host + req.query.redirect*/
     };
-    console.log('OPTIONS', options);
 
     return request.post(dwollaClient.tokenUrl, {
       headers: {

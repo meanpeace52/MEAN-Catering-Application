@@ -3,59 +3,59 @@
 class EventsAdminController {
   constructor($http, $scope, $rootScope, socket, Auth, $state, IncludedInPriceService, $interval, $filter, $uibModal, $log, $timeout) {
 
-    var root = this;
-    this.errors = {};
-    this.submitted = false;
-    this.saved = false;
-    this.sent = false;
+  var root = this;
+  this.errors = {};
+  this.submitted = false;
+  this.saved = false;
+  this.sent = false;
 
-    this.Auth = Auth;
-    this.$state = $state;
-    this.$scope = $scope;
-    this.$rootScope = $rootScope;
-    this.$http = $http;
-    this.socket = socket;
-    this.incService = IncludedInPriceService;
-    this.getCurrentUser = Auth.getCurrentUser;
-    this.isLoggedIn = Auth.isLoggedIn;
-    this.user = this.$scope.user = this.getCurrentUser();
-    this.$scope.eventActive = null;
-    this.$scope.events = [];
-    this.$scope.displayed = [];
+  this.Auth = Auth;
+  this.$state = $state;
+  this.$scope = $scope;
+  this.$rootScope = $rootScope;
+  this.$http = $http;
+  this.socket = socket;
+  this.incService = IncludedInPriceService;
+  this.getCurrentUser = Auth.getCurrentUser;
+  this.isLoggedIn = Auth.isLoggedIn;
+  this.user = this.$scope.user = this.getCurrentUser();
+  this.$scope.eventActive = null;
+  this.$scope.events = [];
+  this.$scope.displayed = [];
 
-    this.$scope.selectedEvents = {};
-    this.$scope.allEventsAreSelected = false;
+  this.$scope.selectedEvents = {};
+  this.$scope.allEventsAreSelected = false;
 
-    $scope.selectAll = value => this.$scope.events.forEach(event => $scope.selectedEvents[event._id] = value);
-    $scope.isSelected = event => selectedEvents[event._id];
+  $scope.selectAll = value => this.$scope.events.forEach(event => $scope.selectedEvents[event._id] = value);
+  $scope.isSelected = event => selectedEvents[event._id];
 
-    $scope.select = () => {
-      let allIsSelected = true;
-      for (let k in $scope.selectedEvents) {
-        if(!$scope.selectedEvents[k]) {
-          allIsSelected = false;
-          break;
-        }
+  $scope.select = () => {
+    let allIsSelected = true;
+    for (let k in $scope.selectedEvents) {
+      if(!$scope.selectedEvents[k]) {
+        allIsSelected = false;
+        break;
       }
-      $scope.allEventsAreSelected = allIsSelected;
-    };
-    $scope.selectAll(false);
+    }
+    $scope.allEventsAreSelected = allIsSelected;
+  };
+  $scope.selectAll(false);
 
-    $scope.paySelected = () => {
-      let selectedEventIds = [];
-      for (let k in $scope.selectedEvents) {
-        if($scope.selectedEvents[k]) {
-          selectedEventIds.push(k);
-        }
+  $scope.paySelected = () => {
+    let selectedEventIds = [];
+    for (let k in $scope.selectedEvents) {
+      if($scope.selectedEvents[k]) {
+        selectedEventIds.push(k);
       }
-      let selectedEvents = $scope.events.filter(event => selectedEventIds.includes(event._id));
+    }
+    let selectedEvents = $scope.events.filter(event => selectedEventIds.includes(event._id));
 
-      if (selectedEvents.length) {
-        this.$http.post('/api/payments/pay', {
-          items: selectedEvents.map(event => event.offers[0]._id)
-      }).then(response => {
-        $scope.$emit('eventUpdated');
-    });
+  if (selectedEvents.length) {
+    this.$http.post('/api/payments/pay', {
+      items: selectedEvents.map(event => event.offers[0]._id)
+    }).then(response => {
+      $scope.$emit('eventUpdated');
+    }).catch(response => $state.go('dwolla'));
   }
 };
 
@@ -64,7 +64,7 @@ $scope.pay = (offer) => {
     items: [offer._id]
   }).then(response => {
     $scope.$emit('eventUpdated');
-});
+  }).catch(response => $state.go('dwolla'));
 };
 
 $scope.open = (offer) => {
