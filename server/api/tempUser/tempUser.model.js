@@ -46,7 +46,9 @@ var TempUserSchema = new Schema({
   //logo: { data: Buffer, contentType: String }
   payableAccount: Object, // for a caterer
   payableAccountId: String, // for an user
-  address: Object
+  address: Object,
+  sendSummary: Boolean,
+  sendNotification: Boolean
 });
 
 /**
@@ -81,7 +83,9 @@ TempUserSchema
       'role': this.role,
       'status': this.status,
       'logo': this.logo,
-      'address': this.address
+      'address': this.address,
+      'sendSummary': this.sendSummary,
+      'sendNotification': this.sendNotification
     };
   });
 
