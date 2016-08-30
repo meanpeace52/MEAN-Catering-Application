@@ -17,6 +17,7 @@
                   <th>Total</th>
                   <th>Event</th>
                   <th>Caterer</th>
+                  <th>Invoice</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -31,9 +32,71 @@
                   <td>{{event.offer.invoice.total}}</td>
                   <td>{{event.name}}</td>
                   <td>{{event.offer.catererName}}</td>
+                  <td><a class="btn btn-xs btn-success" ng-click="vm.showInvoice($event, event)">Invoice</a></td>
                 </tr>
                 </tbody>
               </table>
+            </div>
+          </div>
+          <div class="row" ng-if="isInvoiceMode">
+            <div class="col-sm-12">
+              <header>Invoice</header>
+              <article>
+                <table class="table col-sm-12">
+                  <thead>
+                    <tr class="active">
+                      <th class="col-sm-1">#</th>
+                      <th class="col-sm-5">Event Description</th>
+                      <th class="col-sm-2"># People</th>
+                      <th class="col-sm-2">$ Per Person</th>
+                      <th class="col-sm-2">$ Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>{{eventForInvoice.description}}</td>
+                      <td>{{eventForInvoice.people.toFixed(2)}}</td>
+                      <td>{{eventForInvoice.pricePerPerson.toFixed(2)}}</td>
+                      <td>{{(eventForInvoice.people * eventForInvoice.pricePerPerson).toFixed(2)}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <section class="col-sm-4 col-sm-offset-8">
+                  <table class="table">
+                    <tbody>
+                      <tr ng-if="eventForInvoice.offer.counter">
+                        <td>Counter</td>
+                        <td>{{eventForInvoice.offer.counter.toFixed(2)}}</td>
+                      </tr>
+                      <tr>
+                        <td>Sub Total</td>
+                        <td>{{eventForInvoice.offer.invoice.service.toFixed(2)}}</td>
+                      </tr>
+                      <tr>
+                        <td>Sales Tax ({{((eventForInvoice.offer.invoice.tax/eventForInvoice.offer.invoice.service) * 100).toFixed(2)}}%)</td>
+                        <td>{{eventForInvoice.offer.invoice.tax.toFixed(2)}}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Total</b></td>
+                        <td><b>{{eventForInvoice.offer.invoice.total.toFixed(2)}}</b></td>
+                      </tr>
+                      <tr class="success" ng-if="vm.user.role == 'user'">
+                        <td>Charged to Credit Card</td>
+                        <td>{{eventForInvoice.offer.invoice.total.toFixed(2)}}</td>
+                      </tr>
+                      <tr class="danger" ng-if="eventForInvoice.offer.invoice.refund">
+                        <td>Refund</td>
+                        <td>-{{eventForInvoice.offer.invoice.refund.toFixed(2)}}</td>
+                      </tr>
+                      <tr class="warning" ng-if="!eventForInvoice.offer.invoice.refund && eventForInvoice.offer.invoice.adjustment.client && vm.user.role == 'user'">
+                        <td>Partial Refund</td>
+                        <td>-{{eventForInvoice.offer.invoice.adjustment.client.toFixed(2)}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </section>
+              </article>
             </div>
           </div>
         </uib-tab>

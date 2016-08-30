@@ -113,10 +113,11 @@ export function show(req, res) {
 // Creates a new Thing in the DB
 export function create(req, res) {
   return Comment.create(req.body)
-    .then(respondWithResult(res, 201))
     .then((res) => {
       mailer.notifyComment(res);
+      return res;
     })
+    .then(respondWithResult(res))
     .catch(handleError(res));
 }
 

@@ -61,7 +61,8 @@ class SignupController {
       request.veganOffers = this.user.veganOffers;
       request.website = this.user.website;
       request.phone = this.user.phone;
-      console.log('req', request);
+      request.sendSummary = true;
+      request.sendNotification = true;
     }
 
     if (/*this.user.role && */ form.$valid) {

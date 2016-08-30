@@ -10,7 +10,7 @@ class NavbarController {
     this.isUser = Auth.isUser;
     this.getCurrentUser = Auth.getCurrentUser;
     this.user = this.getCurrentUser()
-    console.log(this.user);
+    //console.log(this.user);
 
   }
 
