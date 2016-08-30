@@ -266,6 +266,13 @@
             <button class="btn btn-lg btn-primary" type="submit">Save changes</button>
           </form>
         </uib-tab>
+        <uib-tab index="4" heading="Login to the Dwolla" ng-if="vm.user.payableAccount">
+          <div style="padding:20px;">
+            <button class="btn btn-primary" type="button" ng-click="vm.loginToDwolla()">
+              Login To the Dwolla
+            </button>
+          </div>
+        </uib-tab>
       </uib-tabset>
     </div>
   </div>
