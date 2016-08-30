@@ -106,6 +106,15 @@ class DwollaController {
     };
     return Promise.resolve(output).then(respondWithResult(res))
   }
+
+  loginUrl(req, res) {
+      let loginUrl = config.payments.DWOLLA.LOGIN_URL;
+      //let redirectUrl = '//' + req.headers.host + req.query.redirect;
+      let output = {
+        loginUrl: `${loginUrl}`
+      };
+      return Promise.resolve(output).then(respondWithResult(res))
+  }
 }
 
 function respondWithResult(res, statusCode) {

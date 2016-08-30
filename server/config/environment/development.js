@@ -38,7 +38,8 @@ module.exports = {
       SECRET: '8xPG4YytWNmeVtbt7UMCVDH5wT6UfBEZtqBE3tmRQ1nq7fle72',
       ACCOUNT_ID: '9b0c7e4e-56d2-4722-8ca4-832609e7dcf0', //eabd60f1-8fbc-4ed9-b09a-b213bdc9d092
       ACCESS_TOKEN: 'WzpXdO9KTOXsTKBncasOBn0i3lsI8t8rTZzlmW65k3UMzd1WZ4',
-      REFRESH_TOKEN: '9kAlLadOCGrchOgAHdKc28vWIIl31hsT4YvZvOXT3nNVrkYpCa'
+      REFRESH_TOKEN: '9kAlLadOCGrchOgAHdKc28vWIIl31hsT4YvZvOXT3nNVrkYpCa',
+      LOGIN_URL: 'https://uat.dwolla.com/login'
     },
     STRIPE: {
       SECRET_KEY: 'sk_test_wRIsHZnwUKFqmPTD8YjRxkQd',

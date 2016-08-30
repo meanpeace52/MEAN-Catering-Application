@@ -163,6 +163,7 @@ class EventsNewController {
     _.each(this.$scope.caterers, (item, i) => {
       let intersectFT = _.intersection(item.foodTypes, selectedFT),
         intersectST = _.intersection(item.serviceTypes, selectedST);
+        
       if (!selectedFT.length && !selectedST.length) {
         this.$scope.caterers[i].showByCat = true;
       } else if (selectedFT.length && !selectedST.length) {
