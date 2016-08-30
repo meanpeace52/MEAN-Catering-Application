@@ -90,7 +90,12 @@ function getEventMailList(event) {
       });
 
       return _.map(fltUsers, (user) => {
-          return user.email;
+          let emailOptions = {
+            sendSummary: user.sendSummary,
+            sendNotification: user.sendNotification,
+            email: user.email
+          }
+          return emailOptions;
         });
     });
 }
@@ -302,22 +307,24 @@ var mailer = {
   report: function() {
     getUsers().then((users) => {
       _.each(users, (user) =>{
-        createSummary(user).then((summary)=> {
-          let message = summary.eventsNumberHtml + summary.offersSentHtml + summary.offersAcceptedHtml + summary.eventsTomorrowHtml;
-          nodemailerMailgun.sendMail({
-              from: config.mailgun.from,
-              to: user.email,
-              subject: 'Catering-ninja: daily report',
-              html: message,
-            }, function (err, info) {
-              if (err) {
-                console.log('Error: ' + err);
-              }
-              else {
-                console.log('Response: ' + info);
-              }
-            });
+        if (user.sendSummary) {
+          createSummary(user).then((summary)=> {
+            let message = summary.eventsNumberHtml + summary.offersSentHtml + summary.offersAcceptedHtml + summary.eventsTomorrowHtml;
+            nodemailerMailgun.sendMail({
+                from: config.mailgun.from,
+                to: user.email,
+                subject: 'Catering-ninja: daily report',
+                html: message,
+              }, function (err, info) {
+                if (err) {
+                  console.log('Error: ' + err);
+                }
+                else {
+                  console.log('Response: ' + info);
+                }
+              });
           });
+        }
       });
     });
   },
@@ -325,27 +332,29 @@ var mailer = {
     let date = new Date(event.date),
       time = new Date(event.time),
       message = '<h1>Event ' + event.name + ' was ' + fact + '!</h1>';
-    message += '<p>Date:<strong>' + date.toDateString() + '</strong></p>';
-    message += '<p>Time:<strong>' + time.toTimeString() + '</strong></p>';
-    message += '<p>Location: <strong>' + event.location + '</strong></p>';
-    message += '<p>People: <strong>' + event.people + '</strong></p>';
-    message += '<p>Price per person: <strong>' + event.pricePerPerson + '</strong></p>';
+      message += '<p>Date:<strong>' + date.toDateString() + '</strong></p>';
+      message += '<p>Time:<strong>' + time.toTimeString() + '</strong></p>';
+      message += '<p>Location: <strong>' + event.location + '</strong></p>';
+      message += '<p>People: <strong>' + event.people + '</strong></p>';
+      message += '<p>Price per person: <strong>' + event.pricePerPerson + '</strong></p>';
 
-    getEventMailList(event).then((sendTo) => {
-      _.each(sendTo, (cEmail) => {
-        nodemailerMailgun.sendMail({
-          from: config.mailgun.from,
-          to: cEmail,
-          subject: 'Catering-ninja: event has been ' + fact,
-          html: message,
-        }, function (err, info) {
-          if (err) {
-            console.log('Error: ' + err);
-          }
-          else {
-            console.log('Response: ' + info);
-          }
-        });
+    getEventMailList(event).then((users) => {
+      _.each(users, (user) => {
+        if (user.sendNotification) {
+          nodemailerMailgun.sendMail({
+            from: config.mailgun.from,
+            to: user.email,
+            subject: 'Catering-ninja: event has been ' + fact,
+            html: message,
+          }, function (err, info) {
+            if (err) {
+              console.log('Error: ' + err);
+            }
+            else {
+              console.log('Response: ' + info);
+            }
+          });
+        }
       });
     });
   },

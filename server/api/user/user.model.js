@@ -47,7 +47,9 @@ var UserSchema = new Schema({
   payableAccount: Object, // for a caterer
   payableAccountId: String, // for an user
   address: Object,
-  dwollaTokens: Object // admin only
+  dwollaTokens: Object, // admin only
+  sendSummary: Boolean,
+  sendNotification: Boolean
 });
 
 /**
@@ -82,7 +84,9 @@ UserSchema
       'role': this.role,
       'status': this.status,
       'logo': this.logo,
-      'address': this.address
+      'address': this.address,
+      'sendSummary': this.sendSummary,
+      'sendNotification': this.sendNotification
     };
   });
 
