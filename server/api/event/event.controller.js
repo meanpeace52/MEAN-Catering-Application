@@ -174,7 +174,6 @@ export function dataset(req, res) {
     events.forEach((event, i) => {
       events[i] = events[i].toObject();
       let total = { eventId: '' + event._id, status: { $nin: ['cancelled', 'draft']} },
-        catererQuery = { eventId: '' + event._id, catererId: req.body.catererId, status: {$in: ['confirmed', 'completed', 'sent']}},
         adminQuery = {eventId: '' + event._id, status: {$in: ['confirmed', 'completed']}};
       if (isAdmin) {
         eventPromises.push(Offer.find(adminQuery).exec().then((offers) => {
