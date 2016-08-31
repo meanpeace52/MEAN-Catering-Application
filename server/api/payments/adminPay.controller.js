@@ -34,7 +34,7 @@ class AdminPayController {
               },
               "amount": {
                 "currency": "USD",
-                "value": amount,
+                "value": amount
               }
             };
             if (offer.invoice.adjustment.chargeOff) {

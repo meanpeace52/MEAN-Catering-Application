@@ -1,16 +1,31 @@
 <div class="container">
   <div class="row">
-    <div class="col-sm-12">
+    <div class="col-sm-2">
+      <table class="table table-hover table-condensed" ng-class="{'is-hidden': filter.paid === 'allUnpaid'}">
+        <thead>
+          <tr>
+            <th width="150">Date</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-class="{'active': selectedDate === item.date}" ng-repeat="item in payments" ng-click="setDate(item.date)">
+            <td>{{item.date | date}}</td>
+            <td>{{item.summary.toFixed(2)}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-sm-10">
       <div class="panel panel-default">
         <div class="panel-body">
           <div class="filter-events">
             <div class="row">
               <div class="col-sm-2" ng-if="vm.user.role === 'admin'">
-                <a class="btn btn-success" ng-click="paySelected()" ng-disabled="filter.paid === 'allUnpaid'">Pay All Selected</a>
+                <a class="btn btn-success" ng-click="paySelected()" ng-disabled="filter.paid === 'allPaid'">Pay All Selected</a>
               </div>
               <div class="col-sm-3">
                 <select class="input-sm form-control" style="height: 34px;" ng-model="filter.paid">
-                  <option value="all">All</option>
                   <option value="allPaid">All Paid</option>
                   <option value="allUnpaid">All Unpaid</option>
                 </select>
@@ -20,7 +35,7 @@
           <table st-table="events" st-pipe="vm.pipe" class="table table-hover table-condensed table-events">
             <thead>
             <tr>
-              <th ng-if="vm.user.role === 'admin'"><input type="checkbox" ng-model="allEventsAreSelected" ng-change="selectAll(allEventsAreSelected)"></th>
+              <th ng-if="vm.user.role === 'admin' && filter.paid === 'allUnpaid'"><input type="checkbox" ng-model="allEventsAreSelected" ng-change="selectAll(allEventsAreSelected)"></th>
               <th ng-if="vm.user.role === 'admin'">Caterer</th>
               <th>Customer</th>
               <th st-sort="date" st-skip-natural="true">Event Date</th>
@@ -32,9 +47,10 @@
               <th>Net</th>
               <th>Date Paid (from Customer)</th>
               <th ng-if="filter.paid === 'all' || filter.paid === 'allPaid'">Date Paid (to Caterer)</th>
+              <th ng-if="vm.user.role === 'admin' && filter.paid === 'allUnpaid'"></th>
             </tr>
             <tr>
-              <th ng-if="vm.user.role === 'admin'"></th>
+              <th ng-if="vm.user.role === 'admin' && filter.paid === 'allUnpaid'"></th>
               <th ng-if="vm.user.role === 'admin'"></th>
               <th><input st-search="customer" style="width: 50px;" class="input-sm form-control" type="search"/></th>
               <th><input st-search="date" style="width: 120px;" class="input-sm form-control" type="search"/></th>
@@ -46,11 +62,12 @@
               <th></th>
               <th></th>
               <th ng-if="filter.paid === 'all' || filter.paid === 'allPaid'"></th>
+              <th ng-if="vm.user.role === 'admin' && filter.paid === 'allUnpaid'"></th>
             </tr>
             </thead>
             <tbody>
             <tr ng-repeat="event in displayed" ng-class="{'drafted': event.drafted, 'active': event.active, 'hidden': event.hide}" ng-click="setActiveEvent(event)">
-              <td ng-if="vm.user.role === 'admin'"><input ng-if="event.status !== 'completed' || event.paymentStatus !== 'completed'" type="checkbox" ng-model="selectedEvents[event._id]" ng-change="select(selectedEvents[event._id])"></td>
+              <td ng-if="vm.user.role === 'admin' && filter.paid === 'allUnpaid'"><input ng-if="event.status !== 'completed' || event.paymentStatus !== 'completed'" type="checkbox" ng-model="selectedEvents[event._id]" ng-change="select(selectedEvents[event._id])"></td>
               <td ng-if="vm.user.role === 'admin'">{{event.offers[0].catererName}}</td>
               <td>{{event.customer}}</td>
               <td>{{event.date | date: "longDate"}}</td>
@@ -69,7 +86,13 @@
                 <span ng-if="!event.offers[0].invoice.refund">{{(event.offers[0].invoice.total * ((100 - event.offers[0].invoice.commission) / 100) - event.offers[0].invoice.adjustment.caterer).toFixed(2)}}</span>
               </td>
               <td>{{!event.paymentPaidDate ? 'pending' : (event.paymentPaidDate | date)}}</td>
-              <td ng-if="filter.paid === 'all' || filter.paid === 'allPaid'">{{!event.datePaid ? 'pending' : (event.datePaid | date)}}</td>
+              <td ng-if="filter.paid === 'allPaid'">{{!event.datePaid ? 'pending' : (event.datePaid | date)}}</td>
+              <td ng-if="vm.user.role === 'admin' && filter.paid === 'allUnpaid'">
+                <div>
+                  <a class="btn btn-xs btn-primary" ng-click="open(event.offers[0])">Adjust</a>
+                  <a class="btn btn-xs btn-success" ng-if="event.offers[0].paymentStatus === 'paid'" ng-click="pay(event.offers[0])">Pay</a>
+                </div>
+              </td>
             </tr>
             </tbody>
             <tfoot>
@@ -83,12 +106,9 @@
       </div>
     </div>
   </div>
-  <div class="row" ng-if="eventActive">
+  <div class="row">
     <div class="col-sm-12">
-      <h3>Offer from <b>{{eventActive.offers[0].catererName}}</b>, Total price: <b><mark>${{eventActive.offers[0].priceWithCounter}}</mark></b> <span class="label label-info">{{eventActive.offers[0].paymentStatus || eventActive.offers[0].status}}</span></h3>
-      <hr />
-      <button ng-if="vm.user.role === 'admin' && (eventActive.status !== 'completed' || eventActive.paymentStatus !== 'completed')" class="btn btn-primary" ng-click="open(eventActive.offers[0])">Adjust Payment</button>
-      <table class="col-sm-12"  ng-if="vm.user.role === 'caterer' || eventActive.status === 'completed' || eventActive.paymentStatus === 'completed'">
+      <table class="col-sm-12" ng-if="(selectedDate || (vm.user.role === 'caterer' && eventActive) || (vm.user.role === 'admin' && hasSelectedEvents())) && ((vm.user.role === 'caterer' && displayed.length > 0) || (vm.user.role === 'admin' && (filter.paid === 'allPaid' || (filter.paid === 'allUnpaid' && hasSelectedEvents())) && displayed.length > 0))">
         <tr>
           <th>Subtotal</th>
           <th>Tax</th>
@@ -99,50 +119,17 @@
           <th>Caterer Adjust</th>
           <th>Net Caterer</th>
         </tr>
-        <tr>
-          <td>{{eventActive.offers[0].invoice.service}}</td>
-          <td>{{eventActive.offers[0].invoice.tax.toFixed(2)}}</td>
-          <td>{{(eventActive.offers[0].invoice.service + eventActive.offers[0].invoice.tax).toFixed(2)}}</td>
-          <td>{{((eventActive.offers[0].invoice.service + eventActive.offers[0].invoice.tax) * eventActive.offers[0].invoice.commission / 100).toFixed(2)}}</td>
-          <td>{{eventActive.offers[0].invoice.refund}}</td>
-          <td>{{eventActive.offers[0].invoice.adjustment.chargeOff}}</td>
-          <td>{{eventActive.offers[0].invoice.adjustment.caterer}}</td>
-          <td>{{(((eventActive.offers[0].invoice.service + eventActive.offers[0].invoice.tax) * (100 - eventActive.offers[0].invoice.commission)/100) - eventActive.offers[0].invoice.adjustment.client).toFixed(2)}}</td>
+        <tr ng-class="{'bg-primary': event._id === eventActive._id && displayed.length > 1}" ng-repeat="event in displayed">
+          <td>{{event.offers[0].invoice.service}}</td>
+          <td>{{event.offers[0].invoice.tax.toFixed(2)}}</td>
+          <td>{{(event.offers[0].invoice.service + event.offers[0].invoice.tax).toFixed(2)}}</td>
+          <td>{{((event.offers[0].invoice.service + event.offers[0].invoice.tax) * event.offers[0].invoice.commission / 100).toFixed(2)}}</td>
+          <td>{{event.offers[0].invoice.refund}}</td>
+          <td>{{event.offers[0].invoice.adjustment.chargeOff}}</td>
+          <td>{{event.offers[0].invoice.adjustment.caterer}}</td>
+          <td>{{(((event.offers[0].invoice.service + event.offers[0].invoice.tax) * (100 - event.offers[0].invoice.commission)/100) - event.offers[0].invoice.adjustment.client).toFixed(2)}}</td>
         </tr>
       </table>
-      <hr />
-      <div class="row">
-        <div class="col-sm-6">
-          <div class="row">
-            <div class="col-sm-6" ng-if="eventActive.offers[0].includedInPrice.length">
-              <p><b>Offer Included in price:</b>
-              <ul>
-                <li ng-repeat="iip in eventActive.offers[0].includedInPrice">
-                  {{iip.name}}
-                </li>
-              </ul>
-              </p>
-            </div>
-            <div class="col-sm-6" ng-if="eventActive.includedInPrice.length">
-              <p><b>Event Included in price:</b></p>
-              <ul>
-                <li ng-repeat="iip in eventActive.includedInPrice">
-                  {{iip.name}}
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <p ng-if="eventActive.offers[0].counter"><b>Price per person:</b> ${{eventActive.offers[0].pricePerPerson}}</p>
-          <p ng-if="eventActive.offers[0].counter"><b>Counter:</b> ${{eventActive.offers[0].counter}}, Total with counter: <b><mark>${{eventActive.offers[0].priceWithCounter}}</mark></b> </p>
-          <p ng-if="!eventActive.offers[0].counter">Total: <b><mark>${{eventActive.offers[0].priceWithCounter}}</mark></b> </p>
-          <p ng-if="eventActive.offers[0].counterReason"><b>Counter Reason:</b> {{eventActive.offers[0].counterReason}}</p>
-          <p ng-if="eventActive.offers[0].contactInfo"><b>Contact Info:</b> {{eventActive.offers[0].contactInfo}}</p>
-          <p ng-if="eventActive.offers[0].offerDescription"><b>Offer Description:</b> {{eventActive.offers[0].offerDescription}}</p>
-
-        </div>
-      </div>
-
     </div>
   </div>
 </div>

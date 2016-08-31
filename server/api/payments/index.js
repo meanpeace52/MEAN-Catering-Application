@@ -9,6 +9,7 @@ let StripeController = require('./stripe.controller');
 let DwollaController = require('./dwolla.controller');
 let AdminPayController = require('./adminPay.controller');
 let TaxesController = require('./taxes.controller');
+let PaymentsStatisticsController = require('./paymentsStatistics.controller');
 router.post('/taxes/address/verify', auth.isAuthenticated(), TaxesController.verifyAddress);
 router.post('/taxes/lookup', auth.isAuthenticated(), TaxesController.lookup);
 router.post('/card/auth', auth.isAuthenticated(), StripeController.auth);
@@ -20,5 +21,6 @@ router.get('/dwolla/startAuth', auth.isAuthenticated(), DwollaController.startAu
 router.get('/dwolla/endAuth', auth.isAuthenticated(), DwollaController.endAuth);
 router.get('/dwolla/loginUrl', auth.isAuthenticated(), DwollaController.loginUrl);
 router.post('/pay', auth.isAuthenticated(), AdminPayController.pay);
+router.post('/summary', auth.isAuthenticated(), PaymentsStatisticsController.summary);
 module.exports = router;
 
