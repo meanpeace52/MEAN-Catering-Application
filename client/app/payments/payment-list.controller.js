@@ -1,72 +1,253 @@
 'use strict';
 
 class PaymentListController {
-  constructor(authCode, $http, $state, $stateParams, $rootScope, Auth, PaymentService) {
-    this.user = Auth.getCurrentUser();
-    this.PaymentService = PaymentService;
-    this.offer = $stateParams.offer;
-    this.authCode = authCode;
-    this.isAuth = false;
+  constructor($http, $scope, $rootScope, socket, Auth, $state, IncludedInPriceService, $interval, $filter, $uibModal, $log, $timeout) {
 
-    if(!authCode){
-      localStorage.setItem('SAVING_OFFER', JSON.stringify(this.offer));
-    }
+    var root = this;
+    this.errors = {};
+    this.submitted = false;
+    this.saved = false;
+    this.sent = false;
 
-    // After Dwolla Auth
-    if((!this.user.payableAccount || !this.user.dwollaTokens) && authCode){
-      this.isAuth = true;
+    this.Auth = Auth;
+    this.$state = $state;
+    this.$scope = $scope;
+    this.$rootScope = $rootScope;
+    this.$http = $http;
+    this.socket = socket;
+    this.incService = IncludedInPriceService;
+    this.getCurrentUser = Auth.getCurrentUser;
+    this.isLoggedIn = Auth.isLoggedIn;
+    this.user = this.$scope.user = this.getCurrentUser();
+    this.$scope.eventActive = null;
+    this.$scope.events = [];
+    this.$scope.displayed = [];
 
-      PaymentService.dwollaAuth(authCode).then(response => {
-        if (response) {
-          if (this.user.role === 'admin') {
-            console.log(response);
-            $http.post(`/api/users/${this.user._id}`, {
-              dwollaTokens: {
-                access_token: response.access_token,
-                refresh_token: response.refresh_token
-              }
-            }).then(() => {
-              $state.go('admin');
-            }).catch(() => $state.go('dwolla'));
-            // $state.go('admin');
-          } else {
-            $http.post(`/api/users/${this.user._id}`, {
-              payableAccount: {
-                id: response.account_id,
-                links: response._links
-              }
-            })
-              .then(res => {
-                let user = res.data;
-                if (user.payableAccount) {
-                  this.user.payableAccount = user.payableAccount;
+    this.$scope.selectedEvents = {};
+    this.$scope.allEventsAreSelected = false;
 
-                  let offerModel = JSON.parse(localStorage.getItem('SAVING_OFFER'));
-                  offerModel.status = 'sent';
+    $scope.selectAll = value => this.$scope.events.forEach(event => $scope.selectedEvents[event._id] = value);
+    $scope.isSelected = event => selectedEvents[event._id];
 
-                  if (offerModel) {
-                    $http.post('/api/offers/' + offerModel._id, offerModel).then(response => {
-                      $state.go('events', { time: 'active' });
-                    })
-                      .catch(err => {
-                        //this.errors.other = err.message;
-                      })
-                  }
-                }
+    $scope.select = () => {
+      let allIsSelected = true;
+      for (let k in $scope.selectedEvents) {
+        if(!$scope.selectedEvents[k]) {
+          allIsSelected = false;
+          break;
+        }
+      }
+      $scope.allEventsAreSelected = allIsSelected;
+    };
+    $scope.selectAll(false);
+
+    $scope.paySelected = () => {
+      let selectedEventIds = [];
+      for (let k in $scope.selectedEvents) {
+        if($scope.selectedEvents[k]) {
+          selectedEventIds.push(k);
+        }
+      }
+      let selectedEvents = $scope.events.filter(event => selectedEventIds.includes(event._id));
+
+      if (selectedEvents.length) {
+        this.$http.post('/api/payments/pay', {
+          items: selectedEvents.map(event => event.offers[0]._id)
+        }).then(response => {
+          $scope.$emit('eventUpdated');
+        }).catch(response => $state.go('dwolla'));
+      }
+    };
+
+    $scope.pay = (offer) => {
+      this.$http.post('/api/payments/pay', {
+        items: [offer._id]
+      }).then(response => {
+        $scope.$emit('eventUpdated');
+      }).catch(response => $state.go('dwolla'));
+    };
+
+    $scope.open = (offer) => {
+
+      var modalInstance = $uibModal.open({
+        animation: true,
+        templateUrl: 'adjustPayment.html',
+        controller: ($scope, $uibModalInstance) => {
+
+          $scope.totalRefund = angular.copy(offer.invoice);
+          $scope.totalRefund.refund = $scope.totalRefund.total;
+          $scope.totalRefund.adjustment.client = 0;
+          $scope.totalRefund.adjustment.caterer = 0;
+          $scope.totalRefund.adjustment.chargeOff = 0;
+          $scope.partialRefund = angular.copy(offer.invoice);
+          $scope.partialRefund.refund = 0;
+          $scope.updatedInvoice = $scope.totalRefund;
+
+          $scope.setAdjustment = (updatedInvoice) => {
+            $scope.updatedInvoice = updatedInvoice
+          };
+
+          $scope.ok = () => {
+            angular.merge(root.$scope.eventActive.offers[0].invoice, $scope.updatedInvoice);
+
+            $http.post('/api/offers/' + root.$scope.eventActive.offers[0]._id, root.$scope.eventActive.offers[0]).then(response => {
+              $http.post('/api/events/' + root.$scope.eventActive._id, root.$scope.eventActive).then(response => {
+                $uibModalInstance.close();
               })
-              .catch(() => $state.go('dwolla'));
-          }
+            });
+          };
 
+          $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+          };
+        },
+        size: 'lg'
+      });
+
+      modalInstance.result.then(function () {
+        //$scope.selected = selectedItem;
+      }, function () {
+        $log.info('Modal dismissed at: ' + new Date());
+      });
+    };
+
+    $scope.includedInPrice = this.incService.getIncludedInPrice().then((data)=> {
+      $scope.includedInPrice = data;
+    });
+
+    $scope.query = { status: 'confirmed' };
+
+    function convertIncludedInPrice(array) {
+      let cnt = [];
+      _.each($scope.includedInPrice, (item, j) => {
+        if (_.indexOf(array, item._id) > -1) {
+          cnt.push(item);
         }
       });
+      return cnt;
     }
 
-  }
+    $scope.filter = {
+      paid: 'all' //allPaid, allUnpaid
+    };
 
-  toDwollaAuth(){
-      return this.PaymentService.dwollaAuth(this.authCode);
+    $scope.dateOptions = {
+      formatYear: 'yy',
+      //minDate: new Date(),
+      startingDay: 1
+    };
+
+    $scope.popup1 = {
+      opened: false
+    };
+
+    $scope.open1 = function() {
+      $scope.popup1.opened = true;
+    };
+
+    $scope.popup2 = {
+      opened: false
+    };
+
+    $scope.open2 = function() {
+      $scope.popup2.opened = true;
+    };
+
+
+    this.pipe = function(tableState) {
+      $scope.tableState = (angular.isObject(tableState) && tableState ? tableState : $scope.tableState);
+
+      if (angular.isUndefined($scope.tableState)) {
+        $scope.tableState = {
+          search: {},
+          pagination: {},
+          sort: {}
+        }
+      }
+
+      $http.post('/api/events/dataset', $scope.query).then(response => {
+        $scope.events = response.data;
+        _.each($scope.events, (event, i) => {
+          $scope.events[i].includedInPrice = convertIncludedInPrice(event.includedInPrice);
+          if ($scope.events[i].offers.length) {
+            $scope.events[i].offers[0].includedInPrice = convertIncludedInPrice(event.offers[0].includedInPrice);
+            if (event.offers[0].invoice) {
+              $scope.events[i].offers[0].priceWithCounter = event.offers[0].invoice.total;
+            } else if (event.offers[0].counter) {
+              $scope.events[i].offers[0].priceWithCounter = event.pricePerPerson * event.people - event.offers[0].counter;
+            } else {
+              $scope.events[i].offers[0].priceWithCounter = event.pricePerPerson * event.people;
+            }
+          }
+        })
+
+        let filtered = $scope.tableState && $scope.tableState.search.predicateObject ? $filter('filter')($scope.events, $scope.tableState.search.predicateObject) : $scope.events,
+          start = $scope.tableState.pagination.start || 0,
+          number = $scope.tableState.pagination.number || $scope.events.length;
+
+        if ($scope.tableState && $scope.tableState.sort.predicate) {
+          filtered = $filter('orderBy')(filtered, $scope.tableState.sort.predicate, $scope.tableState.sort.reverse);
+        }
+
+        $scope.displayed = filtered.slice(start, start + number);
+        if ($scope.tableState) {
+          $scope.tableState.pagination.numberOfPages = Math.ceil(filtered.length / number);
+        }
+        if ($scope.eventActive) $scope.setActiveEvent($scope.eventActive);
+      });
+    };
+
+    $scope.setActiveEvent = function(event) {
+      $scope.eventActive = event;
+
+      _.each($scope.events, (item, i) => {
+        $scope.events[i].active = false;
+        if (item._id == event._id) {
+          $scope.events[i].active = true;
+        }
+      });
+    };
+
+    $scope.$watchGroup(['filter.paid'], () => {
+
+      $scope.eventActive = null;
+
+      if (root.user.role === 'caterer') {
+        $scope.query.catererId = root.user._id;
+        $scope.query.showToCaterers = true;
+      } else {
+        delete $scope.query.catererId;
+        delete $scope.query.showToCaterers;
+      }
+
+      if ($scope.filter.paid === 'all') {
+        $scope.query.status = { $in: ['confirmed', 'completed'] };
+        $scope.query.paymentStatus = { $in: ['paid', 'hold', 'completed'] };
+      } else if ($scope.filter.paid === 'allPaid') {
+        $scope.query.status = { $in: ['completed'] };
+        $scope.query.paymentStatus = { $in: ['completed'] };
+      } else if ($scope.filter.paid === 'allUnpaid') {
+        $scope.query.status = { $in: ['confirmed'] };
+        $scope.query.paymentStatus = { $in: ['paid', 'hold'] };
+      }
+
+      this.pipe();
+    });
+
+    var sync = $interval(root.pipe, (1000 * 60));
+
+    $scope.$on('eventUpdated', () => {
+      root.pipe();
+    });
+
+    $scope.$on('$destroy', function () {
+      socket.unsyncUpdates('event');
+      socket.unsyncUpdates('offer');
+      $interval.cancel(sync);
+    });
   }
 }
 
 angular.module('cateringApp')
-  .controller('PaymentListController', DwollaController);
+  .controller('PaymentListController', PaymentListController);
+
