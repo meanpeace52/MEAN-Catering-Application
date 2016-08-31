@@ -9,7 +9,7 @@
       </div>
       <div ng-if="!vm.isAuth">
         <p ng-if="vm.user.role === 'admin'">
-          Your dwolla tokens have been expired. Please, relogin to Dwolla.
+          Your dwolla tokens have been expired or you don't have enough money in your Dwolla account. Please, check your balance in your Dwolla account and relogin to Dwolla.
         </p>
         <p ng-if="vm.user.role !== 'admin'">
         Before you can send an offer, we have to set up up to get paid! But don't worry, it is easy and free.  We use Dwolla for payments, so when you click OK you will be redirected to the Dwolla website to setup your account.

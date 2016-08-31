@@ -5,18 +5,13 @@ let mongoose = require('mongoose');
 
 class PaymentsStatisticsController {
 
-
-
   summary(req, res) {
-    console.log('REQUEST', req.body);
     let isCaterer = !!req.body.catererId;
 
     let query = {
       status: 'completed',
       paymentStatus: 'completed'
     };
-
-    console.log('QUERY', query);
 
     return mongoose.model('Event').aggregate([
       {
@@ -37,8 +32,12 @@ class PaymentsStatisticsController {
 
       let promises = [];
 
+      list = list.filter(item => item._id);
+
       list.forEach((item, index) => {
         let query = {
+          status: 'completed',
+          paymentStatus: 'completed',
           eventId: {
             $in: item.events
           }
@@ -68,7 +67,6 @@ function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
   return function(entity) {
     if (entity) {
-      console.log('Entity', entity);
       res.status(statusCode).json(entity);
     }
   };

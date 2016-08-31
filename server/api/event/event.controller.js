@@ -146,6 +146,10 @@ export function dataset(req, res) {
       $gte: date.setHours(0, 0, 0, 0),
       $lte: date.setHours(23, 59, 59, 999)
     }
+  } else if (checkStatus(req.body.status, 'completed') && checkStatus(req.body.paymentStatus, 'completed')) {
+    query.datePaid = {
+      $exists: true
+    }
   }
 
   console.log('dataset', query);
@@ -246,6 +250,10 @@ export function payments(req, res) {
     .then(respondWithResult(res))
     .catch(handleError(res));
   })
+}
+
+function checkStatus(status, value) {
+  return status && (status === value || status.$in instanceof Array && status.$in.indexOf(value) !== -1);
 }
 
 // Gets a list of Events
