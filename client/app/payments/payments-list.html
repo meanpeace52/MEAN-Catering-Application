@@ -5,7 +5,7 @@
         <div class="panel-body">
           <div class="filter-events">
             <div class="row">
-              <div class="col-sm-2">
+              <div class="col-sm-2" ng-if="vm.user.role === 'admin'">
                 <a class="btn btn-success" ng-click="paySelected()" ng-disabled="filter.paid === 'allUnpaid'">Pay All Selected</a>
               </div>
               <div class="col-sm-3">
@@ -15,59 +15,31 @@
                   <option value="allUnpaid">All Unpaid</option>
                 </select>
               </div>
-              <div class="col-sm-3">
-                <span class="input-group">
-                  <input type="text" class="form-control" uib-datepicker-popup="MMMM d, y" ng-model="filter.dateFrom" is-open="popup1.opened" datepicker-options="dateOptions" required close-text="Close"/>
-                    <span class="input-group-btn">
-                      <button type="button" class="btn btn-default" ng-click="open1()" style="height: 34px;"><i class="fa fa-calendar"></i></button>
-                    </span>
-                </span>
-              </div>
-              <div class="col-sm-3">
-                <span class="input-group">
-                  <input type="text" class="form-control" uib-datepicker-popup="MMMM d, y" ng-model="filter.dateTo" is-open="popup2.opened" datepicker-options="dateOptions" required close-text="Close"/>
-                    <span class="input-group-btn">
-                      <button type="button" class="btn btn-default" ng-click="open2()" style="height: 34px;"><i class="fa fa-calendar"></i></button>
-                    </span>
-                </span>
-              </div>
             </div>
           </div>
-          <table st-table="events" st-pipe="eac.pipe" class="table table-hover table-condensed table-events">
+          <table st-table="events" st-pipe="vm.pipe" class="table table-hover table-condensed table-events">
             <thead>
             <tr>
-              <th><input type="checkbox" ng-model="allEventsAreSelected" ng-change="selectAll(allEventsAreSelected)"></th>
-              <th st-sort="date" st-skip-natural="true">Date</th>
-              <th>Time</th>
-              <th st-sort="name" st-sort-default="true">Name</th>
-              <th st-sort="pricePerPerson">Price</th>
-              <th st-sort="people">People</th>
-              <th st-sort="">Caterer</th>
+              <th ng-if="vm.user.role === 'admin'"><input type="checkbox" ng-model="allEventsAreSelected" ng-change="selectAll(allEventsAreSelected)"></th>
+              <th ng-if="vm.user.role === 'admin'">Caterer</th>
               <th>Customer</th>
+              <th st-sort="date" st-skip-natural="true">Event Date</th>
+              <th st-sort="name" st-sort-default="true">Event Name</th>
               <th>Total</th>
               <th>Commission</th>
               <th>Refund</th>
+              <th>Adjustment</th>
               <th>Net</th>
-              <th>Offer</th>
-              <th ng-if="filter.paid === 'all' || filter.paid === 'allPaid'">Date Paid</th>
+              <th>Date Paid (from Customer)</th>
+              <th ng-if="filter.paid === 'all' || filter.paid === 'allPaid'">Date Paid (to Caterer)</th>
             </tr>
             <tr>
-              <th></th>
-              <th>
-                <input st-search="date" style="width: 120px;" class="input-sm form-control" type="search"/>
-              </th>
-              <th></th>
-              <th>
-                <input st-search="name" class="input-sm form-control" style="width: 100px;" type="search"/>
-              </th>
-              <th>
-                <input st-search="pricePerPerson" style="width: 50px;" class="input-sm form-control" type="search"/>
-              </th>
-              <th>
-                <input st-search="people" style="width: 50px;" class="input-sm form-control" type="search"/>
-              </th>
-              <th><input st-search="offers[0].catererName" style="width: 50px;" class="input-sm form-control" type="search"/></th>
+              <th ng-if="vm.user.role === 'admin'"></th>
+              <th ng-if="vm.user.role === 'admin'"></th>
               <th><input st-search="customer" style="width: 50px;" class="input-sm form-control" type="search"/></th>
+              <th><input st-search="date" style="width: 120px;" class="input-sm form-control" type="search"/></th>
+              <th><input st-search="name" class="input-sm form-control" style="width: 100px;" type="search"/></th>
+              <th></th>
               <th></th>
               <th></th>
               <th></th>
@@ -78,31 +50,25 @@
             </thead>
             <tbody>
             <tr ng-repeat="event in displayed" ng-class="{'drafted': event.drafted, 'active': event.active, 'hidden': event.hide}" ng-click="setActiveEvent(event)">
-              <td><input ng-if="event.status !== 'completed' || event.paymentStatus !== 'completed'" type="checkbox" ng-model="selectedEvents[event._id]" ng-change="select(selectedEvents[event._id])"></td>
-              <td>{{event.date | date: "longDate"}}</td>
-              <td style="width: 80px;">{{event.time | date: "shortTime"}}</td>
-              <td style="max-width: 100px;">{{event.name}}</td>
-              <td>{{event.pricePerPerson}}</td>
-              <td>{{event.people}}</td>
-              <td>{{event.offers[0].catererName}}</td>
+              <td ng-if="vm.user.role === 'admin'"><input ng-if="event.status !== 'completed' || event.paymentStatus !== 'completed'" type="checkbox" ng-model="selectedEvents[event._id]" ng-change="select(selectedEvents[event._id])"></td>
+              <td ng-if="vm.user.role === 'admin'">{{event.offers[0].catererName}}</td>
               <td>{{event.customer}}</td>
+              <td>{{event.date | date: "longDate"}}</td>
+              <td style="max-width: 100px;">{{event.name}}</td>
+
+
               <td>{{event.offers[0].invoice.total.toFixed(2)}}</td>
               <td>{{(event.offers[0].invoice.total * (event.offers[0].invoice.commission / 100)).toFixed(2)}}</td>
+              <td>{{event.offers[0].invoice.refund.toFixed(2)}}</td>
               <td>
                 <span ng-if="event.offers[0].invoice.refund">{{event.offers[0].invoice.refund.toFixed(2)}}</span>
-                <span ng-if="!event.offers[0].invoice.refund">{{event.offers[0].invoice.adjustment.client.toFixed(2)}} ({{event.offers[0].invoice.adjustment.caterer.toFixed(2)}}/{{event.offers[0].invoice.adjustment.chargeOff.toFixed(2)}})</span>
+                <span ng-if="!event.offers[0].invoice.refund">{{event.offers[0].invoice.adjustment.client.toFixed(2)}}</span>
               </td>
               <td>
                 <span ng-if="event.offers[0].invoice.refund">0.00</span>
                 <span ng-if="!event.offers[0].invoice.refund">{{(event.offers[0].invoice.total * ((100 - event.offers[0].invoice.commission) / 100) - event.offers[0].invoice.adjustment.caterer).toFixed(2)}}</span>
               </td>
-              <td>
-                <div>
-                  <a class="btn btn-xs btn-warning">Confirmed offer</a>
-                  <span class="label label-info" ng-if="event.offers[0].paymentStatus">{{event.offers[0].paymentStatus}}</span>
-                  <a class="btn btn-xs btn-success" ng-if="event.offers[0].paymentStatus === 'paid'" ng-click="pay(event.offers[0])">Pay</a>
-                </div>
-              </td>
+              <td>{{!event.paymentPaidDate ? 'pending' : (event.paymentPaidDate | date)}}</td>
               <td ng-if="filter.paid === 'all' || filter.paid === 'allPaid'">{{!event.datePaid ? 'pending' : (event.datePaid | date)}}</td>
             </tr>
             </tbody>
@@ -121,8 +87,8 @@
     <div class="col-sm-12">
       <h3>Offer from <b>{{eventActive.offers[0].catererName}}</b>, Total price: <b><mark>${{eventActive.offers[0].priceWithCounter}}</mark></b> <span class="label label-info">{{eventActive.offers[0].paymentStatus || eventActive.offers[0].status}}</span></h3>
       <hr />
-      <button ng-if="eventActive.status !== 'completed' || eventActive.paymentStatus !== 'completed'" class="btn btn-primary" ng-click="open(eventActive.offers[0])">Adjust Payment</button>
-      <table class="col-sm-12"  ng-if="eventActive.status === 'completed' || eventActive.paymentStatus === 'completed'">
+      <button ng-if="vm.user.role === 'admin' && (eventActive.status !== 'completed' || eventActive.paymentStatus !== 'completed')" class="btn btn-primary" ng-click="open(eventActive.offers[0])">Adjust Payment</button>
+      <table class="col-sm-12"  ng-if="vm.user.role === 'caterer' || eventActive.status === 'completed' || eventActive.paymentStatus === 'completed'">
         <tr>
           <th>Subtotal</th>
           <th>Tax</th>
@@ -180,161 +146,3 @@
     </div>
   </div>
 </div>
-<script type="text/ng-template" id="adjustPayment.html">
-  <div class="modal-header">
-    <h3 class="modal-title">Payment Adjustments</h3>
-  </div>
-  <div class="modal-body">
-    <uib-tabset active="active">
-      <uib-tab index="0" heading="Complete Refund" ng-click="setAdjustment(totalRefund)">
-        <br />
-        <table class="table table-condensed">
-          <tr>
-            <th>Invoice</th>
-            <th>Refund, $</th>
-          </tr>
-          <tr>
-            <td>Service</td>
-            <td>{{totalRefund.service.toFixed(2)}}</td>
-          </tr>
-          <tr>
-            <td>Tax</td>
-            <td>{{totalRefund.tax.toFixed(2)}}</td>
-          </tr>
-          <tr class="bg-info">
-            <td><b>Total</b></td>
-            <td><b>{{totalRefund.total.toFixed(2)}}</b></td>
-          </tr>
-          <tr class="bg-warning">
-            <td><b>Adjustment</b></td>
-            <td><b>{{totalRefund.adjustment.client.toFixed(2)}}</b></td>
-          </tr>
-          <tr class="bg-success">
-            <td><b>New Total</b></td>
-            <td><b>{{(totalRefund.total - (totalRefund.adjustment.caterer + totalRefund.adjustment.chargeOff)).toFixed(2)}}</b></td>
-          </tr>
-          <tr><td colspan="2"></td></tr>
-          <tr><th colspan="2">Payable</th></tr>
-          <tr>
-            <td>Service</td>
-            <td>{{totalRefund.service.toFixed(2)}}</td>
-          </tr>
-          <tr>
-            <td>Tax</td>
-            <td>{{totalRefund.tax.toFixed(2)}}</td>
-          </tr>
-          <tr class="bg-warning">
-            <td><b>Refund Adjustment</b></td>
-            <td><b>{{totalRefund.refund.toFixed(2)}}</b></td>
-          </tr>
-          <tr class="bg-info">
-            <td><b>Sub Total</b></td>
-            <td><b>-</b></td>
-          </tr>
-          <tr>
-            <td>Comission {{totalRefund.commission}}%</td>
-            <td>-</td>
-          </tr>
-          <tr class="bg-warning">
-            <td><b>Caterer Adjustment</b></td>
-            <td><b>-</b></td>
-          </tr>
-          <tr class="bg-primary">
-            <td><b>Total Payment</b></td>
-            <td><b>-</b></td>
-          </tr>
-          <tr><td colspan="2"></td></tr>
-          <tr><th colspan="2">Home Account</th></tr>
-          <tr>
-            <td><b>Charge Off</b></td>
-            <td><b>-</b></td>
-          </tr>
-          <tr>
-            <td><b>Commission Income</b></td>
-            <td><b>-</b></td>
-          </tr>
-          <tr class="bg-success">
-            <td><b>Adjustment Balanced</b></td>
-            <td><b>{{(partialRefund.adjustment.client - (partialRefund.adjustment.caterer + partialRefund.adjustment.chargeOff)).toFixed(2)}}</b></td>
-          </tr>
-        </table>
-      </uib-tab>
-      <uib-tab index="1" heading="Partial Refund" ng-click="setAdjustment(partialRefund)">
-        <table class="table table-condensed">
-          <tr>
-            <th>Invoice</th>
-            <th>Refund, $</th>
-          </tr>
-          <tr>
-            <td>Service</td>
-            <td>{{partialRefund.service.toFixed(2)}}</td>
-          </tr>
-          <tr>
-            <td>Tax</td>
-            <td>{{partialRefund.tax.toFixed(2)}}</td>
-          </tr>
-          <tr class="bg-info">
-            <td><b>Total</b></td>
-            <td><b>{{partialRefund.total.toFixed(2)}}</b></td>
-          </tr>
-          <tr class="bg-warning">
-            <td><b>Adjustment</b></td>
-            <td><input type="number" ng-model="partialRefund.adjustment.client"></td>
-          </tr>
-          <tr class="bg-success">
-            <td><b>New Total</b></td>
-            <td><b>{{(partialRefund.total - (partialRefund.adjustment.caterer + partialRefund.adjustment.chargeOff)).toFixed(2)}}</b></td>
-          </tr>
-          <tr><td colspan="2"></td></tr>
-          <tr><th colspan="2">Payable</th></tr>
-          <tr>
-            <td>Service</td>
-            <td>{{partialRefund.service.toFixed(2)}}</td>
-          </tr>
-          <tr>
-            <td>Tax</td>
-            <td>{{partialRefund.tax.toFixed(2)}}</td>
-          </tr>
-          <tr class="bg-warning">
-            <td><b>Refund Adjustment</b></td>
-            <td><b>{{partialRefund.refund.toFixed(2)}}</b></td>
-          </tr>
-          <tr class="bg-info">
-            <td><b>Sub Total</b></td>
-            <td><b>-</b></td>
-          </tr>
-          <tr>
-            <td>Comission <input type="number" ng-model="partialRefund.commission">%</td>
-            <td>{{(partialRefund.total * (partialRefund.commission / 100)).toFixed(2)}}</td>
-          </tr>
-          <tr class="bg-warning">
-            <td><b>Caterer Adjustment</b></td>
-            <td><input type="number" ng-model="partialRefund.adjustment.caterer"></td>
-          </tr>
-          <tr class="bg-primary">
-            <td><b>Total Payment</b></td>
-            <td><b>{{((partialRefund.total * ((100 - partialRefund.commission) / 100)) - partialRefund.adjustment.caterer).toFixed(2)}}</b></td>
-          </tr>
-          <tr><td colspan="2"></td></tr>
-          <tr><th colspan="2">Home Account</th></tr>
-          <tr>
-            <td><b>Charge Off</b></td>
-            <td><input type="number" ng-model="partialRefund.adjustment.chargeOff"></td>
-          </tr>
-          <tr>
-            <td><b>Commission Income</b></td>
-            <td><b>{{(partialRefund.total * (partialRefund.commission / 100)).toFixed(2)}}</b></td>
-          </tr>
-          <tr class="bg-success">
-            <td><b>Adjustment Balanced</b></td>
-            <td><b>{{(partialRefund.adjustment.client - (partialRefund.adjustment.caterer + partialRefund.adjustment.chargeOff)).toFixed(2)}}</b></td>
-          </tr>
-        </table>
-      </uib-tab>
-    </uib-tabset>
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="(updatedInvoice.adjustment.client - (updatedInvoice.adjustment.caterer + updatedInvoice.adjustment.chargeOff))">OK</button>
-    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
-  </div>
-</script>

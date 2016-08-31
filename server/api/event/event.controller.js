@@ -174,6 +174,7 @@ export function dataset(req, res) {
     events.forEach((event, i) => {
       events[i] = events[i].toObject();
       let total = { eventId: '' + event._id, status: { $nin: ['cancelled', 'draft']} },
+        catererQuery = { eventId: '' + event._id, catererId: req.body.catererId, status: {$in: ['confirmed', 'completed', 'sent']}},
         adminQuery = {eventId: '' + event._id, status: {$in: ['confirmed', 'completed']}};
       if (isAdmin) {
         eventPromises.push(Offer.find(adminQuery).exec().then((offers) => {
@@ -187,6 +188,7 @@ export function dataset(req, res) {
             events[i].offersTotal = offersTotal.length;
           })
           .then(() => {
+            console.log(catererQuery);
             return Offer.find(catererQuery).exec();
           })
           .then((offers) => {
@@ -204,7 +206,7 @@ export function dataset(req, res) {
     });
 
     return Promise.all(eventPromises).then(() => {
-        return events;
+        return isCaterer ? events.filter(event => event.offers.length > 0) : events;
      }).then(respondWithResult(res))
       .catch(handleError(res));
 

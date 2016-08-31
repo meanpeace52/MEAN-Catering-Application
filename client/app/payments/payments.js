@@ -17,5 +17,17 @@ angular.module('cateringApp')
             return $location.search().code;
           }
         }
+      })
+      .state('payments-list', {
+        url: '/payments-list',
+        templateUrl: 'app/payments/payments-list.html',
+        controller: 'PaymentListController',
+        controllerAs: 'vm',
+        authenticate: true,
+        resolve: {
+          authCode: function($location) {
+            return $location.search().code;
+          }
+        }
       });
   });

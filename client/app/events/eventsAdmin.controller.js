@@ -157,6 +157,8 @@ $scope.open2 = function() {
 
 
 this.pipe = function(tableState) {
+  console.log('tableState', tableState);
+  console.trace();
   $scope.tableState = (angular.isObject(tableState) && tableState ? tableState : $scope.tableState);
 
   $http.post('/api/events/dataset', $scope.query).then(response => {
