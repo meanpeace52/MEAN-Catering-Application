@@ -29,6 +29,15 @@ class PaymentListController {
     $scope.selectAll = value => this.$scope.events.forEach(event => $scope.selectedEvents[event._id] = value);
     $scope.isSelected = event => selectedEvents[event._id];
 
+    let summaryQuery = {};
+    if (this.user.role === 'caterer') {
+      summaryQuery.catererId = root.user._id;
+    }
+
+    $http.post('/api/payments/summary', summaryQuery).then(response => {
+      $scope.payments = response.data;
+    });
+
     $scope.select = () => {
       let allIsSelected = true;
       for (let k in $scope.selectedEvents) {
@@ -65,6 +74,14 @@ class PaymentListController {
       }).then(response => {
         $scope.$emit('eventUpdated');
       }).catch(response => $state.go('dwolla'));
+    };
+
+    $scope.selectedDate = null;
+    $scope.setDate = (date) => {
+      if ($scope.filter.paid === 'allPaid') {
+        $scope.selectedDate = date;
+        $scope.filter.datePaid = date;
+      }
     };
 
     $scope.open = (offer) => {
@@ -115,6 +132,8 @@ class PaymentListController {
       $scope.includedInPrice = data;
     });
 
+    $scope.hasSelectedEvents = () => Object.keys($scope.selectedEvents).length > 0;
+
     $scope.query = { status: 'confirmed' };
 
     function convertIncludedInPrice(array) {
@@ -128,7 +147,8 @@ class PaymentListController {
     }
 
     $scope.filter = {
-      paid: 'all' //allPaid, allUnpaid
+      paid: 'allPaid', //allUnpaid
+      datePaid: null
     };
 
     $scope.dateOptions = {
@@ -179,7 +199,7 @@ class PaymentListController {
               $scope.events[i].offers[0].priceWithCounter = event.pricePerPerson * event.people;
             }
           }
-        })
+        });
 
         let filtered = $scope.tableState && $scope.tableState.search.predicateObject ? $filter('filter')($scope.events, $scope.tableState.search.predicateObject) : $scope.events,
           start = $scope.tableState.pagination.start || 0,
@@ -208,9 +228,15 @@ class PaymentListController {
       });
     };
 
-    $scope.$watchGroup(['filter.paid'], () => {
+    $scope.$watchGroup(['filter.paid', 'filter.datePaid'], () => {
 
-      $scope.eventActive = null;
+      if (!$scope.eventActive) {
+        $scope.eventActive = null;
+      }
+
+      if (!$scope.selectedDate) {
+        $scope.selectedDate = null;
+      }
 
       if (root.user.role === 'caterer') {
         $scope.query.catererId = root.user._id;
@@ -218,6 +244,10 @@ class PaymentListController {
       } else {
         delete $scope.query.catererId;
         delete $scope.query.showToCaterers;
+      }
+
+      if ($scope.filter.datePaid) {
+        $scope.query.datePaid = $scope.filter.datePaid;
       }
 
       if ($scope.filter.paid === 'all') {
@@ -229,6 +259,9 @@ class PaymentListController {
       } else if ($scope.filter.paid === 'allUnpaid') {
         $scope.query.status = { $in: ['confirmed'] };
         $scope.query.paymentStatus = { $in: ['paid', 'hold'] };
+        delete $scope.query.datePaid;
+        $scope.filter.datePaid = null;
+        $scope.selectedDate = null;
       }
 
       this.pipe();
@@ -238,6 +271,9 @@ class PaymentListController {
 
     $scope.$on('eventUpdated', () => {
       root.pipe();
+      $http.post('/api/payments/summary', summaryQuery).then(response => {
+        $scope.payments = response.data;
+      });
     });
 
     $scope.$on('$destroy', function () {

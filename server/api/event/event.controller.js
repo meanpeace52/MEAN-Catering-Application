@@ -140,6 +140,14 @@ export function dataset(req, res) {
     if (req.body.status) query.status = req.body.status;
   }
 
+  if (req.body.datePaid) {
+    let date = new Date(req.body.datePaid);
+    query.datePaid = {
+      $gte: date.setHours(0, 0, 0, 0),
+      $lte: date.setHours(23, 59, 59, 999)
+    }
+  }
+
   console.log('dataset', query);
 
   return Event.find(query).exec().then((events) => {
