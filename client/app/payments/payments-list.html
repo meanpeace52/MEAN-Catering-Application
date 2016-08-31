@@ -8,8 +8,8 @@
             <th>Amount</th>
           </tr>
         </thead>
-        <tbody>
-          <tr ng-class="{'active': selectedDate === item.date}" ng-repeat="item in payments" ng-click="setDate(item.date)">
+        <tbody click-outside="deselectDate()">
+          <tr ng-class="{'active': selectedDate === item.date}" ng-repeat="item in payments" ng-click="setDate($event, item.date)">
             <td>{{item.date | date}}</td>
             <td>{{item.summary.toFixed(2)}}</td>
           </tr>
@@ -108,7 +108,7 @@
   </div>
   <div class="row">
     <div class="col-sm-12">
-      <table class="col-sm-12" ng-if="(selectedDate || (vm.user.role === 'caterer' && eventActive) || (vm.user.role === 'admin' && hasSelectedEvents())) && ((vm.user.role === 'caterer' && displayed.length > 0) || (vm.user.role === 'admin' && (filter.paid === 'allPaid' || (filter.paid === 'allUnpaid' && hasSelectedEvents())) && displayed.length > 0))">
+      <table class="col-sm-12" ng-if="!isPiping && (selectedDate || (vm.user.role === 'caterer' && eventActive) || (vm.user.role === 'admin' && hasSelectedEvents())) && ((vm.user.role === 'caterer' && displayed.length > 0) || (vm.user.role === 'admin' && (filter.paid === 'allPaid' || (filter.paid === 'allUnpaid' && hasSelectedEvents())) && displayed.length > 0))">
         <tr>
           <th>Subtotal</th>
           <th>Tax</th>

@@ -76,11 +76,24 @@ class PaymentListController {
       }).catch(response => $state.go('dwolla'));
     };
 
+    $scope.isPiping = false;
+
     $scope.selectedDate = null;
-    $scope.setDate = (date) => {
+
+    $scope.setDate = ($event, date) => {
       if ($scope.filter.paid === 'allPaid') {
+        $event.stopPropagation();
         $scope.selectedDate = date;
         $scope.filter.datePaid = date;
+        console.log('select');
+      }
+    };
+
+    $scope.deselectDate = () => {
+      if ($scope.filter.paid === 'allPaid' && $scope.selectedDate) {
+        $scope.filter.datePaid = null;
+        $scope.selectedDate = null;
+        console.log('deselect selected date');
       }
     };
 
@@ -175,6 +188,7 @@ class PaymentListController {
 
 
     this.pipe = function(tableState) {
+      $scope.isPiping = true;
       $scope.tableState = (angular.isObject(tableState) && tableState ? tableState : $scope.tableState);
 
       if (angular.isUndefined($scope.tableState)) {
@@ -214,6 +228,7 @@ class PaymentListController {
           $scope.tableState.pagination.numberOfPages = Math.ceil(filtered.length / number);
         }
         if ($scope.eventActive) $scope.setActiveEvent($scope.eventActive);
+        $scope.isPiping = false;
       });
     };
 
@@ -250,18 +265,18 @@ class PaymentListController {
         $scope.query.datePaid = $scope.filter.datePaid;
       }
 
-      if ($scope.filter.paid === 'all') {
-        $scope.query.status = { $in: ['confirmed', 'completed'] };
-        $scope.query.paymentStatus = { $in: ['paid', 'hold', 'completed'] };
-      } else if ($scope.filter.paid === 'allPaid') {
+      if ($scope.filter.paid === 'allPaid') {
         $scope.query.status = { $in: ['completed'] };
         $scope.query.paymentStatus = { $in: ['completed'] };
       } else if ($scope.filter.paid === 'allUnpaid') {
         $scope.query.status = { $in: ['confirmed'] };
         $scope.query.paymentStatus = { $in: ['paid', 'hold'] };
-        delete $scope.query.datePaid;
         $scope.filter.datePaid = null;
         $scope.selectedDate = null;
+      }
+
+      if (!$scope.filter.datePaid) {
+        delete $scope.query.datePaid;
       }
 
       this.pipe();
