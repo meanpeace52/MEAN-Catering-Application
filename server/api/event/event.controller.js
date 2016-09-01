@@ -186,8 +186,6 @@ export function dataset(req, res) {
       })
     }
 
-console.log('events2', events);
-
     events.forEach((event, i) => {
       events[i] = events[i].toObject();
       let total = { eventId: '' + event._id, status: { $nin: ['cancelled', 'draft']} },
@@ -202,13 +200,17 @@ console.log('events2', events);
           return events[i];
         }));
       } else if (isCaterer) {
-        console.log('cq0', catererQuery);
         eventPromises.push(Offer.find(total).exec()
           .then((offersTotal) => {
             events[i].offersTotal = offersTotal.length;
           })
           .then(() => {
-            console.log('cq', catererQuery);
+            return User.findById(event.userId).exec();
+          })
+          .then((user) => {
+            events[i].customer = user.firstname + ' ' + user.lastname;
+          })
+          .then(() => {
             return Offer.find(catererQuery).exec();
           })
           .then((offers) => {
