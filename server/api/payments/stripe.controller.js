@@ -90,7 +90,7 @@ function _auth(offerId) {
       amount: Math.ceil(data.offer.invoice.total * 100), // amount should be in cents
       currency: "usd",
       customer: data.user.payableAccountId,
-      description: "Sample Checkout",
+      description: data.event.name,
       capture: false
     };
     console.log('paymentData', paymentData);

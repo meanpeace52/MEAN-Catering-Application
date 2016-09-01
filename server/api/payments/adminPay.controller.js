@@ -15,7 +15,22 @@ class AdminPayController {
       return Promise.reject({});
     }
 
-    return Promise.all(req.body.items.map(item => mongoose.model('Offer').findById(item))).then(offers => {
+    return Promise.all(req.body.items.map(item => mongoose.model('Offer').findById(item)))
+      .then(offers => {
+
+        let promises = [];
+
+        offers.forEach((offer, index) => {
+          promises.push(mongoose.model('Event').findById(offer.eventId).then((event) => {
+            offers[index].event = event;
+          }));
+        });
+
+        return Promise.all(promises).then(() => offers);
+
+      })
+
+      .then(offers => {
 
       return Promise.all(offers.map(item => mongoose.model('User').findById(item.catererId))).then(caterers => {
 
@@ -23,7 +38,7 @@ class AdminPayController {
         let items = [];
 
         offers.forEach((offer, index) => {
-
+          console.log(offer);
           if (offer.invoice.refund) {
             promises.push(stripeController.$refund(offer.paymentId));
           } else {
@@ -35,10 +50,13 @@ class AdminPayController {
               "amount": {
                 "currency": "USD",
                 "value": amount
+              },
+              "metadata": {
+                "notes": offer.event.name
               }
             };
-            if (offer.invoice.adjustment.chargeOff) {
-              promises.push(stripeController.$refund(offer.paymentId, offer.invoice.adjustment.chargeOff));
+            if (offer.invoice.adjustment.client) {
+              promises.push(stripeController.$refund(offer.paymentId, offer.invoice.adjustment.client));
             }
             items.push(item);
           }

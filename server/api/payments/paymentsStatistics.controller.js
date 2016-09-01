@@ -19,12 +19,12 @@ class PaymentsStatisticsController {
       },
       {
         $group: {
-          _id: '$datePaid',
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$datePaid" } },
           events: {
             $addToSet: '$_id'
           },
           date: {
-            $first: '$datePaid'
+            $first: { $dateToString: { format: "%Y-%m-%d", date: "$datePaid" } }
           }
         }
       }
@@ -49,7 +49,7 @@ class PaymentsStatisticsController {
         promises.push(mongoose.model('Offer').find(query).then((offers) => {
           list[index].summary = 0;
           offers.forEach((offer) => {
-            list[index].summary += (((offer.invoice.service + offer.invoice.tax) * (100 - offer.invoice.commission)/100) - offer.invoice.adjustment.client) || 0;
+            list[index].summary += (((offer.invoice.service + offer.invoice.tax) * (100 - offer.invoice.commission)/100) - offer.invoice.adjustment.caterer) || 0;
           });
         }));
 

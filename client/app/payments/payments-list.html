@@ -127,7 +127,7 @@
           <td>{{event.offers[0].invoice.refund}}</td>
           <td>{{event.offers[0].invoice.adjustment.chargeOff}}</td>
           <td>{{event.offers[0].invoice.adjustment.caterer}}</td>
-          <td>{{(((event.offers[0].invoice.service + event.offers[0].invoice.tax) * (100 - event.offers[0].invoice.commission)/100) - event.offers[0].invoice.adjustment.client).toFixed(2)}}</td>
+          <td>{{(((event.offers[0].invoice.service + event.offers[0].invoice.tax) * (100 - event.offers[0].invoice.commission)/100) - event.offers[0].invoice.adjustment.caterer).toFixed(2)}}</td>
         </tr>
       </table>
     </div>
