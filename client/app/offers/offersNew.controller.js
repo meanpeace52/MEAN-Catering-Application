@@ -77,7 +77,7 @@ class OffersNewController {
         if (offerModel.counter) {
           total = offerModel.counter * this.event.people;
         }
-
+        total = +total.toFixed(2);
         this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
           offerModel.invoice = {
             pricePerPerson: this.event.pricePerPerson,
@@ -110,7 +110,7 @@ class OffersNewController {
           total = offerModel.counter * this.event.people;
           //total -= offerModel.counter; changed to correctly add total of counter offer
         }
-        //total = total.toFixed(2);
+        total = +total.toFixed(2);
         this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
           offerModel.invoice = {
             pricePerPerson: this.event.pricePerPerson,
@@ -150,7 +150,7 @@ class OffersNewController {
         if (offerModel.counter) {
           total = offerModel.counter * this.event.people;
         }
-
+        total = +total.toFixed(2);
         this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
           offerModel.invoice = {
             pricePerPerson: this.event.pricePerPerson,

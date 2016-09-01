@@ -51,11 +51,14 @@ var j = schedule.scheduleJob(rule, function(){
 
 var paymentJobs = schedule.scheduleJob('*/30 * * * *', function() {
   var moment = +Date.now();
-  //var next72h = new Date(moment + 72 * 60 * 60 * 1000);
-  //var next24h = new Date(moment + 24 * 60 * 60 * 1000);
-  var next72h = new Date(moment + 5 * 60 * 1000);
-  var next24h = new Date(moment + 1 * 60 * 1000);
+  var next72h = new Date(moment + 72 * 60 * 60 * 1000);
+  var next24h = new Date(moment + 24 * 60 * 60 * 1000);
+  //var next72h = new Date(moment + 5 * 60 * 1000);
+  //var next24h = new Date(moment + 1 * 60 * 1000);
   var promises = [];
+
+  console.log('job started', moment);
+
   promises.push(mongoose.model('Event').find({
     status: 'confirmed',
     paymentStatus: {

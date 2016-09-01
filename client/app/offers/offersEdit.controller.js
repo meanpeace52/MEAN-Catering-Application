@@ -111,7 +111,7 @@ class OffersEditController {
           if (offerModel.counter) {
             total = offerModel.counter * this.event.people;
           }
-          //total = total.toFixed(2);
+          total = +total.toFixed(2);
           this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
             offerModel.invoice = {
               pricePerPerson: this.event.pricePerPerson,
@@ -143,7 +143,7 @@ class OffersEditController {
         if (offerModel.counter) {
           total = offerModel.counter * this.event.people;
         }
-        //total = total.toFixed(2);
+        total = +total.toFixed(2);
         this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
           offerModel.invoice = {
             pricePerPerson: this.event.pricePerPerson,
@@ -182,7 +182,7 @@ class OffersEditController {
       if (offerModel.counter) {
         total = offerModel.counter * this.event.people;
       }
-      //total = total.toFixed(2);
+      total = +total.toFixed(2);
       this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
         offerModel.invoice = {
           pricePerPerson: this.event.pricePerPerson,
@@ -200,7 +200,7 @@ class OffersEditController {
             this.errors.other = err.message;
         });
       });
-    }    
+    }
   }
 }
 
