@@ -104,7 +104,7 @@ class OfferCommentController {
 
     this.isLoggedIn = Auth.isLoggedIn;
     this.getCurrentUser = Auth.getCurrentUser;
-    this.user = this.getCurrentUser();  //author
+    this.user = $scope.user = this.getCurrentUser();  //author
 
     this.CS = CommentsService;
 
@@ -152,7 +152,7 @@ class OfferCommentController {
 
         if ($scope.comment.layout == 'offer' &&
          !$scope.comment.viewed &&
-         $scope.comment.target === this.user._id) {
+         $scope.comment.target === $scope.user._id) {
           $($window).on('scroll', _.throttle(checkRead, 300));
           $($window).on('resize', _.throttle(checkRead, 300));
         }

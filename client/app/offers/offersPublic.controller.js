@@ -11,6 +11,7 @@ class OffersPublicController {
     this.Auth = Auth;
     this.$state = $state;
     this.$scope = $scope;
+    this.$rootScope = $rootScope;
     this.$http = $http;
     this.socket = socket;
 
@@ -18,18 +19,39 @@ class OffersPublicController {
     this.user = this.getCurrentUser();
 
     this.incService = IncludedInPriceService;
-
+    this.$scope.includedInPrice = [];
+    this.$scope.fm = {};
+    this.$scope.offer = {};
     this.id = this.$state.params.id;
-    this.$scope.fm = OffersService.getOfferById(this.id).then((data) => {
-      this.$scope.fm = data;
-      this.$scope.offer = data;
-    });
-
     this.$scope.isPast = false;
-
     this.eventId =  $rootScope.eventActive || $cookies.get('eventActive');
-    this.event = EventsService.getEventById(this.eventId).then((data) => {
-      this.event = data;
+    this.event = {};
+
+    this.incService.getIncludedInPrice().then((data)=> {
+      this.$scope.includedInPrice = data;
+    })
+    .then(() => {
+      return OffersService.getOfferById(this.id);
+    })
+    .then((offer) => {
+      this.$scope.fm = offer;
+      this.$scope.offer = offer;
+      this.$scope.offer.includedInPrice = this.convertIncludedInPrice(this.$scope.offer.includedInPrice);
+      this.eventId = this.$scope.offer.eventId;
+    })
+    .then(() => {
+      return this.$http.get('/api/users/' + this.$scope.offer.catererId);
+    })
+    .then((caterer) => {
+      this.$scope.offer.caterer = caterer.data;
+      this.$rootScope.$broadcast('imageLoaded');
+    })
+    .then(() => {
+      return EventsService.getEventById(this.eventId);
+    })
+    .then((event) => {
+      this.event = event;
+      this.event.includedInPrice = this.convertIncludedInPrice(this.event.includedInPrice);
       if (Date.parse(this.event.date) < Date.parse(new Date())) this.$scope.isPast = true;
     });
 
@@ -37,16 +59,35 @@ class OffersPublicController {
       socket.unsyncUpdates('event');
     });
 
-    this.$scope.includedInPrice = this.incService.getIncludedInPrice().then((data)=> {
-      this.$scope.includedInPrice = _.map(data, (item, i) => {
-        if (_.indexOf(this.$scope.fm.includedInPrice, item._id) < 0) {
-          item.checked = false;
-        } else {
-          item.checked = true;
-        }
-        return item;
-      });
+  }
+
+  convertIncludedInPrice(array) {
+    let cnt = [];
+    _.each(this.$scope.includedInPrice, (item, j) => {
+      if (_.indexOf(array, item._id) > -1) {
+        cnt.push(item);
+      }
     });
+    return cnt;
+  }
+
+  decline(id) {
+    if (this.user.role = 'user') {
+      this.$http.post('/api/offers/' + id + '/decline', {status: 'declined'}).then(response => {
+        this.$scope.offer.status = 'declined';
+        this.socket.syncUpdates('offer', this.$scope.offers);
+      });
+    }
+  }
+
+  accept(id) {  // by customer
+    if (this.user.role = 'user') {
+      this.$http.post('/api/offers/' + id + '/accept', {status: 'accepted', eventId: this.eventId, dateAccepted: new Date() }).then(response => {
+        //set visual state
+        this.$scope.offer.status = 'accepted';
+        this.socket.syncUpdates('offer', this.$scope.offers);
+      });
+    }
   }
 
   backToList() {

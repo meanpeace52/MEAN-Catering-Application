@@ -69,7 +69,7 @@
               <div class="col-sm-6">
                 <label>Included in price: </label>
                 <ul>
-                  <li ng-repeat="iip in includedInPrice" ng-if="iip.checked">
+                  <li ng-repeat="iip in vm.event.includedInPrice">
                     {{iip.name}}
                   </li>
                 </ul>
@@ -80,48 +80,80 @@
       </uib-accordion>
 
       <div>
-        <h2>Offer Details <span class="label label-info">{{fm.status}}</span></h2>
+        <h2>Offer Details</h2>
         <hr />
       </div>
-      <form novalidate class="form-fluid" name="form">
+      <div class="panel panel-default" style="padding: 10px; background-color: #e7e7e7 ">
         <div class="row">
-          <div class="col-sm-3">
-              <label>Price per person: </label>
-              <span>{{fm.pricePerPerson}}</span>
-              <div ng-show>{{vm.reqired.pricePerPerson}}</div>
-          </div>
-          <div class="col-sm-3">
-              <label>Counter Price: </label>
-              <div class="input-group">
-                <span class="form-control">{{fm.counter}}</span>
-                <span class="input-group-addon">$</span>
-              </div>
-          </div>
           <div class="col-sm-6">
-              <label>Counter Reason: </label>
-              <span>{{fm.counterReason}}</span>
+            <h3>
+              <small>Offer from</small> <b>{{offer.catererName}}</b>
+            </h3>
+            <h3>
+              <small>Total price:</small> <b>${{offer.invoice.total}}</b> <span class="label label-info">{{offer.paymentStatus || offer.status}}</span>
+            </h3>
+          </div>
+          <div class="col-sm-6" ng-if="vm.user.role == 'user' && offer.status == 'sent' && !past">
+            <hr>
+            <button class="btn btn-success" ng-click="vm.accept(offer._id)">Accept</button>
+            <button class="btn btn-danger" ng-click="vm.decline(offer._id)">Decline</button>
+            <hr>
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-9">
-            <div class="form-group">
-              <label>Offer Details: </label>
-              <span>{{fm.offerDescription}}</span>
-            </div>
-          </div>
-          <div class="col-sm-3">
-            <label>Included in price: </label>
-            <div class="panel panel-default">
-              <div class="panel-body">
+          <div class="container-fluid" ng-class="{'cancelled-offer': offer.status === 'cancelled', 'drafted': offer.drafted}">
+            <div class="row">
+              <div class="col-sm-6">
+                <p><b>Price per person:</b> ${{offer.pricePerPerson}}</p>
+                <p ng-if="offer.counter"><b>Counter:</b> ${{offer.counter}} </p>
+                <p >Subtotal: <b>${{offer.invoice.service}}</b> </p>
+                <p >Tax: <b>${{offer.invoice.tax}}</b> </p>
+                <p>Total: <b>${{offer.invoice.total}}</b> </p>
+                <p ng-if="offer.counterReason"><b>Counter Reason:</b> {{offer.counterReason}}</p>
+              </div>
+              <div class="col-sm-3" ng-if="offer.includedInPrice.length">
+                <p><b>Offer Included in price:</b></p>
                 <ul>
-                  <li ng-repeat="iip in includedInPrice">{{iip.name}}</li>
+                  <li ng-repeat="iip in offer.includedInPrice">
+                    {{iip.name}}
+                  </li>
+                </ul>
+              </div>
+              <div class="col-sm-3" ng-if="vm.event.includedInPrice.length">
+                <p><b>Event Included in price:</b></p>
+                <ul>
+                  <li ng-repeat="iip in vm.event.includedInPrice">
+                    {{iip.name}}
+                  </li>
                 </ul>
               </div>
             </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <p ng-if="offer.offerDescription"><b>Offer Description:</b> <p style="white-space: pre-wrap;">{{offer.offerDescription}}</p></p>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
       <hr>
       <div offercomments offer="offer"></div>
+      <hr>
+      <div class="row">
+        <div class="col-sm-6">
+          <div ng-if="offer.caterer.logo" class="img-thumbnail" width="300" ng-draw="{file: offer.caterer.logo, width: 300}"></div>
+        </div>
+        <div class="col-sm-6">
+          <a href="/caterers/{{offer.catererId}}" class="label label-info m-3" target="_blank" style="font-size: 100%;">View Profile</a>
+          <p></p>
+          <p ng-if="offer.caterer.website"><b>Website:</b> <a href="http://{{offer.caterer.website}}" target="_blank">{{offer.caterer.website}}</a> </p>
+          <p ng-if="offer.caterer.location"><b>Location:</b> {{offer.caterer.location}}</p>
+          <p ng-if="offer.caterer.ninja_firstname"><b>Contact:</b> {{offer.caterer.ninja_firstname}} {{offer.caterer.ninja_lastname}}</p>
+          <p ng-if="offer.caterer.ninja_firstname"><b>Contact Email:</b> {{offer.caterer.ninja_email}}</p>
+          <p ng-if="offer.caterer.ninja_firstname"><b>Contact Phone:</b> {{offer.caterer.ninja_phone}}</p>
+          <p ng-if="offer.caterer.description"><b>Description:</b> {{offer.caterer.description}}</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
