@@ -49,11 +49,13 @@ var j = schedule.scheduleJob(rule, function(){
   mailer.report();
 });
 
-var paymentJobs = schedule.scheduleJob('*/30 * * * *', function() {
+// Changed time of job running here
+var paymentJobs = schedule.scheduleJob('*/5 * * * *', function() {
   var moment = +Date.now();
   var next72h = new Date(moment + 72 * 60 * 60 * 1000);
   var next24h = new Date(moment + 24 * 60 * 60 * 1000);
   var promises = [];
+  var $events = null;
 
   console.log('job started', moment);
 
@@ -66,6 +68,7 @@ var paymentJobs = schedule.scheduleJob('*/30 * * * *', function() {
       $lte: next72h
     }
   }).then(function(events) {
+    console.log('Auth', events);
     return events.map(event => {
       return mongoose.model('Offer').find({
         status: 'confirmed',
@@ -85,14 +88,16 @@ var paymentJobs = schedule.scheduleJob('*/30 * * * *', function() {
     }
   })
   .then(function(events) {
-    _.each(events, (event) => {
-      event.blocked = true;
-      event.save();
+    console.log('Capture', events);
+    $events = events;
+    let eventPromises = events.map((event) => {
+      // event.blocked = true;
+      return event.save();
     });
-    return events;
+    return Promise.all(eventPromises);
   })
-  .then(function(events) {
-    return events.map(event => {
+  .then(function() {
+    let offerPromises = $events.map(event => {
       console.log('block by job', event.name, event.blocked);
       return mongoose.model('Offer').find({
         status: 'confirmed',
@@ -100,7 +105,8 @@ var paymentJobs = schedule.scheduleJob('*/30 * * * *', function() {
       }).then(function(offers) {
         return offers.map(offer => stripeController.$capture(offer._id).then(response => console.log('JOB2', response)));
       });
-    })
+    });
+    return Promise.all(offerPromises);
   }));
   return Promise.all(promises);
 });
