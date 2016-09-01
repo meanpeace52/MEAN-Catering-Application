@@ -94,7 +94,11 @@ export function dataset(req, res) {
     isUser = (req.body.userId ? true : false),
     isCaterer = (req.body.catererId ? true : false),
     isAdmin = !isUser && !isCaterer,
+    filterWithOffers = isCaterer && checkStatus(req.body.status, 'completed') && checkStatus(req.body.paymentStatus, 'completed'),
+    eventPromises = [],
     today = new Date(new Date().setHours(0, 0, 0, 0)) /*.toISOString()*/;
+
+  console.log('isCaterer', isCaterer);
 
   if (isUser) {
     query = {
@@ -155,9 +159,8 @@ export function dataset(req, res) {
   console.log('dataset', query);
 
   return Event.find(query).exec().then((events) => {
-    let eventPromises = [];
-
-    if (isCaterer) {
+      console.log('events', events);
+    if (isCaterer && !req.body.paymentList) {
       events = _.filter(events, (event) => {
         let catererft = req.body.foodTypes || [],
           catererst = req.body.serviceTypes || [],
@@ -183,11 +186,15 @@ export function dataset(req, res) {
       })
     }
 
+console.log('events2', events);
+
     events.forEach((event, i) => {
       events[i] = events[i].toObject();
       let total = { eventId: '' + event._id, status: { $nin: ['cancelled', 'draft']} },
-        catererQuery = { eventId: '' + event._id, catererId: req.body.catererId, status: {$in: ['confirmed', 'completed', 'sent']}},
+        catererQuery = { eventId: '' + event._id, catererId: req.body.catererId /*, status: {$in: ['confirmed', 'completed', 'sent']}*/ },
         adminQuery = {eventId: '' + event._id, status: {$in: ['confirmed', 'completed']}};
+
+
       if (isAdmin) {
         eventPromises.push(Offer.find(adminQuery).exec().then((offers) => {
           events[i].offers = offers;
@@ -195,12 +202,13 @@ export function dataset(req, res) {
           return events[i];
         }));
       } else if (isCaterer) {
+        console.log('cq0', catererQuery);
         eventPromises.push(Offer.find(total).exec()
           .then((offersTotal) => {
             events[i].offersTotal = offersTotal.length;
           })
           .then(() => {
-            console.log(catererQuery);
+            console.log('cq', catererQuery);
             return Offer.find(catererQuery).exec();
           })
           .then((offers) => {
@@ -217,10 +225,12 @@ export function dataset(req, res) {
       }
     });
 
-    return Promise.all(eventPromises).then(() => {
-        return isCaterer ? events.filter(event => event.offers.length > 0) : events;
-     }).then(respondWithResult(res))
-      .catch(handleError(res));
+  return Promise.all(eventPromises).then(() => {
+    //return filterWithOffers ? events.filter(event => event.offers.length > 0) : events;
+    return events;
+  })
+  .then(respondWithResult(res))
+  .catch(handleError(res));
 
  });
 }

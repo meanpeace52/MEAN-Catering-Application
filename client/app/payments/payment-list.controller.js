@@ -147,7 +147,7 @@ class PaymentListController {
 
     $scope.hasSelectedEvents = () => Object.keys($scope.selectedEvents).length > 0;
 
-    $scope.query = { status: 'confirmed' };
+    $scope.query = { status: 'confirmed', paymentList: true };
 
     function convertIncludedInPrice(array) {
       let cnt = [];
