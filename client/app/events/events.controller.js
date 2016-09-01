@@ -57,9 +57,6 @@ class EventsController {
       if (this.$state.params.time === 'active' || !this.$state.params.time) $scope.query.showFuture = true;
       else if (this.$state.params.time === 'past') $scope.query.showPast = true;
 
-      console.log('params', this.$state.params)
-      console.log('query', $scope.query)
-
     });
 
     this.pipe = function(tableState) {
