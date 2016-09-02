@@ -49,7 +49,9 @@ class PaymentsStatisticsController {
         promises.push(mongoose.model('Offer').find(query).then((offers) => {
           list[index].summary = 0;
           offers.forEach((offer) => {
-            list[index].summary += (((offer.invoice.service + offer.invoice.tax) * (100 - offer.invoice.commission)/100) - offer.invoice.adjustment.caterer) || 0;
+            if (!offer.invoice.refund) {
+              list[index].summary += (((offer.invoice.service + offer.invoice.tax) * (100 - offer.invoice.commission)/100) - offer.invoice.adjustment.caterer) || 0;
+            }
           });
         }));
 
