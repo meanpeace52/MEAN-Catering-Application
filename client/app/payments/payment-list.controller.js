@@ -22,6 +22,7 @@ class PaymentListController {
     this.$scope.eventActive = null;
     this.$scope.events = [];
     this.$scope.displayed = [];
+    this.$scope.eventsSummary = null;
 
     this.$scope.selectedEvents = {};
     this.$scope.allEventsAreSelected = false;
@@ -201,6 +202,21 @@ class PaymentListController {
 
       $http.post('/api/events/dataset', $scope.query).then(response => {
         $scope.events = response.data;
+
+        $scope.eventsSummary = {
+          service: 0,
+          tax: 0,
+          total: 0,
+          commission: 0,
+          refund: 0,
+          adjustment: {
+            client: 0,
+            chargeOff: 0,
+            caterer: 0
+          },
+          net: 0
+        };
+
         _.each($scope.events, (event, i) => {
           $scope.events[i].includedInPrice = convertIncludedInPrice(event.includedInPrice);
           if ($scope.events[i].offers.length) {
@@ -213,6 +229,19 @@ class PaymentListController {
               $scope.events[i].offers[0].priceWithCounter = event.pricePerPerson * event.people;
             }
           }
+
+          if (event.offers[0] && ($scope.filter.paid === 'allPaid' || ($scope.filter.paid === 'allUnpaid' && $scope.selectedEvents && $scope.isSelected(event)))) {
+            $scope.eventsSummary.service += event.offers[0].invoice.service || 0;
+            $scope.eventsSummary.tax += event.offers[0].invoice.tax || 0;
+            $scope.eventsSummary.total += parseFloat((event.offers[0].invoice.service + event.offers[0].invoice.tax).toFixed(2)) || 0;
+            $scope.eventsSummary.commission += parseFloat(((event.offers[0].invoice.service + event.offers[0].invoice.tax) * event.offers[0].invoice.commission / 100).toFixed(2)) || 0;
+            $scope.eventsSummary.refund += event.offers[0].invoice.refund || 0;
+            $scope.eventsSummary.adjustment.client += event.offers[0].invoice.adjustment.client || 0;
+            $scope.eventsSummary.adjustment.chargeOff += event.offers[0].invoice.adjustment.chargeOff || 0;
+            $scope.eventsSummary.adjustment.caterer += event.offers[0].invoice.adjustment.caterer || 0;
+            $scope.eventsSummary.net += event.offers[0].invoice.refund ? 0 : ((event.offers[0].invoice.service + event.offers[0].invoice.tax) * (100 - event.offers[0].invoice.commission)/100) - event.offers[0].invoice.adjustment.caterer;
+          }
+
         });
 
         let filtered = $scope.tableState && $scope.tableState.search.predicateObject ? $filter('filter')($scope.events, $scope.tableState.search.predicateObject) : $scope.events,
