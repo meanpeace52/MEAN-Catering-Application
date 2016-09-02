@@ -108,7 +108,7 @@
   </div>
   <div class="row">
     <div class="col-sm-12">
-      <table class="col-sm-12" ng-if="!isPiping && (selectedDate || (vm.user.role === 'caterer' && eventActive) || (vm.user.role === 'admin' && hasSelectedEvents())) && ((vm.user.role === 'caterer' && displayed.length > 0) || (vm.user.role === 'admin' && (filter.paid === 'allPaid' || (filter.paid === 'allUnpaid' && hasSelectedEvents())) && displayed.length > 0))">
+      <table class="col-sm-12" ng-if="eventsSummary && !isPiping && (selectedDate || (vm.user.role === 'caterer' && eventActive) || (vm.user.role === 'admin' && hasSelectedEvents())) && ((vm.user.role === 'caterer' && displayed.length > 0) || (vm.user.role === 'admin' && (filter.paid === 'allPaid' || (filter.paid === 'allUnpaid' && hasSelectedEvents())) && displayed.length > 0))">
         <tr>
           <th>Subtotal</th>
           <th>Tax</th>
@@ -119,18 +119,15 @@
           <th>Caterer Adjust</th>
           <th>Net Caterer</th>
         </tr>
-        <tr ng-class="{'bg-primary': event._id === eventActive._id && displayed.length > 1}" ng-repeat="event in displayed">
-          <td>{{event.offers[0].invoice.service.toFixed(2)}}</td>
-          <td>{{event.offers[0].invoice.tax.toFixed(2)}}</td>
-          <td>{{(event.offers[0].invoice.service + event.offers[0].invoice.tax).toFixed(2)}}</td>
-          <td>{{((event.offers[0].invoice.service + event.offers[0].invoice.tax) * event.offers[0].invoice.commission / 100).toFixed(2)}}</td>
-          <td>{{event.offers[0].invoice.refund.toFixed(2)}}</td>
-          <td>{{event.offers[0].invoice.adjustment.chargeOff.toFixed(2)}}</td>
-          <td>{{event.offers[0].invoice.adjustment.caterer.toFixed(2)}}</td>
-          <td>
-            <span ng-if="event.offers[0].invoice.refund">0.00</span>
-            <span ng-if="!event.offers[0].invoice.refund">{{(((event.offers[0].invoice.service + event.offers[0].invoice.tax) * (100 - event.offers[0].invoice.commission)/100) - event.offers[0].invoice.adjustment.caterer).toFixed(2)}}</span>
-          </td>
+        <tr>
+          <td>{{eventsSummary.service.toFixed(2)}}</td>
+          <td>{{eventsSummary.tax.toFixed(2)}}</td>
+          <td>{{eventsSummary.total.toFixed(2)}}</td>
+          <td>{{eventsSummary.commission.toFixed(2)}}</td>
+          <td>{{eventsSummary.refund.toFixed(2)}}</td>
+          <td>{{eventsSummary.adjustment.chargeOff.toFixed(2)}}</td>
+          <td>{{eventsSummary.adjustment.caterer.toFixed(2)}}</td>
+          <td>{{eventsSummary.net.toFixed(2)}}</td>
         </tr>
       </table>
     </div>
