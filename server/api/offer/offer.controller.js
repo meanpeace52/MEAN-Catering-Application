@@ -13,6 +13,7 @@ import _ from 'lodash';
 import Offer from './offer.model';
 import Event from '../event/event.model';
 
+var mongoose = require('mongoose');
 var  mailer = require('../mailer/mailer');
 
 function respondWithResult(res, statusCode) {
@@ -140,6 +141,9 @@ export function total(req, res) {
 
 // Creates a new Thing in the DB
 export function create(req, res) {
+  if (req.body.invoice) {
+    req.body.invoice._id = mongoose.Types.ObjectId();
+  }
   return Offer.create(req.body)
     .then((res) => {
       if (req.body.status !== 'draft') mailer.notifyOffer(res, 'created');
@@ -155,7 +159,7 @@ export function update(req, res) {
   if (req.body._id) {
     delete req.body._id;
   }
-
+  if (req.body.invoice && !req.body.invoice._id) req.body.invoice._id = mongoose.Types.ObjectId();
   if (req.body.eventId && (req.body.status == 'accepted' || req.body.status == 'confirmed' || req.body.status == 'cancelled')) {
 
     let eventUpdates = {status: req.body.status};

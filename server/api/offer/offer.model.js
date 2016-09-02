@@ -18,6 +18,7 @@ var OfferSchema = new mongoose.Schema({
   dateConfirmed: Date,
   status: String,
   invoice: {
+    _id:  mongoose.Schema.Types.ObjectId,
     pricePerPerson: Number,
     people: Number,
     service: Number,

@@ -134,7 +134,7 @@
           </thead>
           <tbody>
             <tr>
-              <td>1</td>
+              <td><div uib-tooltip="{{eventForInvoice.offer.invoice._id}}" style="overflow: hidden; width: 50px; white-space: nowrap; text-overflow: ellipsis;">{{eventForInvoice.offer.invoice._id}}</div></td>
               <td>{{eventForInvoice.description}}</td>
               <td>{{eventForInvoice.people.toFixed(2)}}</td>
               <td>{{eventForInvoice.pricePerPerson.toFixed(2)}}</td>
