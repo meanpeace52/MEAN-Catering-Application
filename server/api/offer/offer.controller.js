@@ -156,8 +156,6 @@ export function update(req, res) {
     delete req.body._id;
   }
 
-  console.log('req.body', req.body)
-
   if (req.body.eventId && (req.body.status == 'accepted' || req.body.status == 'confirmed' || req.body.status == 'cancelled')) {
 
     let eventUpdates = {status: req.body.status};
@@ -175,18 +173,16 @@ export function update(req, res) {
       eventUpdates.acceptedDate = null;
     }
 
-    console.log('req.body', req.body, eventUpdates)
-
     Event.findById(req.body.eventId).exec()
       .then(saveEventUpdates(eventUpdates));
   }
   return Offer.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then((res) => {
-      if (req.body.status == 'accepted') {
+      if (req.body.status == 'accepted' && res.status !== 'accepted') {
         mailer.notifyOfferAccepted(res, 'accepted');
       }
-      if (req.body.status == 'confirmed') {
+      if (req.body.status == 'confirmed' && res.status !== 'confirmed') {
         mailer.notifyOffer(res, 'confirmed');
       }
       return res;
