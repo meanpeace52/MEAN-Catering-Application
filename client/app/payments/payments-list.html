@@ -120,14 +120,17 @@
           <th>Net Caterer</th>
         </tr>
         <tr ng-class="{'bg-primary': event._id === eventActive._id && displayed.length > 1}" ng-repeat="event in displayed">
-          <td>{{event.offers[0].invoice.service}}</td>
+          <td>{{event.offers[0].invoice.service.toFixed(2)}}</td>
           <td>{{event.offers[0].invoice.tax.toFixed(2)}}</td>
           <td>{{(event.offers[0].invoice.service + event.offers[0].invoice.tax).toFixed(2)}}</td>
           <td>{{((event.offers[0].invoice.service + event.offers[0].invoice.tax) * event.offers[0].invoice.commission / 100).toFixed(2)}}</td>
-          <td>{{event.offers[0].invoice.refund}}</td>
-          <td>{{event.offers[0].invoice.adjustment.chargeOff}}</td>
-          <td>{{event.offers[0].invoice.adjustment.caterer}}</td>
-          <td>{{(((event.offers[0].invoice.service + event.offers[0].invoice.tax) * (100 - event.offers[0].invoice.commission)/100) - event.offers[0].invoice.adjustment.caterer).toFixed(2)}}</td>
+          <td>{{event.offers[0].invoice.refund.toFixed(2)}}</td>
+          <td>{{event.offers[0].invoice.adjustment.chargeOff.toFixed(2)}}</td>
+          <td>{{event.offers[0].invoice.adjustment.caterer.toFixed(2)}}</td>
+          <td>
+            <span ng-if="event.offers[0].invoice.refund">0.00</span>
+            <span ng-if="!event.offers[0].invoice.refund">{{(((event.offers[0].invoice.service + event.offers[0].invoice.tax) * (100 - event.offers[0].invoice.commission)/100) - event.offers[0].invoice.adjustment.caterer).toFixed(2)}}</span>
+          </td>
         </tr>
       </table>
     </div>
