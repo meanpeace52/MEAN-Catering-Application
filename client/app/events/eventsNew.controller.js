@@ -27,6 +27,7 @@ class EventsNewController {
     this.ftService = FoodTypesService;
     this.incService = IncludedInPriceService;
     this.sService = ServiceTypesService;
+    this.addressValidationError = "Please enter a valid address";
 
     this.$scope.fm = {};
     this.$scope.fm.date = this.$scope.date = new Date();
@@ -256,7 +257,7 @@ class EventsNewController {
 
       if (this.$scope.fm.status == 'sent') eventModel.isUpdated = true;
 
-      if (eventModel && form.$valid) {
+      if (eventModel && form.$valid && !this.addressValidationError) {
         this.$http.post(url, eventModel)
           .then(response => {
             this.sent = true;
@@ -281,7 +282,8 @@ class EventsNewController {
     eventModel.userId = this.user._id;
     eventModel.status = 'draft';
 
-    if (eventModel && form.$valid) {
+    //if (eventModel && form.$valid) {
+    if (eventModel && form.$valid && !this.addressValidationError) {
       //return this.payments.verifyAddress(eventModel.address).then(address => {
         //eventModel.address = address;
 

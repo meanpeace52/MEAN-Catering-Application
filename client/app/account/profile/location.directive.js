@@ -5,8 +5,8 @@ angular.module('cateringApp')
     restrict: 'A',
     link: (scope, element, attrs, $rootScope) => {
       let locationOptions = {
-            types: ['geocode'],
-            //types: ['address'],
+            //types: ['geocode'],
+            types: ['address'],
             //types: ['(regions)'],
             componentRestrictions: {country: "US"}
       };
@@ -30,14 +30,16 @@ angular.module('cateringApp')
         });
       }*/
 
-      autocomplete.addListener('place_changed', () => {
+/*      autocomplete.addListener('place_changed', () => {
+        console.log("place changed");
         let place = autocomplete.getPlace(),
             address = '';
+
         if (place.formatted_address) {
           address = place.formatted_address;
         }
 
-        console.log(place);
+        console.log("autocomplete place:", place);
 
         if (scope.vm.user && scope.vm.user.location) {
           scope.vm.user.location = address;
@@ -48,6 +50,34 @@ angular.module('cateringApp')
           scope.fm.location = address;
           scope.fm.address = getAddress(place);
         }
+      });*/
+
+      autocomplete.addListener('place_changed', () => {
+        let place = autocomplete.getPlace(),
+            address = '';
+
+        let checkResult = checkAddress(place);
+
+        if(!checkResult){
+          scope.vm.addressValidationError = "Please enter a valid address";
+        } else {
+          scope.vm.addressValidationError = false;
+
+          if (place.formatted_address) {
+            address = place.formatted_address;
+          }
+
+          if (scope.vm.user && scope.vm.user.location) {
+            scope.vm.user.location = address;
+            scope.vm.user.address = getAddress(place);
+            console.log('we here in user', scope.vm.user);
+          }
+
+          if (scope.fm && scope.fm.location) {
+            scope.fm.location = address;
+            scope.fm.address = getAddress(place);
+          }
+        }
       });
 
       autocomplete.setBounds(defaultBounds);
@@ -55,14 +85,47 @@ angular.module('cateringApp')
 }));
 
 function getAddress(place) {
-  let formatedComponents = place.formatted_address.split(',').map(item => item.trim());
+  /*let formatedComponents = place.formatted_address.split(',').map(item => item.trim());
   let region = getByIndex(formatedComponents, -2).split(' ').map(item => item.trim());
-  return {
+    return {
     Address1: formatedComponents[0],
     Address2: '',
     City: getByIndex(formatedComponents, -3),
     State: getByIndex(region, -2),
     Zip5: getByIndex(region, -1),
+    Zip4: '0000'
+  }
+  */
+  let address = place.address_components;
+  let route = "";
+  let city = "";
+  let state = "";
+  let zipCode = "";
+
+  _.each(address, (item, i) => {
+    if (item.types[0] === 'route') {
+      route = item.long_name;
+    }
+
+    if (item.types[0] === 'locality') {
+      city = item.long_name;
+    }
+
+    if (item.types[0] === 'administrative_area_level_1') {
+      state = item.short_name;
+    }
+
+    if (item.types[0] === 'postal_code') {
+      zipCode = item.long_name;
+    }
+  });
+
+  return {
+    Address1: route,
+    Address2: '',
+    City: city,
+    State: state,
+    Zip5: zipCode,
     Zip4: '0000'
   }
 }
@@ -72,4 +135,22 @@ function getByIndex(arr, index) {
     index = arr.length + index;
   }
   return arr[index];
+}
+
+function checkAddress(place){
+  let address = place.address_components;
+  let route = false;
+  let zipCode = false;
+
+  _.each(address, (item, i) => {
+    if (item.types[0] === 'route') {
+      route = true;
+    }
+
+    if (item.types[0] === 'postal_code') {
+      zipCode = true;
+    }
+  });
+
+  return route && zipCode;
 }
