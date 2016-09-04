@@ -197,8 +197,9 @@
             <button class="btn btn-lg btn-primary" type="submit">Save changes</button>
           </form>
         </uib-tab>
-        <uib-tab index="3" heading="Update Card" ng-if="vm.user.payableAccountId">
+        <uib-tab index="3" heading="Update Credit Card Card" ng-if="vm.user.payableAccountId">
           <div style="padding:50px;">
+            <p>If you need to change or update your credit card, please use this form to do so.</p>
               <credit-card-form verifier="false" ccupdate="true" user="vm.user" event=""></credit-card-form>
           </div>
         </uib-tab>
