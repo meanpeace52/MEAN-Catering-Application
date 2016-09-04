@@ -56,8 +56,6 @@ angular.module('cateringApp')
         let place = autocomplete.getPlace(),
             address = '';
 
-        console.log("autocomplete place:", place);
-
         let checkResult = checkAddress(place);
 
         if(!checkResult){

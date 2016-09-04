@@ -54,7 +54,6 @@ angular.module('cateringApp')
         }
       },
       dwollaLogin() {
-        console.log("payment service dwolla login");
           return $http.get('/api/payments/dwolla/loginUrl').then((response) => {
             $window.open(response.data.loginUrl, '_blank');
           });
