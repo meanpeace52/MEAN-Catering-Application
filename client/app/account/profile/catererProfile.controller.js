@@ -161,6 +161,7 @@ class CatererProfileController {
   }
 
   loginToDwolla() {
+    console.log("login to dwolla");
     return this.payments.dwollaLogin();
   }
 }

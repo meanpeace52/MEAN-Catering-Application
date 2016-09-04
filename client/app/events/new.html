@@ -105,7 +105,7 @@
               <div ng-show="form.$submitted || form.location.$touched">
                 <div ng-show="form.location.$error.required">Please enter location</div>
               </div>
-              <div class="form-group has-error" ng-if="vm.addressValidationError">
+              <div class="form-group has-error" ng-if="vm.addressValidationError && !form.location.$error.required" style="padding:5px;">
                 {{ vm.addressValidationError }}
               </div>
             </div>
