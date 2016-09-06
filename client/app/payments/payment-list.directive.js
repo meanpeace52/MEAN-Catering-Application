@@ -3,7 +3,7 @@
 angular.module('cateringApp')
   .directive('payments', () => ({
     controller: 'PaymentListController',
-    controllerAs: 'vm',
+    controllerAs: 'plc',
     templateUrl: 'app/payments/payments-list.html',
     restrict: 'E'
   }));

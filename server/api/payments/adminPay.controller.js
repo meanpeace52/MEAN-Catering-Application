@@ -15,6 +15,8 @@ class AdminPayController {
       return Promise.reject({});
     }
 
+    const datePaid = new Date();
+
     return Promise.all(req.body.items.map(item => mongoose.model('Offer').findById(item)))
       .then(offers => {
 
@@ -86,7 +88,7 @@ class AdminPayController {
               return Promise.all(events.map(event => {
                 event.status = 'completed';
                 event.paymentStatus = 'completed';
-                event.datePaid = new Date();
+                event.datePaid = datePaid;
                 return event.save();
               })).then(respondWithResult(res))
                  .catch(handleError(res));

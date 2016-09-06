@@ -120,6 +120,14 @@ function _capture(offerId) {
         data.event.paymentStatus = 'paid';
         data.event.paymentPaidDate = new Date();
         data.event.offerId = offerId;
+        if (payment.balance_transaction) {
+          stripe.balance.retrieveTransaction(payment.balance_transaction).then((transaction) => {
+            if (transaction.fee) {
+              data.offer.invoice.stripeFee = transaction.fee * 100;
+              data.offer.save()
+            }
+          });
+        }
         return data.event.save().then(() => data.offer.save());
       }
       return _breakOffer(data.user, data.offer, mailer.breakCapture);
