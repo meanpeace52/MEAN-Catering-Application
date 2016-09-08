@@ -32,7 +32,7 @@
                   <td>{{event.offer.invoice.total}}</td>
                   <td>{{event.name}}</td>
                   <td>{{event.offer.catererName}}</td>
-                  <td><a class="btn btn-xs btn-success" ng-click="vm.showInvoice($event, event)">Invoice</a></td>
+                  <td><a class="btn btn-xs btn-success" ng-click="customerProfile.showInvoice($event, event)">Invoice</a></td>
                 </tr>
                 </tbody>
               </table>
@@ -81,7 +81,7 @@
                         <td><b>Total</b></td>
                         <td><b>{{eventForInvoice.offer.invoice.total.toFixed(2)}}</b></td>
                       </tr>
-                      <tr class="success" ng-if="vm.user.role == 'user'">
+                      <tr class="success" ng-if="customerProfile.user.role == 'user'">
                         <td>Charged to Credit Card</td>
                         <td>{{eventForInvoice.offer.invoice.total.toFixed(2)}}</td>
                       </tr>
@@ -89,7 +89,7 @@
                         <td>Refund</td>
                         <td>-{{eventForInvoice.offer.invoice.refund.toFixed(2)}}</td>
                       </tr>
-                      <tr class="warning" ng-if="!eventForInvoice.offer.invoice.refund && eventForInvoice.offer.invoice.adjustment.client && vm.user.role == 'user'">
+                      <tr class="warning" ng-if="!eventForInvoice.offer.invoice.refund && eventForInvoice.offer.invoice.adjustment.client && customerProfile.user.role == 'user'">
                         <td>Partial Refund</td>
                         <td>-{{eventForInvoice.offer.invoice.adjustment.client.toFixed(2)}}</td>
                       </tr>
@@ -100,50 +100,50 @@
             </div>
           </div>
         </uib-tab>
-        <uib-tab index="1" heading="Profile">
+        <uib-tab index="1" heading="Profile & Credit Card">
           <br />
-          <form class="form" name="form" ng-submit="vm.register(form)" novalidate>
+          <form class="form" name="form" ng-submit="customerProfile.register(form)" novalidate>
 
-            <div class="form-group" ng-class="{ 'has-success': form.name.$valid && vm.submitted,
-                                                'has-error': form.name.$invalid && vm.submitted }">
+            <div class="form-group" ng-class="{ 'has-success': form.name.$valid && customerProfile.submitted,
+                                                'has-error': form.name.$invalid && customerProfile.submitted }">
               <label>First Name</label>
 
-              <input type="text" name="firstname" class="form-control" ng-model="vm.user.firstname"
+              <input type="text" name="firstname" class="form-control" ng-model="customerProfile.user.firstname"
                      required/>
-              <p class="help-block" ng-show="form.name.$error.required && vm.submitted">
+              <p class="help-block" ng-show="form.name.$error.required && customerProfile.submitted">
                 A name is required
               </p>
             </div>
 
-            <div class="form-group" ng-class="{ 'has-success': form.name.$valid && vm.submitted,
-                                                'has-error': form.name.$invalid && vm.submitted }">
+            <div class="form-group" ng-class="{ 'has-success': form.name.$valid && customerProfile.submitted,
+                                                'has-error': form.name.$invalid && customerProfile.submitted }">
               <label>Last Name</label>
 
-              <input type="text" name="lastname" class="form-control" ng-model="vm.user.lastname"
+              <input type="text" name="lastname" class="form-control" ng-model="customerProfile.user.lastname"
                      required/>
-              <p class="help-block" ng-show="form.name.$error.required && vm.submitted">
+              <p class="help-block" ng-show="form.name.$error.required && customerProfile.submitted">
                 A name is required
               </p>
             </div>
 
-            <div class="form-group" ng-class="{ 'has-success': form.email.$valid && vm.submitted,
-                                                'has-error': form.email.$invalid && vm.submitted }">
+            <div class="form-group" ng-class="{ 'has-success': form.email.$valid && customerProfile.submitted,
+                                                'has-error': form.email.$invalid && customerProfile.submitted }">
               <label>Email</label>
 
-              <input type="email" name="email" class="form-control" ng-model="vm.user.email"
+              <input type="email" name="email" class="form-control" ng-model="customerProfile.user.email"
                      required
                      mongoose-error/>
-              <p class="help-block" ng-show="form.email.$error.email && vm.submitted">
+              <p class="help-block" ng-show="form.email.$error.email && customerProfile.submitted">
                 Doesn't look like a valid email.
               </p>
-              <p class="help-block" ng-show="form.email.$error.required && vm.submitted">
+              <p class="help-block" ng-show="form.email.$error.required && customerProfile.submitted">
                 What's your email address?
               </p>
               <p class="help-block" ng-show="form.email.$error.mongoose">
-                {{ vm.errors.email }}
+                {{ customerProfile.errors.email }}
               </p>
             </div>
-            <div class="alert alert-success" role="alert" ng-if="vm.saved">Account information is successfully saved</div>
+            <div class="alert alert-success" role="alert" ng-if="customerProfile.saved">Account information is successfully saved</div>
             <div>
               <button class="btn btn-primary btn-lg btn-register" type="submit">
                 Save Changes
@@ -151,29 +151,41 @@
             </div>
 
           </form>
+
+          <br>          
+          <div style="margin-top:50px;" ng-if="customerProfile.user.payableAccountId">
+            <p>If you need to change or update your credit card, please click the button below.</p>
+            <button class="btn btn-primary btn-lg btn-register" stripe-checkout="customerProfile.doCheckout"
+            data-key="pk_test_0EFB2Y1WvIYGIIUsAQJ42DVD"
+            data-name="Catering Ninja"
+            data-description="Please Verify your Credit Card"
+            data-amount="1000">
+              Edit Credit Card
+            </button>
+          </div>
         </uib-tab>
         <uib-tab index="2" heading="Change password">
           <br />
-          <form class="form" name="form" ng-submit="vm.changePassword(form)" novalidate>
+          <form class="form" name="form" ng-submit="customerProfile.changePassword(form)" novalidate>
 
             <div class="form-group">
               <label>Current Password</label>
 
-              <input type="password" name="password" class="form-control" ng-model="vm.user.oldPassword"
+              <input type="password" name="password" class="form-control" ng-model="customerProfile.user.oldPassword"
                      mongoose-error/>
               <p class="help-block" ng-show="form.password.$error.mongoose">
-                {{ vm.errors.other }}
+                {{ customerProfile.errors.other }}
               </p>
             </div>
 
             <div class="form-group">
               <label>New Password</label>
 
-              <input type="password" name="newPassword" class="form-control" ng-model="vm.user.newPassword"
+              <input type="password" name="newPassword" class="form-control" ng-model="customerProfile.user.newPassword"
                      ng-minlength="3"
                      required/>
               <p class="help-block"
-                 ng-show="(form.newPassword.$error.minlength || form.newPassword.$error.required) && (form.newPassword.$dirty || vm.submitted)">
+                 ng-show="(form.newPassword.$error.minlength || form.newPassword.$error.required) && (form.newPassword.$dirty || customerProfile.submitted)">
                 Password must be at least 3 characters.
               </p>
             </div>
@@ -181,28 +193,28 @@
             <div class="form-group">
               <label>Confirm New Password</label>
 
-              <input type="password" name="confirmPassword" class="form-control" ng-model="vm.user.confirmPassword"
-                     match="vm.user.newPassword"
+              <input type="password" name="confirmPassword" class="form-control" ng-model="customerProfile.user.confirmPassword"
+                     match="customerProfile.user.newPassword"
                      ng-minlength="3"
                      required=""/>
               <p class="help-block"
-                 ng-show="form.confirmPassword.$error.match && vm.submitted">
+                 ng-show="form.confirmPassword.$error.match && customerProfile.submitted">
                 Passwords must match.
               </p>
 
             </div>
 
-            <p class="help-block"> {{ vm.message }} </p>
-            <div class="alert alert-success" role="alert" ng-if="vm.saved">Account information is successfully saved</div>
+            <p class="help-block"> {{ customerProfile.message }} </p>
+            <div class="alert alert-success" role="alert" ng-if="customerProfile.saved">Account information is successfully saved</div>
             <button class="btn btn-lg btn-primary" type="submit">Save changes</button>
           </form>
         </uib-tab>
-        <uib-tab index="3" heading="Update Credit Card Card" ng-if="vm.user.payableAccountId">
+        <!-- <uib-tab index="3" heading="Update Credit Card Card" ng-if="customerProfile.user.payableAccountId">
           <div style="padding:50px;">
             <p>If you need to change or update your credit card, please use this form to do so.</p>
-              <credit-card-form verifier="false" ccupdate="true" user="vm.user" event=""></credit-card-form>
+              <credit-card-form verifier="false" ccupdate="true" user="customerProfile.user" event=""></credit-card-form>
           </div>
-        </uib-tab>
+        </uib-tab> -->
       </uib-tabset>
     </div>
   </div>

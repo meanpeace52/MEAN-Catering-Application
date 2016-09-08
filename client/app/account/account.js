@@ -43,25 +43,25 @@ angular.module('cateringApp')
         controllerAs: 'vm',
         authenticate: true
       })
-      /*.state('notifications', {
+      .state('notifications', {
         url: '/notifications',
         templateUrl: 'app/account/notifications/notifications.html',
         controller: 'NotificationsController',
         controllerAs: 'vm',
         authenticate: true
-      }) */
+      }) 
       .state('customer-profile', {
         url: '/profile/customer',
         templateUrl: 'app/account/profile/customer.html',
         controller: 'CustomerProfileController',
-        controllerAs: 'vm',
+        controllerAs: 'customerProfile',
         authenticate: 'user'
       })
       .state('caterer-profile', {
         url: '/profile/caterer',
         templateUrl: 'app/account/profile/caterer.html',
         controller: 'CatererProfileController',
-        controllerAs: 'vm',
+        controllerAs: 'catererProfile',
         authenticate: 'caterer'
       })
       .state('caterer-public-profile', {

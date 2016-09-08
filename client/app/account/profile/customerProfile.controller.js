@@ -64,6 +64,10 @@ class CustomerProfileController {
     }
   }
 
+  doCheckout(token) {
+    console.log("Got Stripe token: " + token.id);
+  }
+
 }
 
 angular.module('cateringApp')

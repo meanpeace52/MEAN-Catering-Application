@@ -12,58 +12,58 @@
               <div class="col-sm-8">
                 <div class="row">
                   <div class="col-sm-6">
-                    <div class="form-group" ng-class="{ 'has-success': profileForm.companyName.$valid && vm.profileSubmitted, 'has-error': profileForm.companyName.$invalid && vm.profileSubmitted }">
+                    <div class="form-group" ng-class="{ 'has-success': profileForm.companyName.$valid && catererProfile.profileSubmitted, 'has-error': profileForm.companyName.$invalid && catererProfile.profileSubmitted }">
                       <label>Company Name</label>
-                      <input type="text" name="companyName" class="form-control" ng-model="vm.user.companyName" required />
-                      <p class="help-block" ng-show="profileForm.companyName.$error.required && vm.profileSubmitted">A company name is required</p>
+                      <input type="text" name="companyName" class="form-control" ng-model="catererProfile.user.companyName" required />
+                      <p class="help-block" ng-show="profileForm.companyName.$error.required && catererProfile.profileSubmitted">A company name is required</p>
                     </div>
                   </div>
                   <div class="col-sm-6">
                     <div class="form-group">
                       <label>Description</label>
-                      <input type="text" name="description" class="form-control" tooltip-placement="top" uib-tooltip='A short description about your business' ng-model="vm.user.description"/>
+                      <input type="text" name="description" class="form-control" tooltip-placement="top" uib-tooltip='A short description about your business' ng-model="catererProfile.user.description"/>
                     </div>
                   </div>
                 </div>
 
                 <div class="row">
                   <div class="col-sm-4">
-                    <div class="form-group" ng-class="{ 'has-success': profileForm.phone.$valid && vm.profileSubmitted, 'has-error': profileForm.phone.$invalid && vm.profileSubmitted }">
+                    <div class="form-group" ng-class="{ 'has-success': profileForm.phone.$valid && catererProfile.profileSubmitted, 'has-error': profileForm.phone.$invalid && catererProfile.profileSubmitted }">
                       <label>Phone</label>
-                      <input type="text" name="phone" class="form-control" ng-model="vm.user.phone" required />
-                      <p class="help-block" ng-show="profileForm.phone.$error.required && vm.profileSubmitted">A phone number is required</p>
+                      <input type="text" name="phone" class="form-control" ng-model="catererProfile.user.phone" required />
+                      <p class="help-block" ng-show="profileForm.phone.$error.required && catererProfile.profileSubmitted">A phone number is required</p>
                     </div>
                   </div>
                   <div class="col-sm-4">
                     <div class="form-group">
                       <label>Website</label>
-                      <input type="text" name="website" class="form-control" ng-model="vm.user.website"/>
+                      <input type="text" name="website" class="form-control" ng-model="catererProfile.user.website"/>
                     </div>
                   </div>
                   <div class="col-sm-3">
-                    <div class="form-group" ng-class="{ 'has-success': profileForm.minprice.$valid && vm.profileSubmitted, 'has-error': profileForm.minprice.$invalid && vm.profileSubmitted }">
+                    <div class="form-group" ng-class="{ 'has-success': profileForm.minprice.$valid && catererProfile.profileSubmitted, 'has-error': profileForm.minprice.$invalid && catererProfile.profileSubmitted }">
                       <label>Min Price per person</label>
-                      <input tooltip-placement="top" uib-tooltip='This is the minimum priced events that you want to view, this filters events you see.' type="text" name="minprice" class="form-control" ng-model="vm.user.minprice" required />
-                      <p class="help-block" ng-show="profileForm.minprice.$error.required && vm.profileSubmitted">A minimum price is required</p>
+                      <input tooltip-placement="top" uib-tooltip='This is the minimum priced events that you want to view, this filters events you see.' type="text" name="minprice" class="form-control" ng-model="catererProfile.user.minprice" required />
+                      <p class="help-block" ng-show="profileForm.minprice.$error.required && catererProfile.profileSubmitted">A minimum price is required</p>
                     </div>
                   </div>
                 </div>
 
                 <div class="row">
                   <div class="col-sm-6">
-                    <div class="form-group" ng-class="{ 'has-success': profileForm.location.$valid && vm.profileSubmitted, 'has-error': profileForm.location.$invalid && vm.profileSubmitted }">
+                    <div class="form-group" ng-class="{ 'has-success': profileForm.location.$valid && catererProfile.profileSubmitted, 'has-error': profileForm.location.$invalid && catererProfile.profileSubmitted }">
                       <label>Location</label>
-                      <input type="text" name="location" class="form-control" data-location="location" tooltip-placement="top" uib-tooltip='Start to type in your address and google should autofill the rest.  If it does not find the correct one, call us so we can fix it.' ng-model="vm.user.location" required/>
-                      <p class="help-block" ng-show="profileForm.location.$error.required && vm.profileSubmitted">Location is required</p>
-                      <div class="form-group has-error" ng-if="vm.addressValidationError">
-                        {{ vm.addressValidationError }}
+                      <input type="text" name="location" class="form-control" data-location="location" tooltip-placement="top" uib-tooltip='Start to type in your address and google should autofill the rest.  If it does not find the correct one, call us so we can fix it.' ng-model="catererProfile.user.location" required/>
+                      <p class="help-block" ng-show="profileForm.location.$error.required && catererProfile.profileSubmitted">Location is required</p>
+                      <div class="form-group has-error" ng-if="catererProfile.addressValidationError">
+                        {{ catererProfile.addressValidationError }}
                       </div>
                     </div>
                   </div>
                   <div class="col-sm-3">
                     <div class="form-group">
                       <label> Have Vegetarian offers</label>
-                      <input tooltip-placement="top" uib-tooltip='Only select this option if you offer Vegetarian meals.' type="checkbox" name="veganOffers" ng-model="vm.user.veganOffers"/>
+                      <input tooltip-placement="top" uib-tooltip='Only select this option if you offer Vegetarian meals.' type="checkbox" name="veganOffers" ng-model="catererProfile.user.veganOffers"/>
                     </div>
                   </div>
                 </div>
@@ -71,33 +71,33 @@
                 <div class="panel panel-default" style="padding: 10px; background-color: #d3d3d3 ">
                   <div class="row">
                     <div class="col-sm-6">
-                      <div class="form-group" ng-class="{ 'has-success': profileForm.firstname.$valid && vm.profileSubmitted, 'has-error': profileForm.firstname.$invalid && vm.profileSubmitted }">
+                      <div class="form-group" ng-class="{ 'has-success': profileForm.firstname.$valid && catererProfile.profileSubmitted, 'has-error': profileForm.firstname.$invalid && catererProfile.profileSubmitted }">
                         <label>First Name</label>
-                        <input type="text" name="firstname" class="form-control" tooltip-placement="top" uib-tooltip='This is the contact for the Administrator who will be the main contact for Catering Ninja to work with.' ng-model="vm.user.firstname" required/>
-                        <p class="help-block" ng-show="profileForm.firstname.$error.required && vm.profileSubmitted">A first name is required</p>
+                        <input type="text" name="firstname" class="form-control" tooltip-placement="top" uib-tooltip='This is the contact for the Administrator who will be the main contact for Catering Ninja to work with.' ng-model="catererProfile.user.firstname" required/>
+                        <p class="help-block" ng-show="profileForm.firstname.$error.required && catererProfile.profileSubmitted">A first name is required</p>
                       </div>
                     </div>
                     <div class="col-sm-6">
-                      <div class="form-group" ng-class="{ 'has-success': profileForm.lastname.$valid && vm.profileSubmitted, 'has-error': profileForm.lastname.$invalid && vm.profileSubmitted }">
+                      <div class="form-group" ng-class="{ 'has-success': profileForm.lastname.$valid && catererProfile.profileSubmitted, 'has-error': profileForm.lastname.$invalid && catererProfile.profileSubmitted }">
                         <label>Last Name</label>
-                        <input type="text" name="lastname" class="form-control" ng-model="vm.user.lastname" required/>
-                        <p class="help-block" ng-show="profileForm.lastname.$error.required && vm.profileSubmitted">A last name is required</p>
+                        <input type="text" name="lastname" class="form-control" ng-model="catererProfile.user.lastname" required/>
+                        <p class="help-block" ng-show="profileForm.lastname.$error.required && catererProfile.profileSubmitted">A last name is required</p>
                       </div>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-sm-6">
-                      <div class="form-group" ng-class="{ 'has-success': profileForm.contact_email.$valid && vm.profileSubmitted, 'has-error': profileForm.contact_email.$invalid && vm.profileSubmitted }">
+                      <div class="form-group" ng-class="{ 'has-success': profileForm.contact_email.$valid && catererProfile.profileSubmitted, 'has-error': profileForm.contact_email.$invalid && catererProfile.profileSubmitted }">
                         <label>Email</label>
-                        <input tooltip-placement="top" uib-tooltip='This is the email for the Administrator who will be the main contact for Catering Ninja to work with.  It can be the same as the user email to login.' type="text" name="contact_email" class="form-control" ng-model="vm.user.contact_email" required/>
-                        <p class="help-block" ng-show="profileForm.contact_email.$error.required && vm.profileSubmitted">An email is required</p>
+                        <input tooltip-placement="top" uib-tooltip='This is the email for the Administrator who will be the main contact for Catering Ninja to work with.  It can be the same as the user email to login.' type="text" name="contact_email" class="form-control" ng-model="catererProfile.user.contact_email" required/>
+                        <p class="help-block" ng-show="profileForm.contact_email.$error.required && catererProfile.profileSubmitted">An email is required</p>
                       </div>
                     </div>
                     <div class="col-sm-6">
-                      <div class="form-group" ng-class="{ 'has-success': profileForm.contact_phone.$valid && vm.profileSubmitted, 'has-error': profileForm.contact_phone.$invalid && vm.profileSubmitted }">
+                      <div class="form-group" ng-class="{ 'has-success': profileForm.contact_phone.$valid && catererProfile.profileSubmitted, 'has-error': profileForm.contact_phone.$invalid && catererProfile.profileSubmitted }">
                         <label>Phone</label>
-                        <input tooltip-placement="top" uib-tooltip='The phone number Catering Ninja should use to contact you' type="text" name="contact_phone" class="form-control" ng-model="vm.user.contact_phone" required/>
-                        <p class="help-block" ng-show="profileForm.contact_phone.$error.required && vm.profileSubmitted">A phone number is required</p>
+                        <input tooltip-placement="top" uib-tooltip='The phone number Catering Ninja should use to contact you' type="text" name="contact_phone" class="form-control" ng-model="catererProfile.user.contact_phone" required/>
+                        <p class="help-block" ng-show="profileForm.contact_phone.$error.required && catererProfile.profileSubmitted">A phone number is required</p>
                       </div>
                     </div>
                   </div>
@@ -106,33 +106,33 @@
                 <div class="panel panel-default" style="padding: 10px; background-color: #d3d3d3 ">
                   <div class="row">
                     <div class="col-sm-6">
-                      <div class="form-group" ng-class="{ 'has-success': profileForm.ninja_firstname.$valid && vm.profileSubmitted, 'has-error': profileForm.ninja_firstname.$invalid && vm.profileSubmitted }">
+                      <div class="form-group" ng-class="{ 'has-success': profileForm.ninja_firstname.$valid && catererProfile.profileSubmitted, 'has-error': profileForm.ninja_firstname.$invalid && catererProfile.profileSubmitted }">
                         <label>First Name</label>
-                        <input tooltip-placement="top" uib-tooltip='Enter the contact that customers can reach out to with questions'  type="text" name="ninja_firstname" class="form-control" ng-model="vm.user.ninja_firstname" required/>
-                        <p class="help-block" ng-show="profileForm.ninja_firstname.$error.required && vm.profileSubmitted">A  first name is required</p>
+                        <input tooltip-placement="top" uib-tooltip='Enter the contact that customers can reach out to with questions'  type="text" name="ninja_firstname" class="form-control" ng-model="catererProfile.user.ninja_firstname" required/>
+                        <p class="help-block" ng-show="profileForm.ninja_firstname.$error.required && catererProfile.profileSubmitted">A  first name is required</p>
                       </div>
                     </div>
                     <div class="col-sm-6">
-                      <div class="form-group" ng-class="{ 'has-success': profileForm.ninja_lastname.$valid && vm.profileSubmitted, 'has-error': profileForm.ninja_lastname.$invalid && vm.profileSubmitted }">
+                      <div class="form-group" ng-class="{ 'has-success': profileForm.ninja_lastname.$valid && catererProfile.profileSubmitted, 'has-error': profileForm.ninja_lastname.$invalid && catererProfile.profileSubmitted }">
                         <label>Last Name</label>
-                        <input type="text" name="ninja_lastname" class="form-control" ng-model="vm.user.ninja_lastname" required/>
-                        <p class="help-block" ng-show="profileForm.ninja_lastname.$error.required && vm.profileSubmitted">A last name is required</p>
+                        <input type="text" name="ninja_lastname" class="form-control" ng-model="catererProfile.user.ninja_lastname" required/>
+                        <p class="help-block" ng-show="profileForm.ninja_lastname.$error.required && catererProfile.profileSubmitted">A last name is required</p>
                       </div>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-sm-6">
-                      <div class="form-group" ng-class="{ 'has-success': profileForm.ninja_email.$valid && vm.profileSubmitted, 'has-error': profileForm.ninja_email.$invalid && vm.profileSubmitted }">
+                      <div class="form-group" ng-class="{ 'has-success': profileForm.ninja_email.$valid && catererProfile.profileSubmitted, 'has-error': profileForm.ninja_email.$invalid && catererProfile.profileSubmitted }">
                         <label>Email</label>
-                        <input tooltip-placement="top" uib-tooltip='Enter the email that customers can reach out to with questions'  type="text" name="ninja_email" class="form-control" ng-model="vm.user.ninja_email" required/>
-                        <p class="help-block" ng-show="profileForm.ninja_email.$error.required && vm.profileSubmitted">An email is required</p>
+                        <input tooltip-placement="top" uib-tooltip='Enter the email that customers can reach out to with questions'  type="text" name="ninja_email" class="form-control" ng-model="catererProfile.user.ninja_email" required/>
+                        <p class="help-block" ng-show="profileForm.ninja_email.$error.required && catererProfile.profileSubmitted">An email is required</p>
                       </div>
                     </div>
                     <div class="col-sm-6">
-                      <div class="form-group" ng-class="{ 'has-success': profileForm.ninja_phone.$valid && vm.profileSubmitted, 'has-error': profileForm.ninja_phone.$invalid && vm.profileSubmitted }">
+                      <div class="form-group" ng-class="{ 'has-success': profileForm.ninja_phone.$valid && catererProfile.profileSubmitted, 'has-error': profileForm.ninja_phone.$invalid && catererProfile.profileSubmitted }">
                         <label>Phone</label>
-                        <input tooltip-placement="top" uib-tooltip='Enter the contact phone that customers can reach out to with questions' type="text" name="ninja_phone" class="form-control" ng-model="vm.user.ninja_phone" required/>
-                        <p class="help-block" ng-show="profileForm.ninja_phone.$error.required && vm.profileSubmitted">A phone number is required</p>
+                        <input tooltip-placement="top" uib-tooltip='Enter the contact phone that customers can reach out to with questions' type="text" name="ninja_phone" class="form-control" ng-model="catererProfile.user.ninja_phone" required/>
+                        <p class="help-block" ng-show="profileForm.ninja_phone.$error.required && catererProfile.profileSubmitted">A phone number is required</p>
                       </div>
                     </div>
                   </div>
@@ -140,18 +140,18 @@
               </div>
               <div class="col-sm-4">
                 <label tooltip-placement="top" uib-tooltip='Make sure you enter a picture of logo.'>Company Picture or Logo</label>
-                <div class="img-thumbnail" ng-draw="{file: vm.user.logo, width: 300, userId: vm.user._id}">
+                <div class="img-thumbnail" ng-draw="{file: catererProfile.user.logo, width: 300, userId: catererProfile.user._id}">
                 </div>
                 <br />
                 <br />
                 <div class="form-group">
-                  <!--<input type="file" class="form-control" name="logo" nv-file-select uploader="FileUploader" options="faOptions" ng-model="vm.user.logo"/>-->
-                  <input type="file" name="logo" ng-model="vm.user.logo" nv-file-select uploader="uploader" options="faOptions"/>
+                  <!--<input type="file" class="form-control" name="logo" nv-file-select uploader="FileUploader" options="faOptions" ng-model="catererProfile.user.logo"/>-->
+                  <input type="file" name="logo" ng-model="catererProfile.user.logo" nv-file-select uploader="uploader" options="faOptions"/>
                 </div>
 
                 <ul ng-if="uploadButtonShow">
                   <li ng-repeat="item in uploader.queue">
-                    <span ng-bind="item.file.name"></span> <button class="btn btn-default" ng-disable="!uploadButtonReady" ng-click="vm.saveImage()">Upload</button><br />
+                    <span ng-bind="item.file.name"></span> <button class="btn btn-default" ng-disable="!uploadButtonReady" ng-click="catererProfile.saveImage()">Upload</button><br />
                     <!--<div ng-show="uploader.isHTML5" class="img-thumbnail" ng-thumb="{ file: item._file, height: 100 }"></div>-->
                   </li>
                 </ul>
@@ -164,8 +164,8 @@
                 <div class="panel panel-default" style="padding: 10px; background-color: #e7e7e7 ">
                   <div class="checkbox" ng-repeat="type in foodTypes">
                     <label>
-                      <!--<button class="btn btn-default btn-xs" ng-if="vm.checkRights(type)" ng-click="vm.deleteFoodType(type)"><i class="fa fa-times"></i></button>-->
-                      <input type="checkbox" checklist-model="vm.user.foodTypes" checklist-value="type._id" checked="{{type.checked}}"> {{type.name}}
+                      <!--<button class="btn btn-default btn-xs" ng-if="catererProfile.checkRights(type)" ng-click="catererProfile.deleteFoodType(type)"><i class="fa fa-times"></i></button>-->
+                      <input type="checkbox" checklist-model="catererProfile.user.foodTypes" checklist-value="type._id" checked="{{type.checked}}"> {{type.name}}
                       <!--<span class="label label-info" ng-if="type.approved">approved</span>-->
                       <!--<span class="label label-info" ng-if="!type.approved">not approved</span>-->
                     </label>
@@ -174,7 +174,7 @@
                   <!--<div class="input-group" style="width: 250px;">-->
                   <!--<input class="form-control" type="text" ng-model="ft.newFoodType" />-->
                   <!--<span class="input-group-btn">-->
-                  <!--<a class="btn btn-default" ng-click="vm.addFoodType()"><span class="fa fa-plus"></span></a>-->
+                  <!--<a class="btn btn-default" ng-click="catererProfile.addFoodType()"><span class="fa fa-plus"></span></a>-->
                   <!--</span>-->
                   <!--</div>-->
                 </div>
@@ -186,16 +186,16 @@
                 <div class="panel panel-default" style="padding: 10px; background-color: #e7e7e7 ">
                   <div class="checkbox" ng-repeat="type in serviceTypes">
                     <label>
-                      <input type="checkbox" checklist-model="vm.user.serviceTypes" checklist-value="type._id" checked="{{type.checked}}"> {{type.name}}
+                      <input type="checkbox" checklist-model="catererProfile.user.serviceTypes" checklist-value="type._id" checked="{{type.checked}}"> {{type.name}}
                     </label>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-            <div ng-if="vm.profileSaved" class="alert alert-success">Changes are successfully saved.</div>
+            <div ng-if="catererProfile.profileSaved" class="alert alert-success">Changes are successfully saved.</div>
             <div>
-              <button class="btn btn-primary btn-lg btn-register" ng-click="vm.save(profileForm)" type="submit">
+              <button class="btn btn-primary btn-lg btn-register" ng-click="catererProfile.save(profileForm)" type="submit">
                 Save changes
               </button>
             </div>
@@ -206,26 +206,26 @@
         </uib-tab>
         <uib-tab index="2" heading="Change password">
           <br />
-          <form class="form" name="cpForm" ng-submit="vm.changePassword(cpForm)" novalidate>
+          <form class="form" name="cpForm" ng-submit="catererProfile.changePassword(cpForm)" novalidate>
 
             <div class="form-group">
               <label>Current Password</label>
 
-              <input type="password" name="password" class="form-control" ng-model="vm.user.oldPassword"
+              <input type="password" name="password" class="form-control" ng-model="catererProfile.user.oldPassword"
                      mongoose-error/>
               <p class="help-block" ng-show="cpForm.password.$error.mongoose">
-                {{ vm.errors.other }}
+                {{ catererProfile.errors.other }}
               </p>
             </div>
 
             <div class="form-group">
               <label>New Password</label>
 
-              <input type="password" name="newPassword" class="form-control" ng-model="vm.user.newPassword"
+              <input type="password" name="newPassword" class="form-control" ng-model="catererProfile.user.newPassword"
                      ng-minlength="3"
                      required/>
               <p class="help-block"
-                 ng-show="(cpForm.newPassword.$error.minlength || cpForm.newPassword.$error.required) && (cpForm.newPassword.$dirty || vm.profileSubmitted)">
+                 ng-show="(cpForm.newPassword.$error.minlength || cpForm.newPassword.$error.required) && (cpForm.newPassword.$dirty || catererProfile.profileSubmitted)">
                 Password must be at least 3 characters.
               </p>
             </div>
@@ -233,44 +233,44 @@
             <div class="form-group">
               <label>Confirm New Password</label>
 
-              <input type="password" name="confirmPassword" class="form-control" ng-model="vm.user.confirmPassword"
-                     match="vm.user.newPassword"
+              <input type="password" name="confirmPassword" class="form-control" ng-model="catererProfile.user.confirmPassword"
+                     match="catererProfile.user.newPassword"
                      ng-minlength="3"
                      required=""/>
               <p class="help-block"
-                 ng-show="cpForm.confirmPassword.$error.match && vm.profileSubmitted">
+                 ng-show="cpForm.confirmPassword.$error.match && catererProfile.profileSubmitted">
                 Passwords must match.
               </p>
 
             </div>
 
-            <p class="help-block"> {{ vm.message }} </p>
-            <div class="alert alert-success" role="alert" ng-if="vm.saved">Changes are successfully saved</div>
+            <p class="help-block"> {{ catererProfile.message }} </p>
+            <div class="alert alert-success" role="alert" ng-if="catererProfile.saved">Changes are successfully saved</div>
             <button class="btn btn-lg btn-primary" type="submit">Save changes</button>
           </form>
         </uib-tab>
         <uib-tab index="3" heading="Email options">
           <br />
-          <form class="form" name="eoForm" ng-submit="vm.save(eoForm)" novalidate>
+          <form class="form" name="eoForm" ng-submit="catererProfile.save(eoForm)" novalidate>
             <div class="checkbox">
               <label>
-                <input type="checkbox"  ng-model="vm.user.sendSummary"> Send Events Summary
+                <input type="checkbox"  ng-model="catererProfile.user.sendSummary"> Send Events Summary
               </label>
             </div>
             <div class="checkbox">
               <label>
-                <input type="checkbox" ng-model="vm.user.sendNotification"> Send Immediate notification about events
+                <input type="checkbox" ng-model="catererProfile.user.sendNotification"> Send Immediate notification about events
               </label>
             </div>
-            <div class="alert alert-success" role="alert" ng-if="vm.saved">Changes are successfully saved</div>
+            <div class="alert alert-success" role="alert" ng-if="catererProfile.saved">Changes are successfully saved</div>
             <button class="btn btn-lg btn-primary" type="submit">Save changes</button>
           </form>
         </uib-tab>
-        <uib-tab index="4" heading="Setup or Change Payment Info" ng-if="vm.user.payableAccount">
+        <uib-tab index="4" heading="Setup or Change Payment Info" ng-if="catererProfile.user.payableAccount">
           <div style="padding:20px;">
             <p>To setup or change how you get paid by Catering Ninja, you have to have an account at our Payment Gateway Dwolla (www.dwolla.com) <br>
             Click the link below to be directed to the Dwolla website to setup or change your account.</p>
-            <button class="btn btn-primary" type="button" ng-click="vm.loginToDwolla()">
+            <button class="btn btn-primary" type="button" ng-click="catererProfile.loginToDwolla()">
               Access Dwolla Account
             </button>
           </div>

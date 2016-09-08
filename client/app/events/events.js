@@ -1,13 +1,17 @@
 'use strict';
 
 angular.module('cateringApp')
-  .config(function($stateProvider) {
+  .config(function($stateProvider, StripeCheckoutProvider) {
+
     $stateProvider.state('newEvent', {
       url: '/events/new',
       templateUrl: 'app/events/new.html',
       controller: 'EventsNewController',
       controllerAs: 'vm',
-      authenticate: 'user'
+      authenticate: 'user',
+      resolve:{
+        stripe: StripeCheckoutProvider.load
+      }
     })
       .state('events', {
       url: '/events/list/:time',

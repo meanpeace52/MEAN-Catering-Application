@@ -31,6 +31,11 @@ class NotificationsController {
     });
 
     this.commentsWatcher = function() {
+      if(!$scope.user._id){
+        $scope.comments = [];
+        return;
+      }
+
       CommentsService.getNewComments($scope.user._id)
         .then((result) => {
         let comments = result;

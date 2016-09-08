@@ -1,7 +1,7 @@
 'use strict';
 
 class EventsNewController {
-  constructor($http, $scope,  socket, Auth, $state, EventsService, FoodTypesService, IncludedInPriceService, ServiceTypesService, PaymentService) {
+  constructor($http, $scope,  socket, Auth, $state, EventsService, FoodTypesService, IncludedInPriceService, ServiceTypesService, PaymentService, StripeCheckout) {
     let root = this;
     this.errors = {};
     this.submitted = false;
@@ -15,6 +15,7 @@ class EventsNewController {
     this.$http = $http;
     this.socket = socket;
     this.payments = PaymentService;
+    this.stripeCheckout = StripeCheckout;
 
     this.isLoggedIn = Auth.isLoggedIn;
     this.isAdmin = Auth.isAdmin;
@@ -237,13 +238,35 @@ class EventsNewController {
   sendRequest(form) {
 
     if (!this.user.payableAccountId) {
-      let saving = this.saveDraft(form);
 
-      if (saving) {
-        saving.then(() => {
-          this.verifyCard = true;
+      var handler = this.stripeCheckout.configure({
+        name: "Catering Ninja"
+      });
+      
+      var options = {
+        description: "Please Verify your Credit Card",
+        amount: 1000
+      };
+      
+      let _this = this;
+
+      handler.open(options)
+        .then(function(result) {
+
+          console.log("Got Stripe token: " + result[0].id);
+
+          let saving = _this.saveDraft(form);
+
+          if (saving) {
+            saving.then(() => {
+              // _this.verifyCard = true;
+            });
+          }
+
+        },function() {
+          console.log("Stripe Checkout closed without making a sale :(");
         });
-      }
+      
     } else {
       this.verifyCard = false;
       let eventModel = this.$scope.fm,
@@ -290,6 +313,7 @@ class EventsNewController {
         return this.$http.post('/api/events/new', eventModel)
           .then(response => {
             this.saved = true;
+console.log(response);
             this.$scope.fm._id = response.data._id;
           })
           .catch(err => {
