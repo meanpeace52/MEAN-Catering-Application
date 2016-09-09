@@ -252,9 +252,38 @@ class EventsNewController {
 
       handler.open(options)
         .then(function(result) {
-
           console.log("Got Stripe token: " + result[0].id);
 
+          _this.bindCard(result.id).then(result => {
+            _this.user.payableAccountId = result.data.id;
+
+            _this.$http.post(`/api/users/${_this.user._id}`, {
+              payableAccountId: result.data.id
+            });
+
+            let eventModel = _this.$scope.fm,
+            url = '/api/events/' + eventModel._id;
+
+            eventModel.showToCaterers = true;
+            eventModel.sentTo = eventModel.selectedCaterers;
+            eventModel.status = 'sent';
+            eventModel.userId = _this.user._id;
+            eventModel.createDate = new Date();
+
+            if (eventModel.status == 'sent') eventModel.isUpdated = true;
+
+            if (eventModel) {
+                _this.$http.post(url, eventModel)
+                  .then(response => {
+                    //_this.$state.go('events');
+                  })
+                  .catch(err => {
+                    _this.errors.other = err.message;
+                  });
+            }
+            _this.$state.go('events', { time: 'active' });
+          });
+          
           let saving = _this.saveDraft(form);
 
           if (saving) {
@@ -292,6 +321,14 @@ class EventsNewController {
       }
     }
 
+  }
+
+  bindCard(token) {
+    return this.$http.post('/api/payments/card/verify', {
+      card: token,
+      description: `Verified credit card for ${this.user.firstname} ${this.user.lastname} <${this.user.email}>`,
+      email: this.user.email
+    });
   }
 
   cancel() {
