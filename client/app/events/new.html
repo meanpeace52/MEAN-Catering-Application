@@ -1,13 +1,45 @@
 <div class="container">
   <div class="row">
-    <!-- <div class="col-sm-12" ng-if="!vm.user.payableAccountId && vm.verifyCard">
+    <div class="col-sm-12" ng-if="!vm.user.payableAccountId && vm.verifyCard">
       <h1>Please Verify your Credit Card</h1>
       <p>To send an event we need to have a valid credit card on file.  This credit card will be saved in your profile for payment.</p>
       <p>You can always update your credit card information in the Account Info in the upper right.</p>
+
+      <!-- <form stripe:form="vm.saveCustomer" style="width: 500px;">
+        <fieldset>
+          <div class="form-group">
+            <input class="form-control" type="text" size="20" data-stripe="number" placeholder="Card Number"/>
+          </div>
+          <div class="form-group">
+            <input class="form-control" type="text" size="4" data-stripe="cvc" placeholder="CVC" />
+          </div>
+          <div class="form-group">
+            <input class="form-control" type="text" size="2" data-stripe="exp-month" placeholder="Expiration Month" />
+          </div>
+          <div class="form-group">
+            <input class="form-control" type="text" size="4" data-stripe="exp-year" placeholder="Expiration Year" />
+          </div>
+        </fieldset>
+        <div class="form-group">
+          <button class="btn btn-primary" type="submit">Save</button>
+        </div>
+
+        <div class="form-group" ng-if="vm.ccupdateSuccess">
+          <div class="alert alert-success" role="alert">
+            The Credit Card was updated .
+          </div>
+        </div>
+        <div class="form-group has-error" ng-if="vm.error">
+          <div class="alert alert-info" role="alert">
+            {{ vm.error }}
+          </div>
+        </div>
+      </form> -->
+      
       <div class="row">
         <credit-card-form verifier="true" ccupdate="false" user="vm.user" event="fm"></credit-card-form>
       </div>
-    </div> -->
+    </div>
     
     <div class="col-sm-12" redirect="/events/new" ng-if="vm.user.payableAccountId || !vm.verifyCard">
       <h1>New event</h1>

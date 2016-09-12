@@ -198,9 +198,9 @@ class EventsNewController {
     this.removeFromSelected(id);
     _.each(this.$scope.caterers, (item, i) => {
       if (item._id === id) {
-      this.$scope.caterers[i].showByEdit = false;
-    }
-  });
+        this.$scope.caterers[i].showByEdit = false;
+      }
+    });
   }
   }
 
@@ -227,8 +227,6 @@ class EventsNewController {
 
   }
 
-
-
   getCaterers() {
     return this.$http.get('/api/users/caterers').then(response => {
       return response.data;
@@ -238,63 +236,69 @@ class EventsNewController {
   sendRequest(form) {
 
     if (!this.user.payableAccountId) {
+      let saving = this.saveDraft(form);
 
-      var handler = this.stripeCheckout.configure({
-        name: "Catering Ninja"
-      });
-      
-      var options = {
-        description: "Please Verify your Credit Card",
-        amount: 1000
-      };
-      
-      let _this = this;
-
-      handler.open(options)
-        .then(function(result) {
-          console.log("Got Stripe token: " + result[0].id);
-
-          _this.bindCard(result.id).then(result => {
-            _this.user.payableAccountId = result.data.id;
-
-            _this.$http.post(`/api/users/${_this.user._id}`, {
-              payableAccountId: result.data.id
-            });
-
-            let eventModel = _this.$scope.fm,
-            url = '/api/events/' + eventModel._id;
-
-            eventModel.showToCaterers = true;
-            eventModel.sentTo = eventModel.selectedCaterers;
-            eventModel.status = 'sent';
-            eventModel.userId = _this.user._id;
-            eventModel.createDate = new Date();
-
-            if (eventModel.status == 'sent') eventModel.isUpdated = true;
-
-            if (eventModel) {
-                _this.$http.post(url, eventModel)
-                  .then(response => {
-                    //_this.$state.go('events');
-                  })
-                  .catch(err => {
-                    _this.errors.other = err.message;
-                  });
-            }
-            _this.$state.go('events', { time: 'active' });
-          });
-          
-          let saving = _this.saveDraft(form);
-
-          if (saving) {
-            saving.then(() => {
-              // _this.verifyCard = true;
-            });
-          }
-
-        },function() {
-          console.log("Stripe Checkout closed without making a sale :(");
+      if (saving) {
+        saving.then(() => {
+          this.verifyCard = true;
         });
+      }
+      // var handler = this.stripeCheckout.configure({
+      //   name: "Catering Ninja"
+      // });
+      
+      // var options = {
+      //   description: "Please Verify your Credit Card",
+      //   amount: 1000
+      // };
+      
+      // let _this = this;
+
+      // handler.open(options)
+      //   .then(function(result) {
+      //     console.log("Got Stripe token: " + result[0].id);
+
+      //     _this.bindCard(result.id).then(result => {
+      //       _this.user.payableAccountId = result.data.id;
+
+      //       _this.$http.post(`/api/users/${_this.user._id}`, {
+      //         payableAccountId: result.data.id
+      //       });
+
+      //       let eventModel = _this.$scope.fm,
+      //       url = '/api/events/' + eventModel._id;
+
+      //       eventModel.showToCaterers = true;
+      //       eventModel.sentTo = eventModel.selectedCaterers;
+      //       eventModel.status = 'sent';
+      //       eventModel.userId = _this.user._id;
+      //       eventModel.createDate = new Date();
+
+      //       if (eventModel.status == 'sent') eventModel.isUpdated = true;
+
+      //       if (eventModel) {
+      //           _this.$http.post(url, eventModel)
+      //             .then(response => {
+      //               //_this.$state.go('events');
+      //             })
+      //             .catch(err => {
+      //               _this.errors.other = err.message;
+      //             });
+      //       }
+      //       _this.$state.go('events', { time: 'active' });
+      //     });
+          
+      //     let saving = _this.saveDraft(form);
+
+      //     if (saving) {
+      //       saving.then(() => {
+      //         // _this.verifyCard = true;
+      //       });
+      //     }
+
+      //   },function() {
+      //     console.log("Stripe Checkout closed without making a sale :(");
+      //   });
       
     } else {
       this.verifyCard = false;
@@ -322,6 +326,41 @@ class EventsNewController {
     }
 
   }
+
+  saveCustomer(status, response) {
+    let token = response.id;
+
+    this.bindCard(token).then(result => {
+      this.user.payableAccountId = result.data.id;
+
+      this.$http.post(`/api/users/${this.user._id}`, {
+        payableAccountId: result.data.id
+      });
+
+      let eventModel = this.$scope.fm,
+      url = '/api/events/' + eventModel._id;
+
+      eventModel.showToCaterers = true;
+      eventModel.sentTo = eventModel.selectedCaterers;
+      eventModel.status = 'sent';
+      eventModel.userId = this.user._id;
+      eventModel.createDate = new Date();
+
+      if (eventModel.status == 'sent') eventModel.isUpdated = true;
+
+      if (eventModel) {
+          this.$http.post(url, eventModel)
+            .then(response => {
+              //this.$state.go('events');
+            })
+            .catch(err => {
+              this.errors.other = err.message;
+            });
+      }
+      this.$state.go('events', { time: 'active' });
+    });  
+  }
+
 
   bindCard(token) {
     return this.$http.post('/api/payments/card/verify', {
@@ -351,6 +390,7 @@ class EventsNewController {
           .then(response => {
             this.saved = true;
 console.log(response);
+
             this.$scope.fm._id = response.data._id;
           })
           .catch(err => {
@@ -368,4 +408,6 @@ angular.module('cateringApp')
   .controller('EventsNewController', EventsNewController);
 
 
+angular.module('cateringApp')
+  .controller('EventsNewController', EventsNewController);
 

@@ -245,7 +245,7 @@
             </div>
 
             <p class="help-block"> {{ catererProfile.message }} </p>
-            <div class="alert alert-success" role="alert" ng-if="catererProfile.saved">Changes are successfully saved</div>
+            <div class="alert alert-success" role="alert" ng-if="catererProfile.cpSaved">Changes are successfully saved</div>
             <button class="btn btn-lg btn-primary" type="submit">Save changes</button>
           </form>
         </uib-tab>
@@ -262,7 +262,7 @@
                 <input type="checkbox" ng-model="catererProfile.user.sendNotification"> Send Immediate notification about events
               </label>
             </div>
-            <div class="alert alert-success" role="alert" ng-if="catererProfile.saved">Changes are successfully saved</div>
+            <div class="alert alert-success" role="alert" ng-if="catererProfile.profileSaved">Changes are successfully saved</div>
             <button class="btn btn-lg btn-primary" type="submit">Save changes</button>
           </form>
         </uib-tab>

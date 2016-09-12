@@ -100,59 +100,59 @@
             </div>
           </div>
         </uib-tab>
-        <uib-tab index="1" heading="Profile & Credit Card">
+        <uib-tab index="1" heading="Profile">
           <br />
-          <form class="form" name="form" ng-submit="customerProfile.register(form)" novalidate>
+          <form class="form" name="profileForm" novalidate>
 
-            <div class="form-group" ng-class="{ 'has-success': form.name.$valid && customerProfile.submitted,
-                                                'has-error': form.name.$invalid && customerProfile.submitted }">
+            <div class="form-group" ng-class="{ 'has-success': profileForm.firstname.$valid && customerProfile.submitted,
+                                                'has-error': profileForm.firstname.$invalid && customerProfile.submitted }">
               <label>First Name</label>
 
               <input type="text" name="firstname" class="form-control" ng-model="customerProfile.user.firstname"
                      required/>
-              <p class="help-block" ng-show="form.name.$error.required && customerProfile.submitted">
+              <p class="help-block" ng-show="profileForm.firstname.$error.required && customerProfile.submitted">
                 A name is required
               </p>
             </div>
 
-            <div class="form-group" ng-class="{ 'has-success': form.name.$valid && customerProfile.submitted,
-                                                'has-error': form.name.$invalid && customerProfile.submitted }">
+            <div class="form-group" ng-class="{ 'has-success': profileForm.lastname.$valid && customerProfile.submitted,
+                                                'has-error': profileForm.lastname.$invalid && customerProfile.submitted }">
               <label>Last Name</label>
 
               <input type="text" name="lastname" class="form-control" ng-model="customerProfile.user.lastname"
                      required/>
-              <p class="help-block" ng-show="form.name.$error.required && customerProfile.submitted">
+              <p class="help-block" ng-show="profileForm.lastname.$error.required && customerProfile.submitted">
                 A name is required
               </p>
             </div>
 
-            <div class="form-group" ng-class="{ 'has-success': form.email.$valid && customerProfile.submitted,
-                                                'has-error': form.email.$invalid && customerProfile.submitted }">
+            <div class="form-group" ng-class="{ 'has-success': profileForm.email.$valid && customerProfile.submitted,
+                                                'has-error': profileForm.email.$invalid && customerProfile.submitted }">
               <label>Email</label>
 
               <input type="email" name="email" class="form-control" ng-model="customerProfile.user.email"
                      required
                      mongoose-error/>
-              <p class="help-block" ng-show="form.email.$error.email && customerProfile.submitted">
+              <p class="help-block" ng-show="profileForm.email.$error.email && customerProfile.submitted">
                 Doesn't look like a valid email.
               </p>
-              <p class="help-block" ng-show="form.email.$error.required && customerProfile.submitted">
+              <p class="help-block" ng-show="profileForm.email.$error.required && customerProfile.submitted">
                 What's your email address?
               </p>
-              <p class="help-block" ng-show="form.email.$error.mongoose">
+              <p class="help-block" ng-show="profileForm.email.$error.mongoose">
                 {{ customerProfile.errors.email }}
               </p>
             </div>
             <div class="alert alert-success" role="alert" ng-if="customerProfile.saved">Account information is successfully saved</div>
             <div>
-              <button class="btn btn-primary btn-lg btn-register" type="submit">
+              <button class="btn btn-primary btn-lg btn-register" ng-click="customerProfile.save(profileForm)" type="submit">
                 Save Changes
               </button>
             </div>
 
           </form>
 
-          <br>          
+          <!-- <br>          
           <div style="margin-top:50px;" ng-if="customerProfile.user.payableAccountId">
             <p>If you need to change or update your credit card, please click the button below.</p>
             <button class="btn btn-primary btn-lg btn-register" stripe-checkout="customerProfile.doCheckout"
@@ -162,7 +162,7 @@
             data-amount="1000">
               Edit Credit Card
             </button>
-          </div>
+          </div> -->
         </uib-tab>
         <uib-tab index="2" heading="Change password">
           <br />
@@ -209,12 +209,12 @@
             <button class="btn btn-lg btn-primary" type="submit">Save changes</button>
           </form>
         </uib-tab>
-        <!-- <uib-tab index="3" heading="Update Credit Card Card" ng-if="customerProfile.user.payableAccountId">
+        <uib-tab index="3" heading="Update Credit Card Card" ng-if="customerProfile.user.payableAccountId">
           <div style="padding:50px;">
             <p>If you need to change or update your credit card, please use this form to do so.</p>
               <credit-card-form verifier="false" ccupdate="true" user="customerProfile.user" event=""></credit-card-form>
           </div>
-        </uib-tab> -->
+        </uib-tab>
       </uib-tabset>
     </div>
   </div>

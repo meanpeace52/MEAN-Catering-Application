@@ -1,15 +1,17 @@
 'use strict';
 
 class CustomerProfileController {
-  constructor(Auth, $state, $scope, $http) {
+  constructor(Auth, $state, $scope, $http, $timeout) {
     this.user = {};
     this.errors = {};
     this.submitted = false;
+    this.saved = false;
 
     this.Auth = Auth;
     this.$state = $state;
     this.$scope = $scope;
     this.$http = $http;
+    this.$timeout = $timeout;
     this.getCurrentUser = Auth.getCurrentUser;
     this.isLoggedIn = Auth.isLoggedIn;
     this.user = this.getCurrentUser();
@@ -47,13 +49,17 @@ class CustomerProfileController {
   }
 
   save(form) {
+
     let userModel = this.user,
       url = '/api/users/' + this.user._id;
+    
+    this.submitted = true;
 
     if (userModel && form.$valid) {
       this.$http.post(url, userModel).then(response => {
         let root = this;
         this.saved = true;
+        this.submitted = false;
         this.$timeout(function() {
           root.saved = false;
         }, 3000);

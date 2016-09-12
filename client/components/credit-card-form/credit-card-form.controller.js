@@ -12,9 +12,10 @@ class CreditCardController {
 
     $scope.stripeCallback = this.stripeCallback.bind(this);
 
-    this.$http.get('/api/payments/card/token').then((response) => {
-      $window.Stripe.setPublishableKey(response.data.checkoutToken);
-    });
+    $window.Stripe.setPublishableKey('pk_test_0EFB2Y1WvIYGIIUsAQJ42DVD');
+    // this.$http.get('/api/payments/card/token').then((response) => {
+    //   $window.Stripe.setPublishableKey(response.data.checkoutToken);
+    // });
 
   }
 
