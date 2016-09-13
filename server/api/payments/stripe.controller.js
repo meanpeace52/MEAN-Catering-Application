@@ -123,7 +123,7 @@ function _capture(offerId) {
         if (payment.balance_transaction) {
           stripe.balance.retrieveTransaction(payment.balance_transaction).then((transaction) => {
             if (transaction.fee) {
-              data.offer.invoice.stripeFee = transaction.fee * 100;
+              data.offer.invoice.stripeFee = parseFloat((transaction.fee / 100).toFixed(2));
               data.offer.save()
             }
           });
