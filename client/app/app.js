@@ -2,8 +2,9 @@
 
 angular.module('cateringApp', ['cateringApp.auth', 'cateringApp.admin', 'cateringApp.constants',
     'ngCookies', 'ngResource', 'ngSanitize', 'btford.socket-io', 'ui.router', 'ui.bootstrap',
-    'validation.match', "checklist-model", "rzModule", "angularFileUpload", 'smart-table', 'angularPayments',
-    'ngAnimate', 'ui.comments.directive', 'angular-click-outside', 'stripe.checkout', 'stripe'
+    'validation.match', "checklist-model", "rzModule", "angularFileUpload", 'smart-table', 
+    // 'angularPayments',
+    'ngAnimate', 'ui.comments.directive', 'angular-click-outside', 'stripe.checkout', 'credit-cards', 'stripe'
   ])
   .config(function($urlRouterProvider, $locationProvider, commentsConfigProvider, StripeCheckoutProvider) {
     $urlRouterProvider.otherwise('/');

@@ -8,6 +8,7 @@ class EventsNewController {
     this.saved = false;
     this.sent = false;
     this.verifyCard = false;
+    let _this = this;
 
     this.Auth = Auth;
     this.$state = $state;
@@ -16,6 +17,8 @@ class EventsNewController {
     this.socket = socket;
     this.payments = PaymentService;
     this.stripeCheckout = StripeCheckout;
+
+    $scope.saveCustomer = this.saveCustomer.bind(this);
 
     this.isLoggedIn = Auth.isLoggedIn;
     this.isAdmin = Auth.isAdmin;
@@ -44,6 +47,7 @@ class EventsNewController {
     this.$scope.fm.serviceTypes = [];
     this.$scope.serviceTypes = [];
     this.$scope.caterers = [];
+    this.$scope.card = {};
 
     this.$scope.filter = {
       allFt: true,
@@ -243,13 +247,14 @@ class EventsNewController {
           this.verifyCard = true;
         });
       }
+      
       // var handler = this.stripeCheckout.configure({
-      //   name: "Catering Ninja"
+      //   name: "Catering Ninja",
+      //   allowRememberMe: false
       // });
       
       // var options = {
-      //   description: "Please Verify your Credit Card",
-      //   amount: 1000
+      //   description: "Please Verify your Credit Card"
       // };
       
       // let _this = this;
@@ -258,35 +263,35 @@ class EventsNewController {
       //   .then(function(result) {
       //     console.log("Got Stripe token: " + result[0].id);
 
-      //     _this.bindCard(result.id).then(result => {
-      //       _this.user.payableAccountId = result.data.id;
+      //     // _this.bindCard(result.id).then(result => {
+      //     //   _this.user.payableAccountId = result.data.id;
 
-      //       _this.$http.post(`/api/users/${_this.user._id}`, {
-      //         payableAccountId: result.data.id
-      //       });
+      //     //   _this.$http.post(`/api/users/${_this.user._id}`, {
+      //     //     payableAccountId: result.data.id
+      //     //   });
 
-      //       let eventModel = _this.$scope.fm,
-      //       url = '/api/events/' + eventModel._id;
+      //     //   let eventModel = _this.$scope.fm,
+      //     //   url = '/api/events/' + eventModel._id;
 
-      //       eventModel.showToCaterers = true;
-      //       eventModel.sentTo = eventModel.selectedCaterers;
-      //       eventModel.status = 'sent';
-      //       eventModel.userId = _this.user._id;
-      //       eventModel.createDate = new Date();
+      //     //   eventModel.showToCaterers = true;
+      //     //   eventModel.sentTo = eventModel.selectedCaterers;
+      //     //   eventModel.status = 'sent';
+      //     //   eventModel.userId = _this.user._id;
+      //     //   eventModel.createDate = new Date();
 
-      //       if (eventModel.status == 'sent') eventModel.isUpdated = true;
+      //     //   if (eventModel.status == 'sent') eventModel.isUpdated = true;
 
-      //       if (eventModel) {
-      //           _this.$http.post(url, eventModel)
-      //             .then(response => {
-      //               //_this.$state.go('events');
-      //             })
-      //             .catch(err => {
-      //               _this.errors.other = err.message;
-      //             });
-      //       }
-      //       _this.$state.go('events', { time: 'active' });
-      //     });
+      //     //   if (eventModel) {
+      //     //       _this.$http.post(url, eventModel)
+      //     //         .then(response => {
+      //     //           //_this.$state.go('events');
+      //     //         })
+      //     //         .catch(err => {
+      //     //           _this.errors.other = err.message;
+      //     //         });
+      //     //   }
+      //     //   _this.$state.go('events', { time: 'active' });
+      //     // });
           
       //     let saving = _this.saveDraft(form);
 
@@ -358,7 +363,7 @@ class EventsNewController {
             });
       }
       this.$state.go('events', { time: 'active' });
-    });  
+    });
   }
 
 
@@ -406,8 +411,3 @@ console.log(response);
 
 angular.module('cateringApp')
   .controller('EventsNewController', EventsNewController);
-
-
-angular.module('cateringApp')
-  .controller('EventsNewController', EventsNewController);
-
