@@ -27,7 +27,7 @@ class EventsAdminController {
   this.$scope.allEventsAreSelected = false;
 
   $scope.selectAll = value => this.$scope.events.forEach(event => $scope.selectedEvents[event._id] = value);
-  $scope.isSelected = event => selectedEvents[event._id];
+  $scope.isSelected = event => !!$scope.selectedEvents[event._id];
 
   $scope.select = () => {
     let allIsSelected = true;

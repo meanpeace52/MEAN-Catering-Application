@@ -27,8 +27,16 @@ class PaymentListController {
     this.$scope.selectedEvents = {};
     this.$scope.allEventsAreSelected = false;
 
-    $scope.selectAll = value => this.$scope.events.forEach(event => $scope.selectedEvents[event._id] = value);
-    $scope.isSelected = event => selectedEvents[event._id];
+    this.$scope.disabledEvents = {};
+
+    $scope.selectAll = (value) => {
+      $scope.events.forEach(event => $scope.selectedEvents[event._id] = value);
+      if ($scope.calculateSummary instanceof Function) {
+        $scope.calculateSummary();
+      }
+    };
+    $scope.isSelected = event => !!$scope.selectedEvents[event._id];
+    $scope.isDisabled = event => !!$scope.disabledEvents[event._id];
 
     let summaryQuery = {};
     if (this.user.role === 'caterer') {
@@ -48,6 +56,7 @@ class PaymentListController {
         }
       }
       $scope.allEventsAreSelected = allIsSelected;
+      $scope.calculateSummary();
     };
     $scope.selectAll(false);
 
@@ -61,6 +70,7 @@ class PaymentListController {
       let selectedEvents = $scope.events.filter(event => selectedEventIds.includes(event._id));
 
       if (selectedEvents.length) {
+        selectedEvents.forEach(event => $scope.disabledEvents[event._id] = true);
         this.$http.post('/api/payments/pay', {
           items: selectedEvents.map(event => event.offers[0]._id)
         }).then(response => {
@@ -70,6 +80,7 @@ class PaymentListController {
     };
 
     $scope.pay = (offer) => {
+      $scope.disabledEvents[offer.eventId] = true;
       this.$http.post('/api/payments/pay', {
         items: [offer._id]
       }).then(response => {
@@ -146,7 +157,19 @@ class PaymentListController {
       $scope.includedInPrice = data;
     });
 
-    $scope.hasSelectedEvents = () => Object.keys($scope.selectedEvents).length > 0;
+    $scope.hasSelectedEvents = () => {
+      if (Object.keys($scope.selectedEvents).length === 0) {
+        return false;
+      }
+      let result = true;
+      for (let k in $scope.selectedEvents) {
+        if (!$scope.selectedEvents[k]) {
+          result = false;
+          break;
+        }
+      }
+      return result;
+    };
 
     $scope.query = { status: 'confirmed', paymentList: true };
 
@@ -162,6 +185,7 @@ class PaymentListController {
 
     $scope.filter = {
       paid: 'allPaid', //allUnpaid
+      dateTo: null,
       datePaid: null
     };
 
@@ -203,46 +227,7 @@ class PaymentListController {
       $http.post('/api/events/dataset', $scope.query).then(response => {
         $scope.events = response.data;
 
-        $scope.eventsSummary = {
-          service: 0,
-          tax: 0,
-          total: 0,
-          commission: 0,
-          refund: 0,
-          adjustment: {
-            client: 0,
-            chargeOff: 0,
-            caterer: 0
-          },
-          net: 0
-        };
-
-        _.each($scope.events, (event, i) => {
-          $scope.events[i].includedInPrice = convertIncludedInPrice(event.includedInPrice);
-          if ($scope.events[i].offers.length) {
-            $scope.events[i].offers[0].includedInPrice = convertIncludedInPrice(event.offers[0].includedInPrice);
-            if (event.offers[0].invoice) {
-              $scope.events[i].offers[0].priceWithCounter = event.offers[0].invoice.total;
-            } else if (event.offers[0].counter) {
-              $scope.events[i].offers[0].priceWithCounter = event.pricePerPerson * event.people - event.offers[0].counter;
-            } else {
-              $scope.events[i].offers[0].priceWithCounter = event.pricePerPerson * event.people;
-            }
-          }
-
-          if (event.offers[0] && ($scope.filter.paid === 'allPaid' || ($scope.filter.paid === 'allUnpaid' && $scope.selectedEvents && $scope.isSelected(event)))) {
-            $scope.eventsSummary.service += event.offers[0].invoice.service || 0;
-            $scope.eventsSummary.tax += event.offers[0].invoice.tax || 0;
-            $scope.eventsSummary.total += parseFloat((event.offers[0].invoice.service + event.offers[0].invoice.tax).toFixed(2)) || 0;
-            $scope.eventsSummary.commission += parseFloat(((event.offers[0].invoice.service + event.offers[0].invoice.tax) * event.offers[0].invoice.commission / 100).toFixed(2)) || 0;
-            $scope.eventsSummary.refund += event.offers[0].invoice.refund || 0;
-            $scope.eventsSummary.adjustment.client += event.offers[0].invoice.adjustment.client || 0;
-            $scope.eventsSummary.adjustment.chargeOff += event.offers[0].invoice.adjustment.chargeOff || 0;
-            $scope.eventsSummary.adjustment.caterer += event.offers[0].invoice.adjustment.caterer || 0;
-            $scope.eventsSummary.net += event.offers[0].invoice.refund ? 0 : ((event.offers[0].invoice.service + event.offers[0].invoice.tax) * (100 - event.offers[0].invoice.commission)/100) - event.offers[0].invoice.adjustment.caterer;
-          }
-
-        });
+        $scope.calculateSummary();
 
         let filtered = $scope.tableState && $scope.tableState.search.predicateObject ? $filter('filter')($scope.events, $scope.tableState.search.predicateObject) : $scope.events,
           start = $scope.tableState.pagination.start || 0,
@@ -261,6 +246,56 @@ class PaymentListController {
       });
     };
 
+    $scope.calculateSummary = () => {
+
+      $scope.eventsSummary = {
+        service: 0,
+        tax: 0,
+        total: 0,
+        commission: 0,
+        refund: 0,
+        adjustment: {
+          client: 0,
+          chargeOff: 0,
+          caterer: 0
+        },
+        stripeFee: 0,
+        net: 0
+      };
+
+      _.each($scope.events, (event, i) => {
+        $scope.events[i].includedInPrice = convertIncludedInPrice(event.includedInPrice);
+        if ($scope.events[i].offers.length) {
+          $scope.events[i].offers[0].includedInPrice = convertIncludedInPrice(event.offers[0].includedInPrice);
+          if (event.offers[0].invoice) {
+            $scope.events[i].offers[0].priceWithCounter = event.offers[0].invoice.total;
+          } else if (event.offers[0].counter) {
+            $scope.events[i].offers[0].priceWithCounter = event.pricePerPerson * event.people - event.offers[0].counter;
+          } else {
+            $scope.events[i].offers[0].priceWithCounter = event.pricePerPerson * event.people;
+          }
+        }
+
+        console.log($scope.filter.paid === 'allUnpaid' && $scope.selectedEvents && $scope.isSelected(event));
+
+        if (event.offers[0] && ($scope.filter.paid === 'allPaid' || ($scope.filter.paid === 'allUnpaid' && $scope.selectedEvents && $scope.isSelected(event)))) {
+          let commission = parseFloat(((event.offers[0].invoice.service + event.offers[0].invoice.tax) * event.offers[0].invoice.commission / 100).toFixed(2)) || 0;
+          $scope.eventsSummary.service += event.offers[0].invoice.service || 0;
+          $scope.eventsSummary.tax += event.offers[0].invoice.tax || 0;
+          $scope.eventsSummary.total += parseFloat((event.offers[0].invoice.service + event.offers[0].invoice.tax).toFixed(2)) || 0;
+          $scope.eventsSummary.commission += commission;
+          $scope.eventsSummary.refund += event.offers[0].invoice.refund || 0;
+          $scope.eventsSummary.adjustment.client += event.offers[0].invoice.adjustment.client || 0;
+          $scope.eventsSummary.adjustment.chargeOff += event.offers[0].invoice.adjustment.chargeOff || 0;
+          $scope.eventsSummary.adjustment.caterer += event.offers[0].invoice.adjustment.caterer || 0;
+          $scope.eventsSummary.net += event.offers[0].invoice.refund ? 0 : ((event.offers[0].invoice.service + event.offers[0].invoice.tax) * (100 - event.offers[0].invoice.commission)/100) - event.offers[0].invoice.adjustment.caterer;
+          $scope.eventsSummary.stripeFee += event.offers[0].invoice.stripeFee || 0;
+          $scope.eventsSummary.netHouse += (commission - event.offers[0].invoice.adjustment.chargeOff - event.offers[0].invoice.stripeFee) || 0;
+        }
+
+      });
+    };
+
     $scope.setActiveEvent = function(event) {
       $scope.eventActive = event;
 
@@ -272,7 +307,7 @@ class PaymentListController {
       });
     };
 
-    $scope.$watchGroup(['filter.paid', 'filter.datePaid'], () => {
+    $scope.$watchGroup(['filter.paid', 'filter.dateTo', 'filter.datePaid'], () => {
 
       if (!$scope.eventActive) {
         $scope.eventActive = null;
@@ -306,6 +341,12 @@ class PaymentListController {
 
       if (!$scope.filter.datePaid) {
         delete $scope.query.datePaid;
+      }
+
+      if ($scope.filter.dateTo) {
+        $scope.query.date = { $lte: $scope.filter.dateTo };
+      } else {
+        delete $scope.query.date;
       }
 
       this.pipe();
