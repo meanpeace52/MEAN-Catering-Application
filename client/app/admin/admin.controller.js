@@ -3,13 +3,15 @@
 (function() {
 
   class AdminController {
-    constructor(User, $scope, FoodTypesService, IncludedInPriceService, ServiceTypesService) {
+    constructor(User, $scope, FoodTypesService, IncludedInPriceService, ServiceTypesService, $uibModal) {
       // Use the User $resource to fetch all users
       this.users = User.query();
+
       this.$scope = $scope;
       this.$scope.ft = {};
       this.$scope.ut = {};
       this.$scope.st = {};
+      this.$uibModal = $uibModal;
 
       this.ftService = FoodTypesService;
       this.foodTypes = this.ftService.getFoodTypes().then((data)=> {
@@ -26,6 +28,38 @@
         this.includedInPrice = data;
       });
 
+    }
+
+    edit(user) {
+      console.log(user);
+      let templateUrl = '';
+      let controller = '';
+      let controllerAs = '';
+
+      if(user.role == 'user'){
+        templateUrl = 'app/account/profile/customer.html';
+        controller = 'CustomerProfileAdminController';
+        controllerAs = 'customerProfile';
+      }else if(user.role == 'caterer'){
+        templateUrl = 'app/account/profile/caterer.html';
+        controller = 'CatererProfileAdminController';
+        controllerAs = 'catererProfile';
+      }
+
+      let modalInstance = this.$uibModal.open({
+        animation: true,
+        ariaLabelledBy: 'modal-title',
+        ariaDescribedBy: 'modal-body',
+        templateUrl: templateUrl,
+        controller: controller,
+        controllerAs: controllerAs,
+        size: 'lg',
+        resolve: {
+          user: function () {
+            return user;
+          }
+        }
+      });
     }
 
     delete(user) {

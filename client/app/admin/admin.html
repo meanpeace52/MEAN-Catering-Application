@@ -4,17 +4,31 @@
   <uib-tabset active="active">
     <uib-tab index="0" heading="User management">
       <ul class="list-group user-list">
-        <li class="list-group-item" ng-repeat="user in admin.users">
+        <li class="list-group-item" ng-repeat="user in admin.users" ng-if="user.role == 'user'">
           <div class="user-info">
             <strong ng-if="user.role === 'user'">{{user.firstname}} {{user.lastname}} {{user.name}}</strong><br>
             <strong ng-if="user.role === 'caterer'">{{user.companyName}} {{user.name}}</strong><br>
             <span class="text-muted">{{user.email}}</span>
           </div>
+          <a ng-click="admin.edit(user)" class="edit"><span class="fa fa-pencil fa-2x"></span></a>
           <a ng-click="admin.delete(user)" class="trash"><span class="fa fa-trash fa-2x"></span></a>
         </li>
       </ul>
     </uib-tab>
-    <uib-tab index="1" heading="Food types">
+    <uib-tab index="1" heading="Caterer management">
+      <ul class="list-group user-list">
+        <li class="list-group-item" ng-repeat="user in admin.users" ng-if="user.role == 'caterer'">
+          <div class="user-info">
+            <strong ng-if="user.role === 'user'">{{user.firstname}} {{user.lastname}} {{user.name}}</strong><br>
+            <strong ng-if="user.role === 'caterer'">{{user.companyName}} {{user.name}}</strong><br>
+            <span class="text-muted">{{user.email}}</span>
+          </div>
+          <a ng-click="admin.edit(user)" class="edit"><span class="fa fa-pencil fa-2x"></span></a>
+          <a ng-click="admin.delete(user)" class="trash"><span class="fa fa-trash fa-2x"></span></a>
+        </li>
+      </ul>
+    </uib-tab>
+    <uib-tab index="2" heading="Food types">
       <ul class="list-group user-list">
         <li class="list-group-item" ng-repeat="type in admin.foodTypes">
           <div class="row">
@@ -50,7 +64,7 @@
         </li>
       </ul>
     </uib-tab>
-    <uib-tab index="2" heading="Included in price">
+    <uib-tab index="3" heading="Included in price">
       <ul class="list-group user-list">
         <li class="list-group-item" ng-repeat="iip in admin.includedInPrice">
           <div class="row">
@@ -79,7 +93,7 @@
         </li>
       </ul>
     </uib-tab>
-    <uib-tab index="3" heading="Service types">
+    <uib-tab index="4" heading="Service types">
       <ul class="list-group user-list">
         <li class="list-group-item" ng-repeat="st in admin.serviceTypes">
           <div class="row">
@@ -108,11 +122,11 @@
         </li>
       </ul>
     </uib-tab>
-    <uib-tab index="4" heading="Events">
+    <uib-tab index="5" heading="Events">
       <br />
       <eventsadmin></eventsadmin>
     </uib-tab>
-    <uib-tab index="4" heading="Payments">
+    <uib-tab index="6" heading="Payments">
       <br />
       <payments></payments>
     </uib-tab>

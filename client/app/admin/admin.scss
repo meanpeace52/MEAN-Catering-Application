@@ -11,10 +11,29 @@
 		.user-info {
 			flex-grow: 1;
 		}
-		.trash {
+		.trash, .edit {
 			display: flex;
 			align-items: center;
 			text-decoration: none;
+			width: 40px;
+			justify-content: flex-end;
+			cursor: pointer;
 		}
 	}
+}
+
+@media screen and (min-width: 1200px) {
+	.modal-dialog {
+	    width: 1170px;
+	}	
+}
+@media screen and (min-width: 992px) {
+	.modal-dialog {
+	    width: 970px;
+	}	
+}
+@media screen and (min-width: 768px) {
+	.modal-dialog {
+	    width: 750px;
+	}	
 }

@@ -1,8 +1,7 @@
 'use strict';
 
-class CustomerProfileController {
-  constructor(Auth, $state, $scope, $http, $timeout) {
-    this.user = {};
+class CustomerProfileAdminController {
+  constructor(Auth, $state, $scope, $http, $timeout, user, $uibModalInstance) {
     this.errors = {};
     this.submitted = false;
     this.saved = false;
@@ -12,10 +11,12 @@ class CustomerProfileController {
     this.$scope = $scope;
     this.$http = $http;
     this.$timeout = $timeout;
+    this.$uibModalInstance = $uibModalInstance;
 
     this.getCurrentUser = Auth.getCurrentUser;
     this.isLoggedIn = Auth.isLoggedIn;
-    this.user = this.getCurrentUser();
+
+    this.user = user;
 
     this.$scope.ft = {};
     this.ccupdateSuccess = false;
@@ -67,6 +68,7 @@ class CustomerProfileController {
         this.submitted = false;
         this.$timeout(function() {
           root.saved = false;
+          root.$uibModalInstance.close();
         }, 3000);
       })
       .catch(err => {
@@ -105,4 +107,4 @@ class CustomerProfileController {
 }
 
 angular.module('cateringApp')
-  .controller('CustomerProfileController', CustomerProfileController);
+  .controller('CustomerProfileAdminController', CustomerProfileAdminController);
