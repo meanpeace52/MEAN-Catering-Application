@@ -25,11 +25,14 @@ class PaymentListController {
     this.$scope.eventsSummary = null;
 
     this.$scope.selectedEvents = {};
-    this.$scope.allEventsAreSelected = false;
-
     this.$scope.disabledEvents = {};
 
+    this.$scope.states = {
+      allEventsAreSelected: false
+    };
+
     $scope.selectAll = (value) => {
+      $scope.states.allEventsAreSelected = value;
       $scope.events.forEach(event => $scope.selectedEvents[event._id] = value);
       if ($scope.calculateSummary instanceof Function) {
         $scope.calculateSummary();
@@ -55,7 +58,7 @@ class PaymentListController {
           break;
         }
       }
-      $scope.allEventsAreSelected = allIsSelected;
+      $scope.states.allEventsAreSelected = allIsSelected;
       $scope.calculateSummary();
     };
     $scope.selectAll(false);
@@ -161,14 +164,11 @@ class PaymentListController {
       if (Object.keys($scope.selectedEvents).length === 0) {
         return false;
       }
-      let result = true;
+      let selectedEvents = [];
       for (let k in $scope.selectedEvents) {
-        if (!$scope.selectedEvents[k]) {
-          result = false;
-          break;
-        }
+        selectedEvents.push($scope.selectedEvents[k]);
       }
-      return result;
+      return selectedEvents.some(item => item === true);
     };
 
     $scope.query = { status: 'confirmed', paymentList: true };
@@ -244,6 +244,23 @@ class PaymentListController {
         if ($scope.eventActive) $scope.setActiveEvent($scope.eventActive);
         $scope.isPiping = false;
       });
+    };
+
+    $scope.notDefaultSummary = () => {
+      if ($scope.eventsSummary instanceof Object) {
+        let sum = 0;
+        for(let k in $scope.eventsSummary) {
+          if ($scope.eventsSummary[k] instanceof Object) {
+            for(let k2 in $scope.eventsSummary[k]) {
+              sum += $scope.eventsSummary[k][k2];
+            }
+          } else {
+            sum += $scope.eventsSummary[k];
+          }
+        }
+        return sum > 0;
+      }
+      return false;
     };
 
     $scope.calculateSummary = () => {
