@@ -43,7 +43,7 @@
           <table st-table="events" st-pipe="plc.pipe" class="table table-hover table-condensed table-events">
             <thead>
             <tr>
-              <th ng-if="plc.user.role === 'admin' && filter.paid === 'allUnpaid'"><input type="checkbox" ng-model="allEventsAreSelected" ng-change="selectAll(allEventsAreSelected)"></th>
+              <th ng-if="plc.user.role === 'admin' && filter.paid === 'allUnpaid'"><input type="checkbox" ng-model="states.allEventsAreSelected" ng-change="selectAll(states.allEventsAreSelected)"></th>
               <th ng-if="plc.user.role === 'admin'">Caterer</th>
               <th>Customer</th>
               <th st-sort="date" st-skip-natural="true">Event Date</th>
@@ -73,7 +73,7 @@
               <th ng-if="plc.user.role === 'admin' && filter.paid === 'allUnpaid'"></th>
             </tr>
             </thead>
-            <tbody>
+            <tbody ng-show="!isPiping">
             <tr ng-repeat="event in displayed" ng-class="{'drafted': event.drafted, 'active': event.active, 'hidden': event.hide}" ng-click="setActiveEvent(event)">
               <td ng-if="plc.user.role === 'admin' && filter.paid === 'allUnpaid'"><input ng-if="event.status !== 'completed' || event.paymentStatus !== 'completed'" type="checkbox" ng-model="selectedEvents[event._id]" ng-change="select(selectedEvents[event._id])"></td>
               <td ng-if="plc.user.role === 'admin'">{{event.offers[0].catererName}}</td>
@@ -116,7 +116,7 @@
   </div>
   <div class="row">
     <div class="col-sm-12">
-      <table class="col-sm-12" ng-if="eventsSummary && !isPiping && (selectedDate || (plc.user.role === 'caterer' && eventActive) || (plc.user.role === 'admin' && hasSelectedEvents())) && ((plc.user.role === 'caterer' && displayed.length > 0) || (plc.user.role === 'admin' && (filter.paid === 'allPaid' || (filter.paid === 'allUnpaid' && hasSelectedEvents())) && displayed.length > 0))">
+      <table class="col-sm-12" ng-if="eventsSummary && notDefaultSummary() && !isPiping && (selectedDate || (plc.user.role === 'caterer' && eventActive) || (plc.user.role === 'admin' && hasSelectedEvents())) && ((plc.user.role === 'caterer' && displayed.length > 0) || (plc.user.role === 'admin' && (filter.paid === 'allPaid' || (filter.paid === 'allUnpaid' && hasSelectedEvents())) && displayed.length > 0))">
         <tr>
           <th>Subtotal</th>
           <th>Tax</th>
