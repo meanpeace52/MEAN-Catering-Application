@@ -1,10 +1,10 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-12" ng-if="!vm.user.payableAccountId && vm.verifyCard">
-      <form stripe:form="saveCustomer" name="ccForm">
+      <form stripe:form="saveCustomer" name="ccForm" novalidate>
         <div class="form-group">
           <label for="card-number">Card Number</label>
-          <input type="text" class="form-control" id="cardNumber" cc-number cc-eager-type name="ccNumber" ng-model="card.number" data-stripe="number" ng-required="true">
+          <input type="text" class="form-control" id="cardNumber" cc-number cc-eager-type cc-format="card" cc-validate="card" maxlength="19" name="ccNumber" ng-model="card.number" data-stripe="number" ng-required="true">
         </div>
         <div class="form-group">
           <label for="cvc">CVC</label>
