@@ -124,7 +124,22 @@ export function dataset(req, res) {
   //if (!isAdmin) query.date = { $gte: today };
   if (req.body.showFuture) query.date = { $gte: today };
   if (req.body.showPast) query.date = { $lt: today };
-  if (req.body.date) query.date = req.body.date;
+  if (req.body.date) {
+    if (req.body.paymentList && req.body.date instanceof Object) {
+      query.date = {};
+      for (let k in req.body.date) {
+        if (k === '$lt' || k === '$lte') {
+          query.date[k] = new Date(req.body.date[k]).setHours(23, 59, 59, 999);
+        } else if (k === '$gt' || k === '$gte') {
+          query.date[k] = new Date(req.body.date[k]).setHours(0, 0, 0, 0);
+        } else {
+          query.date[k] = req.body.date[k];
+        }
+      }
+    } else {
+      query.date = req.body.date;
+    }
+  }
 
   if (req.body.paymentStatus) query.paymentStatus = req.body.paymentStatus;
 
@@ -146,10 +161,7 @@ export function dataset(req, res) {
 
   if (req.body.datePaid) {
     let date = new Date(req.body.datePaid);
-    query.datePaid = {
-      $gte: date.setHours(0, 0, 0, 0),
-      $lte: date.setHours(23, 59, 59, 999)
-    }
+    query.datePaid = date;
   } else if (checkStatus(req.body.status, 'completed') && checkStatus(req.body.paymentStatus, 'completed')) {
     query.datePaid = {
       $exists: true

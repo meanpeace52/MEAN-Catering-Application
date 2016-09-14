@@ -259,8 +259,9 @@ class PaymentListController {
           chargeOff: 0,
           caterer: 0
         },
+        net: 0,
         stripeFee: 0,
-        net: 0
+        netHouse: 0
       };
 
       _.each($scope.events, (event, i) => {

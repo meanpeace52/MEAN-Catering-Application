@@ -27,6 +27,11 @@ class PaymentsStatisticsController {
             $first: "$datePaid"
           }
         }
+      },
+      {
+        $sort: {
+          date: -1
+        }
       }
     ]).exec().then((list) => {
 
