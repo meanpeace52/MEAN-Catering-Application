@@ -212,11 +212,60 @@
         <uib-tab index="3" heading="Update Credit Card Card" ng-if="customerProfile.user.payableAccountId">
           <div style="padding:50px;">
             <p>If you need to change or update your credit card, please use this form to do so.</p>
-              <credit-card-form verifier="false" ccupdate="true" user="customerProfile.user" event=""></credit-card-form>
+            <form stripe:form="updateCustomer" name="ccForm" novalidate>
+              <div class="form-group">
+                <label for="card-number">Card Number</label>
+                <input type="text" class="form-control" id="cardNumber" cc-number cc-eager-type cc-format="card" cc-validate="card" maxlength="19" name="ccNumber" ng-model="card.number" data-stripe="number" ng-required="true">
+              </div>
+              <div class="form-group">
+                <label for="cvc">CVC</label>
+                <input type="text" class="form-control" id="cvc" cc-cvc cc-type="ccForm.ccNumber.$ccType" name="ccCvc" ng-model="card.cvc" data-stripe="cvc" ng-required="true">
+              </div>
+              <div class="form-group">
+                <label for="card-number">Expiration</label>
+                <div class="row" cc-exp>
+                  <div class="col-xs-3">
+                    <input placeholder="MM" type="text" class="form-control" cc-exp-month name="ccExpMonth" ng-model="card.expiration.month" data-stripe="exp-month" ng-required="true">
+                  </div>
+                  <div class="col-xs-3">
+                    <input placeholder="YY" type="text" class="form-control" cc-exp-year name="ccExpYear" ng-model="card.expiration.year" data-stripe="exp-year" ng-required="true">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <button class="btn btn-primary" type="submit">Submit</button>
+              </div>
+            </form>
+            <p ng-show="ccForm.ccNumber.$invalid && ccForm.ccNumber.$ccEagerType">
+              Looks like you're typing a {{ccForm.ccNumber.$ccEagerType}} number!
+            </p>
+            <p ng-show="ccForm.ccNumber.$valid && ccForm.ccNumber.$ccType">
+              Yes, that looks like a valid {{ccForm.ccNumber.$ccType}} number!
+            </p>
+            <p ng-show="ccForm.ccNumber.$error.required">
+              You must enter a credit card number!
+            </p>
           </div>
+
+          <!-- <div style="padding:50px;">
+            <p>If you need to change or update your credit card, please use this form to do so.</p>
+              <credit-card-form verifier="false" ccupdate="true" user="customerProfile.user" event=""></credit-card-form>
+          </div> -->
         </uib-tab>
       </uib-tabset>
     </div>
+
+    <div class="form-group" ng-if="customerProfile.ccupdateSuccess">
+      <div class="alert alert-success" role="alert">
+        The Credit Card was updated .
+      </div>
+    </div>
+    <div class="form-group has-error" ng-if="customerProfile.error">
+      <div class="alert alert-info" role="alert">
+        {{ customerProfile.error }}
+      </div>
+    </div>
+  
   </div>
   <hr>
 </div>

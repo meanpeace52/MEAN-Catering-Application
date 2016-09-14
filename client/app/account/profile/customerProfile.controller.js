@@ -16,6 +16,9 @@ class CustomerProfileController {
     this.isLoggedIn = Auth.isLoggedIn;
     this.user = this.getCurrentUser();
     this.$scope.ft = {};
+    this.ccupdateSuccess = false;
+
+    $scope.updateCustomer = this.updateCustomer.bind(this);
 
     this.getPayments().then(response => {
       this.$scope.events = response.data;
@@ -72,6 +75,29 @@ class CustomerProfileController {
 
   doCheckout(token) {
     console.log("Got Stripe token: " + token.id);
+  }
+
+  updateCard(token){
+    return this.$http.post('/api/payments/card/update', {
+      id: this.user.payableAccountId,
+      card: token,
+      description: `Updated credit card for ${this.user.firstname} ${this.user.lastname} <${this.user.email}>`,
+      email: this.user.email
+    });
+  }
+
+  updateCustomer(status, response) {
+    let token = response.id;
+
+    this.updateCard(token).then(result => {
+      this.updateCard(result.id).then(result => {
+        //this.$state.go('customer-profile');
+        this.ccupdateSuccess = true;
+      })                
+      .catch(err => {
+          this.errors.other = err.message;
+      });
+    });
   }
 
 }
