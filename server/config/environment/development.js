@@ -4,7 +4,8 @@
 // ==================================
 module.exports = {
   //domain: 'http://localhost:8080/',
-  domain: 'http://dev.cateringninja.com:8080/',
+  // domain: 'http://dev.cateringninja.com:8080/',
+  domain: 'https://dev.cateringninja.com:443/',
 
   // MongoDB connection options
   mongo: {
