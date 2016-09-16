@@ -21,7 +21,7 @@
         <div class="panel-body">
           <div class="filter-events">
             <div class="row">
-              <div class="col-sm-2" ng-if="vm.user.role === 'admin'">
+              <div class="col-sm-2" ng-if="plc.user.role === 'admin'">
                 <a class="btn btn-success" ng-click="paySelected()" ng-disabled="filter.paid === 'allPaid'">Pay All Selected</a>
               </div>
               <div class="col-sm-3">
@@ -30,13 +30,21 @@
                   <option value="allUnpaid">All Unpaid</option>
                 </select>
               </div>
+              <div class="col-sm-3">
+                <span class="input-group">
+                  <input id="date-end-for-payments" type="text" class="form-control" uib-datepicker-popup="MMMM d, y" ng-model="filter.dateTo" is-open="popup2.opened" datepicker-options="dateOptions" required close-text="Close"/>
+                    <span class="input-group-btn">
+                      <button type="button" class="btn btn-default" ng-click="open2()" style="height: 34px;"><i class="fa fa-calendar"></i></button>
+                    </span>
+                </span>
+              </div>
             </div>
           </div>
-          <table st-table="events" st-pipe="vm.pipe" class="table table-hover table-condensed table-events">
+          <table st-table="events" st-pipe="plc.pipe" class="table table-hover table-condensed table-events">
             <thead>
             <tr>
-              <th ng-if="vm.user.role === 'admin' && filter.paid === 'allUnpaid'"><input type="checkbox" ng-model="allEventsAreSelected" ng-change="selectAll(allEventsAreSelected)"></th>
-              <th ng-if="vm.user.role === 'admin'">Caterer</th>
+              <th ng-if="plc.user.role === 'admin' && filter.paid === 'allUnpaid'"><input type="checkbox" ng-model="states.allEventsAreSelected" ng-change="selectAll(states.allEventsAreSelected)"></th>
+              <th ng-if="plc.user.role === 'admin'">Caterer</th>
               <th>Customer</th>
               <th st-sort="date" st-skip-natural="true">Event Date</th>
               <th st-sort="name" st-sort-default="true">Event Name</th>
@@ -47,11 +55,11 @@
               <th>Net</th>
               <th>Date Paid (from Customer)</th>
               <th ng-if="filter.paid === 'all' || filter.paid === 'allPaid'">Date Paid (to Caterer)</th>
-              <th ng-if="vm.user.role === 'admin' && filter.paid === 'allUnpaid'"></th>
+              <th ng-if="plc.user.role === 'admin' && filter.paid === 'allUnpaid'"></th>
             </tr>
             <tr>
-              <th ng-if="vm.user.role === 'admin' && filter.paid === 'allUnpaid'"></th>
-              <th ng-if="vm.user.role === 'admin'"></th>
+              <th ng-if="plc.user.role === 'admin' && filter.paid === 'allUnpaid'"></th>
+              <th ng-if="plc.user.role === 'admin'"></th>
               <th><input st-search="customer" style="width: 50px;" class="input-sm form-control" type="search"/></th>
               <th><input st-search="date" style="width: 120px;" class="input-sm form-control" type="search"/></th>
               <th><input st-search="name" class="input-sm form-control" style="width: 100px;" type="search"/></th>
@@ -62,13 +70,13 @@
               <th></th>
               <th></th>
               <th ng-if="filter.paid === 'all' || filter.paid === 'allPaid'"></th>
-              <th ng-if="vm.user.role === 'admin' && filter.paid === 'allUnpaid'"></th>
+              <th ng-if="plc.user.role === 'admin' && filter.paid === 'allUnpaid'"></th>
             </tr>
             </thead>
-            <tbody>
+            <tbody ng-show="!isPiping">
             <tr ng-repeat="event in displayed" ng-class="{'drafted': event.drafted, 'active': event.active, 'hidden': event.hide}" ng-click="setActiveEvent(event)">
-              <td ng-if="vm.user.role === 'admin' && filter.paid === 'allUnpaid'"><input ng-if="event.status !== 'completed' || event.paymentStatus !== 'completed'" type="checkbox" ng-model="selectedEvents[event._id]" ng-change="select(selectedEvents[event._id])"></td>
-              <td ng-if="vm.user.role === 'admin'">{{event.offers[0].catererName}}</td>
+              <td ng-if="plc.user.role === 'admin' && filter.paid === 'allUnpaid'"><input ng-if="event.status !== 'completed' || event.paymentStatus !== 'completed'" type="checkbox" ng-model="selectedEvents[event._id]" ng-change="select(selectedEvents[event._id])"></td>
+              <td ng-if="plc.user.role === 'admin'">{{event.offers[0].catererName}}</td>
               <td>{{event.customer}}</td>
               <td>{{event.date | date: "longDate"}}</td>
               <td style="max-width: 100px;">{{event.name}}</td>
@@ -79,7 +87,7 @@
               <td>{{event.offers[0].invoice.refund.toFixed(2)}}</td>
               <td>
                 <span ng-if="event.offers[0].invoice.refund">{{event.offers[0].invoice.refund.toFixed(2)}}</span>
-                <span ng-if="!event.offers[0].invoice.refund">{{event.offers[0].invoice.adjustment.client.toFixed(2)}}</span>
+                <span ng-if="!event.offers[0].invoice.refund">{{event.offers[0].invoice.adjustment.client.toFixed(2)}} ({{event.offers[0].invoice.adjustment.caterer.toFixed(2)}}/{{event.offers[0].invoice.adjustment.chargeOff.toFixed(2)}})</span>
               </td>
               <td>
                 <span ng-if="event.offers[0].invoice.refund">0.00</span>
@@ -87,10 +95,10 @@
               </td>
               <td>{{!event.paymentPaidDate ? 'pending' : (event.paymentPaidDate | date)}}</td>
               <td ng-if="filter.paid === 'allPaid'">{{!event.datePaid ? 'pending' : (event.datePaid | date)}}</td>
-              <td ng-if="vm.user.role === 'admin' && filter.paid === 'allUnpaid'">
+              <td ng-if="plc.user.role === 'admin' && filter.paid === 'allUnpaid'">
                 <div>
-                  <a class="btn btn-xs btn-primary" ng-click="open(event.offers[0])">Adjust</a>
-                  <a class="btn btn-xs btn-success" ng-if="event.offers[0].paymentStatus === 'paid'" ng-click="pay(event.offers[0])">Pay</a>
+                  <a class="btn btn-xs btn-primary" ng-click="open(event.offers[0])" ng-disabled="isDisabled(event)">Adjust</a>
+                  <a class="btn btn-xs btn-success" ng-if="event.offers[0].paymentStatus === 'paid'" ng-click="pay(event.offers[0])" ng-disabled="isDisabled(event)">Pay</a>
                 </div>
               </td>
             </tr>
@@ -108,7 +116,7 @@
   </div>
   <div class="row">
     <div class="col-sm-12">
-      <table class="col-sm-12" ng-if="eventsSummary && !isPiping && (selectedDate || (vm.user.role === 'caterer' && eventActive) || (vm.user.role === 'admin' && hasSelectedEvents())) && ((vm.user.role === 'caterer' && displayed.length > 0) || (vm.user.role === 'admin' && (filter.paid === 'allPaid' || (filter.paid === 'allUnpaid' && hasSelectedEvents())) && displayed.length > 0))">
+      <table class="col-sm-12" ng-if="eventsSummary && notDefaultSummary() && !isPiping && (selectedDate || (plc.user.role === 'caterer' && eventActive) || (plc.user.role === 'admin' && hasSelectedEvents())) && ((plc.user.role === 'caterer' && displayed.length > 0) || (plc.user.role === 'admin' && (filter.paid === 'allPaid' || (filter.paid === 'allUnpaid' && hasSelectedEvents())) && displayed.length > 0))">
         <tr>
           <th>Subtotal</th>
           <th>Tax</th>
@@ -118,6 +126,8 @@
           <th>House Adjust</th>
           <th>Caterer Adjust</th>
           <th>Net Caterer</th>
+          <th ng-if="plc.user.role === 'admin'">Stripe Fee</th>
+          <th ng-if="plc.user.role === 'admin'">Net Ninja</th>
         </tr>
         <tr>
           <td>{{eventsSummary.service.toFixed(2)}}</td>
@@ -128,6 +138,8 @@
           <td>{{eventsSummary.adjustment.chargeOff.toFixed(2)}}</td>
           <td>{{eventsSummary.adjustment.caterer.toFixed(2)}}</td>
           <td>{{eventsSummary.net.toFixed(2)}}</td>
+          <td ng-if="plc.user.role === 'admin'">{{eventsSummary.stripeFee.toFixed(2)}}</td>
+          <td ng-if="plc.user.role === 'admin'">{{eventsSummary.netHouse.toFixed(2)}}</td>
         </tr>
       </table>
     </div>

@@ -19,13 +19,18 @@ class PaymentsStatisticsController {
       },
       {
         $group: {
-          _id: { $dateToString: { format: "%Y-%m-%d", date: "$datePaid" } },
+          _id: "$datePaid",
           events: {
             $addToSet: '$_id'
           },
           date: {
-            $first: { $dateToString: { format: "%Y-%m-%d", date: "$datePaid" } }
+            $first: "$datePaid"
           }
+        }
+      },
+      {
+        $sort: {
+          date: -1
         }
       }
     ]).exec().then((list) => {
