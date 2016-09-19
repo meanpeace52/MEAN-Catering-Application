@@ -34,8 +34,8 @@ mongoose.connection.on('error', function(err) {
 if (config.seedDB) { require('./config/seed'); }
 
 // Setup server
-var privateKey  = fs.readFileSync('./sslcert/dev.cateringninja.com.key', 'utf8');
-var certificate = fs.readFileSync('./sslcert/dev_cateringninja_com.crt', 'utf8');
+var privateKey  = fs.readFileSync('file.pem');
+var certificate = fs.readFileSync('file.crt');
 var credentials = {key: privateKey, cert: certificate};
 var app = express();
 
