@@ -10,9 +10,12 @@ import async from 'async';
 mongoose.Promise = require('bluebird');
 import config from './config/environment';
 import http from 'http';
+
 var bodyParser = require("body-parser");
 var mailer = require('./api/mailer/mailer');
 var schedule = require('node-schedule');
+var fs = require('fs');
+var https = require('https');
 
 const stripeController = require('./api/payments/stripe.controller');
 
@@ -31,12 +34,16 @@ mongoose.connection.on('error', function(err) {
 if (config.seedDB) { require('./config/seed'); }
 
 // Setup server
+var privateKey  = fs.readFileSync('sslcert/marcin.key', 'utf8');
+var certificate = fs.readFileSync('sslcert/dev_cateringninja_com.crt', 'utf8');
+var credentials = {key: privateKey, cert: certificate};
 var app = express();
 
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
-var server = http.createServer(app);
+// var server = http.createServer(app);
+var server = https.createServer(credentials, app);
 var socketio = require('socket.io')(server, {
   serveClient: config.env !== 'production',
   path: '/socket.io-client'
