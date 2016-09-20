@@ -34,7 +34,7 @@ mongoose.connection.on('error', function(err) {
 if (config.seedDB) { require('./config/seed'); }
 
 // Setup server
-var privateKey  = fs.readFileSync('dev.cateringninja.com.key.key');
+var privateKey  = fs.readFileSync('dev.cateringninja.com.key');
 var certificate = fs.readFileSync('app_cateringninja_com.crt');
 // var privateKey  = fs.readFileSync('dev.cateringninja.com.key');
 // var certificate = fs.readFileSync('dev_cateringninja_com.crt');
