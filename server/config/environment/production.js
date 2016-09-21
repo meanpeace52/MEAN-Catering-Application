@@ -19,7 +19,8 @@ module.exports = {
           process.env.MONGOHQ_URL ||
           process.env.OPENSHIFT_MONGODB_DB_URL +
           process.env.OPENSHIFT_APP_NAME ||
-          'mongodb://ninja_root:ninja3141@104.198.223.5:27017,ninja_root:ninja3141@104.154.59.205:27017/catering'
+          'mongodb://ninja_root:ninja3141@104.198.223.5:27017/catering'
+          // 'mongodb://ninja_root:ninja3141@104.198.223.5:27017,ninja_root:ninja3141@104.154.59.205:27017/catering'
   },
 
   mailgun: {

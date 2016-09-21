@@ -36,16 +36,14 @@ if (config.seedDB) { require('./config/seed'); }
 // Setup server
 var privateKey  = fs.readFileSync('ninja-prod.key');
 var certificate = fs.readFileSync('app_cateringninja_com.crt');
-// var privateKey  = fs.readFileSync('dev.cateringninja.com.key');
-// var certificate = fs.readFileSync('dev_cateringninja_com.crt');
 var credentials = {key: privateKey, cert: certificate};
 var app = express();
 
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
-// var server = http.createServer(app);
-var server = https.createServer(credentials, app);
+var server = http.createServer(app);
+// var server = https.createServer(credentials, app);
 var socketio = require('socket.io')(server, {
   serveClient: config.env !== 'production',
   path: '/socket.io-client'
