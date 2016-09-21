@@ -13,7 +13,7 @@ module.exports = {
   process.env.PORT ||
   443,
 
-  // MongoDB connection option
+  // MongoDB connection options
   mongo: {
     uri:  process.env.MONGODB_URI ||
     process.env.MONGOHQ_URL ||
