@@ -19,7 +19,7 @@ module.exports = {
           process.env.MONGOHQ_URL ||
           process.env.OPENSHIFT_MONGODB_DB_URL +
           process.env.OPENSHIFT_APP_NAME ||
-          'mongodb://ninja_root:ninja3141@104.198.223.5:27017,ninja_root:ninja3141@104.154.59.205:27017/catering'
+          'mongodb://ninja_root:ninja3141@104.197.194.181:27017/catering'
   },
 
   mailgun: {
@@ -34,11 +34,11 @@ module.exports = {
       API_KEY: 'E1A33450-A519-4379-8FF8-CBA269A17640'
     },
     DWOLLA: {
-      KEY: '2jKQn8aERXipDkCuNYG8TKMKPqpGB4KjuK1Gevrw74ZITIK6Ew',
-      SECRET: 'tWsvZmICKSRpbGbO0WWRKBVXb4B03j35XpI5ifrP1LJJJ5HExy',
-      ACCOUNT_ID: 'f8615f27-0783-4078-97db-d8d7ce3ae368', //eabd60f1-8fbc-4ed9-b09a-b213bdc9d092
-      ACCESS_TOKEN: 'ZT23sJndZj9OHRME4pm6qAZXkNWonkBfgdZvmAVS4glfkhJJ91',
-      REFRESH_TOKEN: 'QNE9juhsyxEOYV9LyMM5OuxAWQIHmcxm6jlt8Eo5fiMxjXJiOw'
+      KEY: 'EVOeQHO2RWEoi57XF80Fxhj1CyfIGIngMCx7vEBCzbhOEl9D0a',
+      SECRET: '78CmxYBXv0DBBv49J18eeCBKxdh75l0OfgZk20pTr7nOmmvGqa',
+      ACCOUNT_ID: 'acc7964c-6bb9-45b2-bbad-5b91487c6758',
+      ACCESS_TOKEN: '67xHL5b8WmIRetuB2MmK8H9OuDvNbTb1Vb280Fsa4zD0QI7hSS',
+      REFRESH_TOKEN: 'P6mWaXYgMiwZqIzpKfZV6GkrhmHabh8ezc0LjkWKlnNIQmroYE'
     },
     STRIPE: {
       SECRET_KEY: 'sk_live_psBPsSZ7ccO1bampVWlVNdMk',
