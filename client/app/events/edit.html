@@ -1,12 +1,42 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-12" ng-if="!vm.user.payableAccountId && vm.verifyCard">
-      <h1>Please Verify your Credit Card</h1>
-      <p>To send an event we need to have a valid credit card on file.  This credit card will be saved in your profile for payment.</p>
-      <p>You can always update your credit card information in the Account Info in the upper right.</p>
-      <div class="row">
-        <credit-card-form verifier="true" user="vm.user" event="fm"></credit-card-form>
-      </div>
+      <form stripe:form="saveCustomer" name="ccForm" novalidate>
+        <h1>Please Verify your Credit Card</h1>
+        <p>To send an event we need to have a valid credit card on file.  This credit card will be saved in your profile for payment.</p>
+        <p>You can always update your credit card information in the Account Info in the upper right.</p>
+        <div class="form-group"  style="width:25%">
+          <label for="card-number">Card Number</label>
+          <input type="text" class="form-control"  id="cardNumber" cc-number cc-eager-type cc-format="card" cc-validate="card" maxlength="19" name="ccNumber" ng-model="card.number" data-stripe="number" ng-required="true">
+        </div>
+        <div class="form-group"  style="width:10%">
+          <label for="cvc">CVC</label>
+          <input type="text" class="form-control"  id="cvc" cc-cvc cc-type="ccForm.ccNumber.$ccType" name="ccCvc" ng-model="card.cvc" data-stripe="cvc" ng-required="true">
+        </div>
+        <div class="form-group"  style="width:35%">
+          <label for="card-number">Expiration</label>
+          <div class="row" cc-exp>
+            <div class="col-xs-3">
+              <input placeholder="MM" type="text" class="form-control" cc-exp-month name="ccExpMonth" ng-model="card.expiration.month" data-stripe="exp-month" ng-required="true">
+            </div>
+            <div class="col-xs-3">
+              <input placeholder="YY" type="text" class="form-control" cc-exp-year name="ccExpYear" ng-model="card.expiration.year" data-stripe="exp-year" ng-required="true">
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-primary" type="submit">Submit</button>
+        </div>
+      </form>
+      <p ng-show="ccForm.ccNumber.$invalid && ccForm.ccNumber.$ccEagerType">
+        Looks like you're typing a {{ccForm.ccNumber.$ccEagerType}} number!
+      </p>
+      <p ng-show="ccForm.ccNumber.$valid && ccForm.ccNumber.$ccType">
+        Yes, that looks like a valid {{ccForm.ccNumber.$ccType}} number!
+      </p>
+      <p ng-show="ccForm.ccNumber.$error.required">
+        You must enter a credit card number!
+      </p>
     </div>
     <div class="col-sm-12" ng-if="vm.user.payableAccountId || !vm.verifyCard">
        <h1>Edit event</h1>

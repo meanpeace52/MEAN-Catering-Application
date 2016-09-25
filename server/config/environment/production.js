@@ -40,7 +40,8 @@ module.exports = {
       SECRET: 'tWsvZmICKSRpbGbO0WWRKBVXb4B03j35XpI5ifrP1LJJJ5HExy',
       ACCOUNT_ID: 'f8615f27-0783-4078-97db-d8d7ce3ae368', //eabd60f1-8fbc-4ed9-b09a-b213bdc9d092
       ACCESS_TOKEN: 'ZT23sJndZj9OHRME4pm6qAZXkNWonkBfgdZvmAVS4glfkhJJ91',
-      REFRESH_TOKEN: 'QNE9juhsyxEOYV9LyMM5OuxAWQIHmcxm6jlt8Eo5fiMxjXJiOw'
+      REFRESH_TOKEN: 'QNE9juhsyxEOYV9LyMM5OuxAWQIHmcxm6jlt8Eo5fiMxjXJiOw',
+      LOGIN_URL: 'https://dwolla.com/login'
     },
     STRIPE: {
       SECRET_KEY: 'sk_live_psBPsSZ7ccO1bampVWlVNdMk',
