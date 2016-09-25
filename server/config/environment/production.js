@@ -3,23 +3,25 @@
 // Production specific configuration
 // =================================
 module.exports = {
+  domain: 'https://app.cateringninja.com/',
+
   // Server IP
   ip:     process.env.OPENSHIFT_NODEJS_IP ||
-  process.env.IP ||
-  undefined,
+          process.env.IP ||
+          undefined,
 
   // Server port
   port:   process.env.OPENSHIFT_NODEJS_PORT ||
-  process.env.PORT ||
-  443,
+          process.env.PORT ||
+          443,
 
   // MongoDB connection options
   mongo: {
     uri:  process.env.MONGODB_URI ||
-    process.env.MONGOHQ_URL ||
-    process.env.OPENSHIFT_MONGODB_DB_URL +
-    process.env.OPENSHIFT_APP_NAME ||
-    'mongodb://ninja_root:ninja3141@104.198.67.10:27017/catering'
+          process.env.MONGOHQ_URL ||
+          process.env.OPENSHIFT_MONGODB_DB_URL +
+          process.env.OPENSHIFT_APP_NAME ||
+          'mongodb://ninja_root:ninja3141@104.198.67.10:27017/catering'
   },
 
   mailgun: {
@@ -34,38 +36,38 @@ module.exports = {
       API_KEY: 'E1A33450-A519-4379-8FF8-CBA269A17640'
     },
     DWOLLA: {
-      KEY: 'EVOeQHO2RWEoi57XF80Fxhj1CyfIGIngMCx7vEBCzbhOEl9D0a',
-      SECRET: '78CmxYBXv0DBBv49J18eeCBKxdh75l0OfgZk20pTr7nOmmvGqa',
-      ACCOUNT_ID: 'acc7964c-6bb9-45b2-bbad-5b91487c6758',
-      ACCESS_TOKEN: '67xHL5b8WmIRetuB2MmK8H9OuDvNbTb1Vb280Fsa4zD0QI7hSS',
-      REFRESH_TOKEN: 'P6mWaXYgMiwZqIzpKfZV6GkrhmHabh8ezc0LjkWKlnNIQmroYE'
+      KEY: '2jKQn8aERXipDkCuNYG8TKMKPqpGB4KjuK1Gevrw74ZITIK6Ew',
+      SECRET: 'tWsvZmICKSRpbGbO0WWRKBVXb4B03j35XpI5ifrP1LJJJ5HExy',
+      ACCOUNT_ID: 'f8615f27-0783-4078-97db-d8d7ce3ae368', //eabd60f1-8fbc-4ed9-b09a-b213bdc9d092
+      ACCESS_TOKEN: 'ZT23sJndZj9OHRME4pm6qAZXkNWonkBfgdZvmAVS4glfkhJJ91',
+      REFRESH_TOKEN: 'QNE9juhsyxEOYV9LyMM5OuxAWQIHmcxm6jlt8Eo5fiMxjXJiOw'
     },
     STRIPE: {
       SECRET_KEY: 'sk_live_psBPsSZ7ccO1bampVWlVNdMk',
       PUBLIC_KEY: 'pk_live_Zpopr6NDYNJ45SpUVLu2c5hq'
     }
     /*STRIPE: {
-     SECRET_KEY: 'sk_test_FgAfCdq6QKhuGwWsHuk0yz7h',
-     PUBLIC_KEY: 'pk_test_sPCubetxhsItqcr1nkZOHQfM'
-     }*/
+      SECRET_KEY: 'sk_test_FgAfCdq6QKhuGwWsHuk0yz7h',
+      PUBLIC_KEY: 'pk_test_sPCubetxhsItqcr1nkZOHQfM'
+    }*/
   }
 
   /*payments: {
-   TAXCLOUD: {
-   API_LOGIN_ID: '36DF64D0',
-   API_KEY: 'E1A33450-A519-4379-8FF8-CBA269A17640'
-   },
-   DWOLLA: {
-   KEY: '2jKQn8aERXipDkCuNYG8TKMKPqpGB4KjuK1Gevrw74ZITIK6Ew',
-   SECRET: 'tWsvZmICKSRpbGbO0WWRKBVXb4B03j35XpI5ifrP1LJJJ5HExy',
-   ACCOUNT_ID: 'f8615f27-0783-4078-97db-d8d7ce3ae368',
-   ACCESS_TOKEN: 'ozXPnlbOePqgiaUKFMOsgBH9xsl2upuOwxCg7C6K6PNgFIzyCt'
-   },
-   STRIPE: {
-   SECRET_KEY: 'sk_test_FgAfCdq6QKhuGwWsHuk0yz7h',
-   PUBLIC_KEY: 'pk_test_sPCubetxhsItqcr1nkZOHQfM'
-   }
-   }*/
+    TAXCLOUD: {
+      API_LOGIN_ID: '36DF64D0',
+      API_KEY: 'E1A33450-A519-4379-8FF8-CBA269A17640'
+    },
+    DWOLLA: {
+      KEY: '2jKQn8aERXipDkCuNYG8TKMKPqpGB4KjuK1Gevrw74ZITIK6Ew',
+      SECRET: 'tWsvZmICKSRpbGbO0WWRKBVXb4B03j35XpI5ifrP1LJJJ5HExy',
+      ACCOUNT_ID: 'f8615f27-0783-4078-97db-d8d7ce3ae368',
+      ACCESS_TOKEN: 'ozXPnlbOePqgiaUKFMOsgBH9xsl2upuOwxCg7C6K6PNgFIzyCt'
+    },
+    STRIPE: {
+      SECRET_KEY: 'sk_test_FgAfCdq6QKhuGwWsHuk0yz7h',
+      PUBLIC_KEY: 'pk_test_sPCubetxhsItqcr1nkZOHQfM'
+    }
+  }*/
 
   //payments: {
   //  DWOLLA: {
