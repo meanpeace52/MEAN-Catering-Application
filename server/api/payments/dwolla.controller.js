@@ -60,7 +60,7 @@ class DwollaController {
         return Promise.reject({});
       }
 
-      return accountToken.get(`https://api-uat.dwolla.com/accounts/${config.payments.DWOLLA.ACCOUNT_ID}/funding-sources`).then((response) => {
+      return accountToken.get(`https://api.dwolla.com/accounts/${config.payments.DWOLLA.ACCOUNT_ID}/funding-sources`).then((response) => {
         let fundingSources = response.body._embedded['funding-sources'];
         let balance = fundingSources.filter(item => item.type === 'balance')[0];
         var requestBody = {
