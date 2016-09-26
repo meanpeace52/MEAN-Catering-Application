@@ -9,7 +9,7 @@ let dwollaOptions = {
   secret: config.payments.DWOLLA.SECRET
 };
 //if (process.env.NODE_ENV !== 'production') {
-  dwollaOptions.environment = 'sandbox';
+  dwollaOptions.environment = 'production';
 //}
 let dwollaClient = new dwolla.Client(dwollaOptions);
 
@@ -50,7 +50,7 @@ class DwollaController {
   pay(items, user) {
 
     return this.requestAccessToken(user).then((response) => {
-      
+
       var accountToken = new dwollaClient.Token({
         access_token: response.access_token,
         refresh_token: response.refresh_token
