@@ -43,8 +43,8 @@ module.exports = {
       LOGIN_URL: 'https://uat.dwolla.com/login'
     },
     STRIPE: {
-      SECRET_KEY: 'sk_test_wRIsHZnwUKFqmPTD8YjRxkQd',
-      PUBLIC_KEY: 'pk_test_0EFB2Y1WvIYGIIUsAQJ42DVD'
+      SECRET_KEY: 'sk_test_FgAfCdq6QKhuGwWsHuk0yz7h',
+      PUBLIC_KEY: 'pk_test_sPCubetxhsItqcr1nkZOHQfM'
     }
     /*STRIPE: {
       SECRET_KEY: 'sk_test_FgAfCdq6QKhuGwWsHuk0yz7h',

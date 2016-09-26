@@ -56,6 +56,7 @@ class SignupController {
       request.ninja_email = this.user.ninja_email;
       request.ninja_phone = this.user.ninja_phone;
       request.serviceTypes = this.user.serviceTypes;
+      request.foodTypes = this.user.foodTypes;
       request.minprice = this.user.minprice;
       request.description = this.user.description;
       request.veganOffers = this.user.veganOffers;
