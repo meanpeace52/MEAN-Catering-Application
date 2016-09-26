@@ -9,6 +9,7 @@
             <strong ng-if="user.role === 'user'">{{user.firstname}} {{user.lastname}} {{user.name}}</strong><br>
             <strong ng-if="user.role === 'caterer'">{{user.companyName}} {{user.name}}</strong><br>
             <span class="text-muted">{{user.email}}</span>
+            <p>  Created On - {{user.created_date}}</p>
           </div>
           <a ng-click="admin.edit(user)" class="edit"><span class="fa fa-pencil fa-2x"></span></a>
           <a ng-click="admin.delete(user)" class="trash"><span class="fa fa-trash fa-2x"></span></a>
@@ -22,6 +23,7 @@
             <strong ng-if="user.role === 'user'">{{user.firstname}} {{user.lastname}} {{user.name}}</strong><br>
             <strong ng-if="user.role === 'caterer'">{{user.companyName}} {{user.name}}</strong><br>
             <span class="text-muted">{{user.email}}</span>
+            <p>  Created On - {{user.created_date}}</p>
           </div>
           <a ng-click="admin.edit(user)" class="edit"><span class="fa fa-pencil fa-2x"></span></a>
           <a ng-click="admin.delete(user)" class="trash"><span class="fa fa-trash fa-2x"></span></a>
