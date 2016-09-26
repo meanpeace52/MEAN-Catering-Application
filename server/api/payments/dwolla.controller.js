@@ -82,7 +82,7 @@ class DwollaController {
       "client_secret": config.payments.DWOLLA.SECRET,
       "code": req.query.authCode,
       "grant_type": "authorization_code",
-      "redirect_uri": '//' + req.headers.host + req.query.redirect /*"redirect_uri": request.headers.protocol + '://' + req.headers.host + req.query.redirect*/
+      "redirect_uri": 'https://' + req.headers.host + req.query.redirect /*"redirect_uri": request.headers.protocol + '://' + req.headers.host + req.query.redirect*/
     };
 
     return request.post(dwollaClient.tokenUrl, {
@@ -99,7 +99,7 @@ class DwollaController {
   startAuth(req, res) {
     let authUrl = dwollaClient.authUrl;
     let clientId = config.payments.DWOLLA.KEY;
-    let redirectUrl = '//' + req.headers.host + req.query.redirect;
+    let redirectUrl = 'https://' + req.headers.host + req.query.redirect;
     let scope = 'Send|Funding'; //'Transactions|Send|Request|Funding|ManageCustomers|Email';
     let output = {
       authUrl: `${authUrl}?client_id=${clientId}&response_type=code&redirect_uri=${redirectUrl}&scope=${scope}`//&verified_account=true`
