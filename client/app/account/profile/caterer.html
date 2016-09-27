@@ -69,7 +69,8 @@
                   <div class="col-sm-3">
                     <div class="form-group">
                       <label tooltip-placement="top" uib-tooltip='This is the Commission Rate Catering Ninja takes on paid services' > Commission Rate</label>
-                      <input type="text" disabled name="commission" ng-model="catererProfile.user.commission"/>
+                      <input ng-if="catererProfile.loggedUser.role == 'caterer'" type="text" disabled name="commission" ng-model="catererProfile.user.commission"/>
+                      <input ng-if="catererProfile.loggedUser.role == 'admin'" type="text" name="commission" ng-model="catererProfile.user.commission"/>
                     </div>
                   </div>
                 </div>
