@@ -108,7 +108,7 @@ class EventsAdminController {
           // });
           
           $scope.adminEvents = events;
-          console.log('events2', $scope.adminEvents);
+          // console.log('events2', $scope.adminEvents);
 
           let filtered = $scope.eventsTableState.search.predicateObject ? $filter('filter')($scope.adminEvents, $scope.eventsTableState.search.predicateObject) : $scope.adminEvents,
               start = $scope.eventsTableState.pagination.start,
