@@ -19,6 +19,8 @@ class EventsEditController {
     this.sService = ServiceTypesService;
     this.payments = PaymentService;
 
+    $scope.saveCustomer = this.saveCustomer.bind(this);
+
     this.isUser = Auth.isUser;
     this.getCurrentUser = Auth.getCurrentUser;
     this.user = this.getCurrentUser();
