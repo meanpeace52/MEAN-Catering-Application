@@ -17,8 +17,8 @@ angular.module('cateringApp', ['cateringApp.auth', 'cateringApp.admin', 'caterin
     });
 
     StripeCheckoutProvider.defaults({
-      key: "pk_test_sPCubetxhsItqcr1nkZOHQfM"
+      key: "pk_test_0EFB2Y1WvIYGIIUsAQJ42DVD"
     });
 
-    Stripe.setPublishableKey('pk_test_sPCubetxhsItqcr1nkZOHQfM');
+    Stripe.setPublishableKey('pk_test_0EFB2Y1WvIYGIIUsAQJ42DVD');
   });
