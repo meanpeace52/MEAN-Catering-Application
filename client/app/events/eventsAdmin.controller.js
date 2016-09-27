@@ -48,7 +48,7 @@ class EventsAdminController {
     this.eventsPipe = function(eventsTableState) {
       // if ($scope.query) {
         $scope.eventsTableState = (angular.isObject(eventsTableState) && eventsTableState ? eventsTableState : $scope.eventsTableState);
-        $http.post('/api/events/adminEvents')
+        $http.post('/api/events/adminEvents', $scope.query)
         .then(response => {
           let events = response.data;
 

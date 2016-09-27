@@ -90,6 +90,7 @@ export function index(req, res) {
 
 // Gets a list of Events for Admin access.
 export function adminEvents(req, res) {
+  console.log('req', req.body);
   return Event.find({status: { $ne: 'completed'}}).exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
