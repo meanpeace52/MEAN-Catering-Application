@@ -2,7 +2,7 @@
 
 angular.module('cateringApp', ['cateringApp.auth', 'cateringApp.admin', 'cateringApp.constants',
     'ngCookies', 'ngResource', 'ngSanitize', 'btford.socket-io', 'ui.router', 'ui.bootstrap',
-    'validation.match', "checklist-model", "rzModule", "angularFileUpload", 'smart-table', 
+    'validation.match', "checklist-model", "rzModule", "angularFileUpload", 'smart-table',
     // 'angularPayments',
     'ngAnimate', 'ui.comments.directive', 'angular-click-outside', 'stripe.checkout', 'credit-cards', 'stripe'
   ])
@@ -17,8 +17,8 @@ angular.module('cateringApp', ['cateringApp.auth', 'cateringApp.admin', 'caterin
     });
 
     StripeCheckoutProvider.defaults({
-      key: "pk_test_sPCubetxhsItqcr1nkZOHQfM"
+      key: "pk_test_0EFB2Y1WvIYGIIUsAQJ42DVD"
     });
 
-    Stripe.setPublishableKey('pk_test_sPCubetxhsItqcr1nkZOHQfM');
+    Stripe.setPublishableKey('pk_test_0EFB2Y1WvIYGIIUsAQJ42DVD');
   });
