@@ -3,8 +3,7 @@
 // Development specific configuration
 // ==================================
 module.exports = {
-  //domain: 'http://localhost:8080/',
-  // domain: 'http://dev.cateringninja.com:8080/',
+  // domain: 'http://localhost:8443/',
   domain: 'https://dev.cateringninja.com:8443/',
 
   // MongoDB connection options
@@ -50,6 +49,11 @@ module.exports = {
       SECRET_KEY: 'sk_test_FgAfCdq6QKhuGwWsHuk0yz7h',
       PUBLIC_KEY: 'pk_test_sPCubetxhsItqcr1nkZOHQfM'
     } */
+  },
+
+  activeCampaign: {
+    domain: 'https://cateringninja.api-us1.com',
+    api_key: '338d95021e19ec066b3dd319c1138e0606b34b8ed306ed2c7e2bd41625a206964ebf7aaa'
   }
 
 };

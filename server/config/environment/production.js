@@ -51,6 +51,11 @@ module.exports = {
       SECRET_KEY: 'sk_test_FgAfCdq6QKhuGwWsHuk0yz7h',
       PUBLIC_KEY: 'pk_test_sPCubetxhsItqcr1nkZOHQfM'
     }*/
+  },
+
+  activeCampaign: {
+    API: 'https://cateringninja.api-us1.com',
+    KEY: '338d95021e19ec066b3dd319c1138e0606b34b8ed306ed2c7e2bd41625a206964ebf7aaa'
   }
 
   /*payments: {
