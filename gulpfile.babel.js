@@ -309,7 +309,7 @@ gulp.task('start:client', cb => {
     whenServerReady(() => {
         open('http://localhost:' + config.port);
         cb();
-    });
+    });  
 });
 
 gulp.task('start:server', () => {

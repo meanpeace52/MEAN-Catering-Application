@@ -31,7 +31,7 @@
     }
 
     edit(user) {
-      console.log(user);
+      
       let templateUrl = '';
       let controller = '';
       let controllerAs = '';
@@ -50,6 +50,7 @@
         animation: true,
         ariaLabelledBy: 'modal-title',
         ariaDescribedBy: 'modal-body',
+        windowClass: 'profile-edit-modal',
         templateUrl: templateUrl,
         controller: controller,
         controllerAs: controllerAs,

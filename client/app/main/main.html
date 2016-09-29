@@ -5,7 +5,16 @@
   </div>
 </header>
 <div class="container">
-
+	<script type="text/ng-template" id="myModalContent.html">        
+    	<div uib-alert class="alert alert-danger password-alert" role="alert" ng-if="$ctrl.alert" dismiss-on-timeout="2000">Password is wrong.</div>
+        <div class="modal-body" id="modal-body">
+        	<h4>Please input password!</h4>
+            <input type="password" class="form-control" id="password" ng-model="$ctrl.pass" />
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary center-block" type="button" ng-click="$ctrl.ok()">OK</button>
+        </div>
+    </script>
 </div>
 
 
