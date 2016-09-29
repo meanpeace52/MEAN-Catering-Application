@@ -6,7 +6,7 @@ angular.module('cateringApp', ['cateringApp.auth', 'cateringApp.admin', 'caterin
     // 'angularPayments',
     'ngAnimate', 'ui.comments.directive', 'angular-click-outside', 'stripe.checkout', 'credit-cards', 'stripe'
   ])
-  .config(function($urlRouterProvider, $locationProvider, commentsConfigProvider, StripeCheckoutProvider) {
+  .config(function($urlRouterProvider, $locationProvider, commentsConfigProvider) {
     $urlRouterProvider.otherwise('/');
 
     $locationProvider.html5Mode(true);
@@ -15,10 +15,11 @@ angular.module('cateringApp', ['cateringApp.auth', 'cateringApp.admin', 'caterin
       commentTemplate: 'assets/comments/template/comments/comment.html',
       commentController: 'OfferCommentController'
     });
+  })
+  .run(function($http){
 
-    StripeCheckoutProvider.defaults({
-      key: $config.STRIPE.PUBLIC_KEY
-    });
-
-    Stripe.setPublishableKey($config.STRIPE.PUBLIC_KEY);
+    $http.get('/api/payments/card/token').then(response => {
+      Stripe.setPublishableKey(response.data.checkoutToken);
+    })
+    
   });

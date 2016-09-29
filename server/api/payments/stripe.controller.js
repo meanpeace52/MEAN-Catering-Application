@@ -6,7 +6,7 @@ let mailer = require('../mailer/mailer');
 let stripe = require('stripe')(config.payments.STRIPE.SECRET_KEY);
 
 class StripeController {
-
+  
   getToken(req, res) {
     return Promise.resolve({
       checkoutToken: config.payments.STRIPE.PUBLIC_KEY
