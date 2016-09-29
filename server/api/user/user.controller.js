@@ -140,8 +140,8 @@ export function verify(req, res, next) {
             "email": user.email,
             "first_name": user.firstname,
             "last_name": user.lastname,
-            "p[4]": "4",
-            "status[4]": "1"
+            "p[${config.activeCampaign.user_group}]": config.activeCampaign.user_group,
+            "status[${config.activeCampaign.user_group}]": "1"
           }
           var contact_add = ac.api("contact/add", contact);
           contact_add.then(function(result){
@@ -152,8 +152,8 @@ export function verify(req, res, next) {
             "email": user.email,
             "first_name": user.firstname,
             "last_name": user.lastname,
-            "p[3]": "3",
-            "status[3]": "1"
+            "p[${config.activeCampaign.catering_group}]": config.activeCampaign.catering_group,
+            "status[${config.activeCampaign.catering_group}]": "1"
           }
           var contact_add = ac.api("contact/add", contact);
           contact_add.then(function(result){
