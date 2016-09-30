@@ -163,6 +163,8 @@ function createSummary(user) {    //user is caterer
         html += '<p>Location: <strong>' + event.location + '</strong></p>';
         html += '<p>People: <strong>' + event.people + '</strong></p>';
         html += '<p>Price per person: <strong>' + event.pricePerPerson + '</strong></p>';
+        html += '<p>To change or stop email notifications, log into your account using this email address and click Profile and Email Options.</p>';
+        html += '<p>If you have not registered or do not know your password, just click forgot my password at login and use this email.</p>';
         html += '<hr />';
       });
       summary.eventsTomorrowHtml = html;
@@ -213,7 +215,7 @@ var mailer = {
     });
   },
   verifyUser: function(user) {
-    let message = '<h1>Hello,</h1><p>Please follow the link below to verify your email. If it is not you who signed up to Catering Ninja, just ignore this message.</p><p><a href="' + config.domain + 'verify/' + user._id + '">Please verify email address</a></p>';
+    let message = '<h2>Hello,</h2><p>Please follow the link below to verify your email. If you did not sign up to Catering Ninja, just ignore this message.</p><p><a href="' + config.domain + 'verify/' + user._id + '">Please verify email address</a></p>';
     nodemailerMailgun.sendMail({
       from: config.mailgun.from,
       to: user.email,
@@ -229,7 +231,7 @@ var mailer = {
     });
   },
   reset: function(user) {
-    let message = '<h1>Hello,</h1><p>Here is your new password. Please change it as soon as you will be able to log in</p><h3>' + user.password + '</h3>';
+    let message = '<h1>Hello,</h1><p>Here is your new password. Please change it as soon as you log in</p><h3>' + user.password + '</h3>';
     nodemailerMailgun.sendMail({
       from: config.mailgun.from,
       to: user.email,
@@ -249,7 +251,7 @@ var mailer = {
     promises.push(nodemailerMailgun.sendMail({
       from: config.mailgun.from,
       to: user.email,
-      subject: 'Catering-ninja: your credit card was not authorised',
+      subject: 'Catering-ninja: your credit card was not authorized',
       html: 'Simple message',
     }, function (err, info) {
       if (err) {
@@ -337,6 +339,8 @@ var mailer = {
       message += '<p>Location: <strong>' + event.location + '</strong></p>';
       message += '<p>People: <strong>' + event.people + '</strong></p>';
       message += '<p>Price per person: <strong>' + event.pricePerPerson + '</strong></p>';
+      message += '<p>To change or stop email notifications, log into your account using this email address and click Profile and Email Options.</p>';
+      message += '<p>If you have not registered or do not know your password, just click forgot my password at login and use this email.</p>';
 
     getEventMailList(event).then((users) => {
       _.each(users, (user) => {
@@ -395,6 +399,8 @@ var mailer = {
           message += '<p>Location: <strong>' + event.location + '</strong></p>';
           message += '<p>People: <strong>' + event.people + '</strong></p>';
           message += '<p>Price per person: <strong>' + event.pricePerPerson + '</strong></p>';
+          message += '<p>To change or stop email notifications, log into your account using this email address and click Profile and Email Options.</p>';
+          message += '<p>If you have not registered or do not know your password, just click forgot my password at login and use this email.</p>';
           message += '<hr />';
           nodemailerMailgun.sendMail({
             from: config.mailgun.from,

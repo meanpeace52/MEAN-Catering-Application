@@ -8,6 +8,10 @@ import _ from 'lodash';
 import TempUser from '../tempUser/tempUser.model';
 var fs = require('fs');
 var  mailer = require('../mailer/mailer');
+var ActiveCampaign = require('activecampaign');
+
+var ac = new ActiveCampaign(config.activeCampaign.domain, config.activeCampaign.api_key);
+ac.debug = true;
 
 function validationError(res, statusCode) {
   statusCode = statusCode || 422;
@@ -130,6 +134,33 @@ export function verify(req, res, next) {
         let token = jwt.sign({ _id: user._id }, config.secrets.session, {
             expiresIn: 60 * 60 * 5
           });
+
+        if(user.role == 'user') {
+          var contact = {
+            "email": user.email,
+            "first_name": user.firstname,
+            "last_name": user.lastname,
+            "p[${config.activeCampaign.user_group}]": config.activeCampaign.user_group,
+            "status[${config.activeCampaign.user_group}]": "1"
+          }
+          var contact_add = ac.api("contact/add", contact);
+          contact_add.then(function(result){
+            console.log(result);
+          });
+        } else if (user.role == 'caterer') {
+          var contact = {
+            "email": user.email,
+            "first_name": user.firstname,
+            "last_name": user.lastname,
+            "p[${config.activeCampaign.catering_group}]": config.activeCampaign.catering_group,
+            "status[${config.activeCampaign.catering_group}]": "1"
+          }
+          var contact_add = ac.api("contact/add", contact);
+          contact_add.then(function(result){
+            console.log(result);
+          });
+        }
+
         return res.status(200).json({token});
       }
     });

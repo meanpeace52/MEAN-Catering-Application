@@ -16,9 +16,8 @@ class OffersNewController {
 
     this.getCurrentUser = Auth.getCurrentUser;
     this.isLoggedIn = Auth.isLoggedIn;
-    this.user = this.getCurrentUser();
+    this.user = this.getCurrentUser();   
     this.incService = IncludedInPriceService;
-
     this.$scope.fm = {};
 
     this.$scope.isPast = false;
@@ -58,45 +57,46 @@ class OffersNewController {
 
   sendRequest(form) {
 
-  if (!this.user.payableAccount) {
+    if (!this.user.payableAccount) {
       /*let saving = this.saveDraft(form, false);
       if (saving) {
         saving.then(() => {
           this.$state.go('dwolla');
         });
       }*/
-    let offerModel = this.$scope.fm;
-    offerModel.catererId = this.user._id;
-    offerModel.catererName = this.user.companyName || this.user.name;
-    offerModel.date = new Date();
-    offerModel.status = 'draft';
+      let offerModel = this.$scope.fm;
+      offerModel.catererId = this.user._id;
+      offerModel.catererName = this.user.companyName || this.user.name;
+      offerModel.date = new Date();
+      offerModel.status = 'draft';
 
-    /* invoice is correct, but return is undefined */
-    if (offerModel) {
-        let total = this.event.pricePerPerson * this.event.people;
-        if (offerModel.counter) {
-          total = offerModel.counter * this.event.people;
-        }
-        total = +total.toFixed(2);
-        this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
-          offerModel.invoice = {
-            pricePerPerson: this.event.pricePerPerson,
-            people: this.event.people,
-            counter: offerModel.counter || 0,
-            service: total,
-            tax: tax,
-            total: total + tax
-          };
+      /* invoice is correct, but return is undefined */
+      if (offerModel) {
+          let total = this.event.pricePerPerson * this.event.people;
+          if (offerModel.counter) {
+            total = offerModel.counter * this.event.people;
+          }
+          total = +total.toFixed(2);
+          this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
+            offerModel.invoice = {
+              pricePerPerson: this.event.pricePerPerson,
+              people: this.event.people,
+              counter: offerModel.counter || 0,
+              service: total,
+              tax: tax,
+              total: total + tax,
+              commission: this.user.commission
+            };
 
-          return this.$http.post('/api/offers/new', offerModel).then(response => {
-            this.saved = true;
-            this.$state.go('dwolla',{offer: response.data});
-          })
-            .catch(err => {
-              this.errors.other = err.message;
-            });
-        });
-    }
+            return this.$http.post('/api/offers/new', offerModel).then(response => {
+              this.saved = true;
+              this.$state.go('dwolla',{offer: response.data});
+            })
+              .catch(err => {
+                this.errors.other = err.message;
+              });
+          });
+      }
 
     } else {
       let offerModel = this.$scope.fm;
@@ -118,7 +118,8 @@ class OffersNewController {
             counter: offerModel.counter || 0,
             service: total,
             tax: tax,
-            total: total + tax
+            total: total + tax,
+            commission: this.user.commission
           };
 
           this.$http.post('/api/offers/new', offerModel).then(response => {
@@ -158,7 +159,8 @@ class OffersNewController {
             counter: offerModel.counter || 0,
             service: total,
             tax: tax,
-            total: total + tax
+            total: total + tax,
+            commission: this.user.commission
           };
 
           return this.$http.post('/api/offers/new', offerModel).then(response => {

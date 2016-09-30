@@ -2,13 +2,12 @@
   <div class="row">
     <div class="col-sm-12">
       <h1>Reset password</h1>
-      <!--<p>Accounts are reset on server restart from <code>server/config/seed.js</code>. Default account is <code>test@example.com</code> / <code>test</code></p>-->
-      <!--<p>Admin account is <code>admin@example.com</code> / <code>admin</code></p>-->
+      <p>Please enter your email below and a new password will be sent.  Make sure you check your Spam or Junkmail folder if you don't see it immediately</p>
     </div>
     <div class="col-sm-12">
       <form class="form" name="form" ng-submit="vm.reset(form)" novalidate>
 
-        <div class="form-group">
+        <div class="form-group" style="width:25%">
           <label>Email</label>
 
           <input type="email" name="email" class="form-control" ng-model="vm.user.email" required>

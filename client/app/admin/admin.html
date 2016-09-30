@@ -4,11 +4,12 @@
   <uib-tabset active="active">
     <uib-tab index="0" heading="User management">
       <ul class="list-group user-list">
-        <li class="list-group-item" ng-repeat="user in admin.users" ng-if="user.role == 'user'">
+        <li class="list-group-item" ng-repeat="user in admin.users | orderBy:'-created_date'" ng-if="user.role == 'user'">
           <div class="user-info">
             <strong ng-if="user.role === 'user'">{{user.firstname}} {{user.lastname}} {{user.name}}</strong><br>
             <strong ng-if="user.role === 'caterer'">{{user.companyName}} {{user.name}}</strong><br>
             <span class="text-muted">{{user.email}}</span>
+            <p>  Created On - {{user.created_date}}</p>
           </div>
           <a ng-click="admin.edit(user)" class="edit"><span class="fa fa-pencil fa-2x"></span></a>
           <a ng-click="admin.delete(user)" class="trash"><span class="fa fa-trash fa-2x"></span></a>
@@ -17,11 +18,12 @@
     </uib-tab>
     <uib-tab index="1" heading="Caterer management">
       <ul class="list-group user-list">
-        <li class="list-group-item" ng-repeat="user in admin.users" ng-if="user.role == 'caterer'">
+        <li class="list-group-item" ng-repeat="user in admin.users | orderBy:'-created_date'" ng-if="user.role == 'caterer'">
           <div class="user-info">
             <strong ng-if="user.role === 'user'">{{user.firstname}} {{user.lastname}} {{user.name}}</strong><br>
             <strong ng-if="user.role === 'caterer'">{{user.companyName}} {{user.name}}</strong><br>
             <span class="text-muted">{{user.email}}</span>
+            <p>  Created On - {{user.created_date}}</p>
           </div>
           <a ng-click="admin.edit(user)" class="edit"><span class="fa fa-pencil fa-2x"></span></a>
           <a ng-click="admin.delete(user)" class="trash"><span class="fa fa-trash fa-2x"></span></a>

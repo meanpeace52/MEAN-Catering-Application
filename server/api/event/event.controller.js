@@ -88,6 +88,14 @@ export function index(req, res) {
     .catch(handleError(res));
 }
 
+// Gets a list of Events for Admin access.
+export function adminEvents(req, res) {
+  console.log('req', req.body);
+  return Event.find({status: { $ne: 'completed'}}).exec()
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+}
+
 export function dataset(req, res) {
   console.log('req', req.body);
   let query = {},

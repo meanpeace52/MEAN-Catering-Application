@@ -18,6 +18,7 @@ class CatererProfileAdminController {
     this.$uibModalInstance = $uibModalInstance;
 
     this.getCurrentUser = Auth.getCurrentUser;
+    this.loggedUser = this.getCurrentUser();
     this.isLoggedIn = Auth.isLoggedIn;
     this.user = user;
     this.ftService = FoodTypesService;

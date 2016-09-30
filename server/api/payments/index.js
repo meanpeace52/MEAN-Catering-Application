@@ -16,7 +16,7 @@ router.post('/card/auth', auth.isAuthenticated(), StripeController.auth);
 router.post('/card/capture', auth.isAuthenticated(), StripeController.capture);
 router.post('/card/verify', auth.isAuthenticated(), StripeController.verify);
 router.post('/card/update', auth.isAuthenticated(), StripeController.update);
-router.get('/card/token', auth.isAuthenticated(), StripeController.getToken);
+router.get('/card/token', StripeController.getToken);
 router.get('/dwolla/startAuth', auth.isAuthenticated(), DwollaController.startAuth);
 router.get('/dwolla/endAuth', auth.isAuthenticated(), DwollaController.endAuth);
 router.get('/dwolla/loginUrl', auth.isAuthenticated(), DwollaController.loginUrl);

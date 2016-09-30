@@ -21,7 +21,7 @@ module.exports = {
           process.env.MONGOHQ_URL ||
           process.env.OPENSHIFT_MONGODB_DB_URL +
           process.env.OPENSHIFT_APP_NAME ||
-          'mongodb://ninja_root:ninja3141@104.198.67.10:27017/catering'
+          'mongodb://ninja_root:ninja3141@104.154.59.205:27017/catering'
   },
 
   mailgun: {
@@ -51,6 +51,13 @@ module.exports = {
       SECRET_KEY: 'sk_test_FgAfCdq6QKhuGwWsHuk0yz7h',
       PUBLIC_KEY: 'pk_test_sPCubetxhsItqcr1nkZOHQfM'
     }*/
+  },
+
+  activeCampaign: {
+    domain: 'https://cateringninja.api-us1.com',
+    api_key: '338d95021e19ec066b3dd319c1138e0606b34b8ed306ed2c7e2bd41625a206964ebf7aaa',
+    user_group: '2',
+    catering_group: '1'
   }
 
   /*payments: {

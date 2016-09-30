@@ -17,7 +17,7 @@ class CatererProfileController {
     this.$cookies = $cookies;
     this.getCurrentUser = Auth.getCurrentUser;
     this.isLoggedIn = Auth.isLoggedIn;
-    this.user = this.getCurrentUser();
+    this.user = this.loggedUser = this.getCurrentUser();    
     this.ftService = FoodTypesService;
     this.payments = PaymentService;
 

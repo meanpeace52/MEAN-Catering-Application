@@ -7,11 +7,11 @@
         <p>You can always update your credit card information in the Account Info in the upper right.</p>
         <div class="form-group"  style="width:25%">
           <label for="card-number">Card Number</label>
-          <input type="text" class="form-control"  id="cardNumber" cc-number cc-eager-type cc-format="card" cc-validate="card" maxlength="19" name="ccNumber" ng-model="card.number" data-stripe="number" ng-required="true">
+          <input type="text" class="form-control" id="cardNumber" cc-number cc-eager-type cc-format="card" cc-validate="card" maxlength="19" name="ccNumber" ng-model="card.number" data-stripe="number" ng-required="true">
         </div>
         <div class="form-group"  style="width:10%">
           <label for="cvc">CVC</label>
-          <input type="text" class="form-control"  id="cvc" cc-cvc cc-type="ccForm.ccNumber.$ccType" name="ccCvc" ng-model="card.cvc" data-stripe="cvc" ng-required="true">
+          <input type="text" class="form-control" id="cvc" cc-cvc cc-type="ccForm.ccNumber.$ccType" name="ccCvc" ng-model="card.cvc" data-stripe="cvc" ng-required="true">
         </div>
         <div class="form-group"  style="width:35%">
           <label for="card-number">Expiration</label>

@@ -19,7 +19,7 @@
                   <small>Total price:</small> <b>${{offer.invoice.total}}</b> <span class="label label-info">{{offer.paymentStatus || offer.status}}</span>
                 </h3>
               </div>
-              <div class="col-sm-6" ng-if="!past">
+              <div class="col-sm-6" ng-if="!past && oc.user.role != 'admin'">
                 <div ng-if="offer.status == 'sent' && !offer.drafted">
                   <hr>
                   <button class="btn btn-success" ng-click="oc.accept(offer._id)">Accept</button>
@@ -72,11 +72,11 @@
               </div>
             </div>
           </div>
-          <div class="row">
+          <div class="row" ng-if="oc.user.role != 'admin'">
             <div style="padding: 10px;" offercomments offer="offer"></div>
             <hr>
           </div>
-          <div class="row">
+          <div class="row" ng-if="oc.user.role != 'admin'">
             <div class="col-sm-6">
               <div ng-if="offer.caterer.logo" class="img-thumbnail" width="300" ng-draw="{file: offer.caterer.logo, width: 300}"></div>
             </div>

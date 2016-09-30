@@ -1,238 +1,171 @@
 'use strict';
 
 class EventsAdminController {
-  constructor($http, $scope, $rootScope, socket, Auth, $state, IncludedInPriceService, $interval, $filter, $uibModal, $log, $timeout) {
+  constructor($http, $scope, $rootScope, socket, Auth, $state, $cookies, $sce, OffersService, $interval, $filter) {
 
-  var root = this;
-  this.errors = {};
-  this.submitted = false;
-  this.saved = false;
-  this.sent = false;
+    var root = this;
+    this.errors = {};
+    this.submitted = false;
+    this.saved = false;
+    this.sent = false;
 
-  this.Auth = Auth;
-  this.$state = $state;
-  this.$scope = $scope;
-  this.$rootScope = $rootScope;
-  this.$http = $http;
-  this.socket = socket;
-  this.incService = IncludedInPriceService;
-  this.getCurrentUser = Auth.getCurrentUser;
-  this.isLoggedIn = Auth.isLoggedIn;
-  this.user = this.$scope.user = this.getCurrentUser();
-  this.$scope.eventActive = null;
-  this.$scope.events = [];
-  this.$scope.displayed = [];
+    this.Auth = Auth;
+    this.$state = $state;
+    this.$scope = $scope;
+    this.$rootScope = $rootScope;
+    this.$http = $http;
+    this.$sce = $sce;
+    this.$cookies = $cookies;
+    this.socket = socket;
+    this.OffersService = OffersService;
+    this.getCurrentUser = Auth.getCurrentUser;
+    this.user = this.getCurrentUser().$promise;
+    this.isLoggedIn = Auth.isLoggedIn;
+    this.$scope.eventActive = null;
+    this.$scope.adminEvents = [];
+    this.$scope.displayed_events = [];
+    this.$scope.isInvoiceMode = false;
+    this.$scope.eventForInvoice = null;
 
-  this.$scope.selectedEvents = {};
-  this.$scope.allEventsAreSelected = false;
-
-  $scope.selectAll = value => this.$scope.events.forEach(event => $scope.selectedEvents[event._id] = value);
-  $scope.isSelected = event => !!$scope.selectedEvents[event._id];
-
-  $scope.select = () => {
-    let allIsSelected = true;
-    for (let k in $scope.selectedEvents) {
-      if(!$scope.selectedEvents[k]) {
-        allIsSelected = false;
-        break;
-      }
+    this.$scope.filter = {
+      dateFilter: 'All',
+      newEvents: false,
+      confirmedEvents: false
     }
-    $scope.allEventsAreSelected = allIsSelected;
-  };
-  $scope.selectAll(false);
 
-  $scope.paySelected = () => {
-    let selectedEventIds = [];
-    for (let k in $scope.selectedEvents) {
-      if($scope.selectedEvents[k]) {
-        selectedEventIds.push(k);
-      }
-    }
-    let selectedEvents = $scope.events.filter(event => selectedEventIds.includes(event._id));
+    let now = new Date();
+    $scope.start24 = Date.parse(now) - (24 * 60 * 60 * 1000);
+    $scope.start1 = Date.parse(now) - (60 * 60 * 1000);
 
-  if (selectedEvents.length) {
-    this.$http.post('/api/payments/pay', {
-      items: selectedEvents.map(event => event.offers[0]._id)
-    }).then(response => {
-      $scope.$emit('eventUpdated');
-    }).catch(response => $state.go('dwolla'));
-  }
-};
-
-$scope.pay = (offer) => {
-  this.$http.post('/api/payments/pay', {
-    items: [offer._id]
-  }).then(response => {
-    $scope.$emit('eventUpdated');
-  }).catch(response => $state.go('dwolla'));
-};
-
-$scope.open = (offer) => {
-
-  var modalInstance = $uibModal.open({
-    animation: true,
-    templateUrl: 'adjustPayment.html',
-    controller: ($scope, $uibModalInstance) => {
-
-    $scope.totalRefund = angular.copy(offer.invoice);
-  $scope.totalRefund.refund = $scope.totalRefund.total;
-  $scope.totalRefund.adjustment.client = 0;
-  $scope.totalRefund.adjustment.caterer = 0;
-  $scope.totalRefund.adjustment.chargeOff = 0;
-  $scope.partialRefund = angular.copy(offer.invoice);
-  $scope.partialRefund.refund = 0;
-  $scope.updatedInvoice = $scope.totalRefund;
-
-  $scope.setAdjustment = (updatedInvoice) => {
-    $scope.updatedInvoice = updatedInvoice
-  };
-
-  $scope.ok = () => {
-    angular.merge(root.$scope.eventActive.offers[0].invoice, $scope.updatedInvoice);
-
-    $http.post('/api/offers/' + root.$scope.eventActive.offers[0]._id, root.$scope.eventActive.offers[0]).then(response => {
-      $http.post('/api/events/' + root.$scope.eventActive._id, root.$scope.eventActive).then(response => {
-      $uibModalInstance.close();
-  })
-});
-};
-
-$scope.cancel = function () {
-  $uibModalInstance.dismiss('cancel');
-};
-},
-size: 'lg'
-});
-
-modalInstance.result.then(function () {
-  //$scope.selected = selectedItem;
-}, function () {
-  $log.info('Modal dismissed at: ' + new Date());
-});
-};
-
-$scope.includedInPrice = this.incService.getIncludedInPrice().then((data)=> {
-  $scope.includedInPrice = data;
-});
-
-$scope.query = { status: 'confirmed' };
-
-function convertIncludedInPrice(array) {
-  let cnt = [];
-  _.each($scope.includedInPrice, (item, j) => {
-    if (_.indexOf(array, item._id) > -1) {
-    cnt.push(item);
-  }
-});
-return cnt;
-}
-
-$scope.filter = {
-  paid: 'all', //allPaid, allUnpaid
-  dateTo: null,
-  dateFrom: null
-}
-
-$scope.dateOptions = {
-  formatYear: 'yy',
-  //minDate: new Date(),
-  startingDay: 1
-};
-
-$scope.popup1 = {
-  opened: false
-};
-
-$scope.open1 = function() {
-  $scope.popup1.opened = true;
-};
-
-$scope.popup2 = {
-  opened: false
-};
-
-$scope.open2 = function() {
-  $scope.popup2.opened = true;
-};
-
-
-this.pipe = function(tableState) {
-  console.log('tableState', tableState);
-  console.trace();
-  $scope.tableState = (angular.isObject(tableState) && tableState ? tableState : $scope.tableState);
-
-  $http.post('/api/events/dataset', $scope.query).then(response => {
-    $scope.events = response.data;
-  _.each($scope.events, (event, i) => {
-    $scope.events[i].includedInPrice = convertIncludedInPrice(event.includedInPrice);
-  if ($scope.events[i].offers.length) {
-    $scope.events[i].offers[0].includedInPrice = convertIncludedInPrice(event.offers[0].includedInPrice);
-    if (event.offers[0].invoice) {
-      $scope.events[i].offers[0].priceWithCounter = event.offers[0].invoice.total;
-    } else if (event.offers[0].counter) {
-      $scope.events[i].offers[0].priceWithCounter = event.pricePerPerson * event.people - event.offers[0].counter;
-    } else {
-      $scope.events[i].offers[0].priceWithCounter = event.pricePerPerson * event.people;
-    }
-  }
-})
-
-let filtered = $scope.tableState.search.predicateObject ? $filter('filter')($scope.events, $scope.tableState.search.predicateObject) : $scope.events,
-  start = $scope.tableState.pagination.start,
-  number = $scope.tableState.pagination.number;
-
-if ($scope.tableState.sort.predicate) {
-  filtered = $filter('orderBy')(filtered, $scope.tableState.sort.predicate, $scope.tableState.sort.reverse);
-}
-
-$scope.displayed = filtered.slice(start, start + number);
-$scope.tableState.pagination.numberOfPages = Math.ceil(filtered.length / number);
-if ($scope.eventActive) $scope.setActiveEvent($scope.eventActive);
-});
-}
-
-  $scope.setActiveEvent = function(event) {
-    $scope.eventActive = event;
-
-    _.each($scope.events, (item, i) => {
-      $scope.events[i].active = false;
-      if (item._id == event._id) {
-        $scope.events[i].active = true;
+    this.getCurrentUser().$promise.then((user) => {
+      this.user = $scope.user = user;
+      if (user.role == 'admin') {
+        $scope.query = { status: { $ne: 'completed'} };        
       }
     });
-  }
 
 
-    $scope.$watchGroup(['filter.paid', 'filter.dateTo', 'filter.dateFrom'], () => {
-      if ($scope.filter.paid === 'all') {
-        $scope.query.status = { $in: ['confirmed', 'completed'] };
-        $scope.query.paymentStatus = { $in: ['paid', 'hold', 'completed'] };
-    } else if ($scope.filter.paid === 'allPaid') {
-      $scope.query.status = { $in: ['completed'] };
-      $scope.query.paymentStatus = { $in: ['completed'] };
-    } else if ($scope.filter.paid === 'allUnpaid') {
-      $scope.query.status = { $in: ['confirmed'] };
-      $scope.query.paymentStatus = { $in: ['paid', 'hold'] };
+    this.eventsPipe = function(eventsTableState) {
+      // if ($scope.query) {
+        $scope.eventsTableState = (angular.isObject(eventsTableState) && eventsTableState ? eventsTableState : $scope.eventsTableState);
+        $http.post('/api/events/adminEvents', $scope.query)
+        .then(response => {
+          let events = response.data;
+
+          $scope.newEventsCount = 0;
+          $scope.confirmedEventsCount = 0;
+
+          // console.log('events1', events);
+
+          // _.each(events, (event, i) => {
+          //   if ($scope.user.role == 'caterer') {
+          //     if ((_.indexOf(event.rejectedBy, $scope.user._id) >= 0) ||
+          //       (event.status == 'confirmed' && event.confirmedBy !== $scope.user._id) ||
+          //       ($scope.user.minprice && event.pricePerPerson < $scope.user.minprice )) {
+          //       events[i].drafted = true;
+          //     }
+          //   }
+          //   let offers = _.filter(event.offers, (offer) => {
+          //     return (offer.status !== 'declined' && offer.status !== 'cancelled');
+          //   }),
+          //   offersNumber = offers ? offers.length : 0;
+
+          //   if ($scope.user.role == 'caterer') {
+          //     let offerUrl = (offers.length ? '/offers/' + offers[0]._id : '/offers/new');
+
+          //     events[i].offerUrl = offerUrl;
+          //     events[i].offerStatus = (offers.length ? offers[0].status : null);
+          //     events[i].offersNumber = offersNumber;
+          //   } else {
+          //     let offersInfo = '';
+          //     _.each(offers, (offer, j) => {
+          //       let status = offer.status;
+          //       offersInfo += '<div>' + offer.catererName + ' <span class="label label-info">' + status + '</span></div><hr class="popover-divider" />';
+          //       events[i].offersInfo = $sce.trustAsHtml(offersInfo);
+          //     });
+          //     events[i].offersNumber = offersNumber;
+          //   }
+          // });
+
+          // //$scope.events = events;
+
+          // $scope.events = _.filter(events, (o) => {
+          //   if (!o.drafted) {
+
+          //     if (o.status == 'confirmed') $scope.confirmedEventsCount++;
+
+          //     if ($scope.filter.dateFilter == '24') {
+          //       if (Date.parse(o.createDate) > $scope.start24) {
+          //         $scope.newEventsCount++;
+          //       }
+          //     } else if ($scope.filter.dateFilter == '1') {
+          //       if (Date.parse(o.createDate) > $scope.start1) {
+          //         $scope.newEventsCount++;
+          //       }
+          //     }
+          //     return o;
+          //   }
+          // });
+          
+          $scope.adminEvents = events;
+          // console.log('events2', $scope.adminEvents);
+
+          let filtered = $scope.eventsTableState.search.predicateObject ? $filter('filter')($scope.adminEvents, $scope.eventsTableState.search.predicateObject) : $scope.adminEvents,
+              start = $scope.eventsTableState.pagination.start,
+              number = $scope.eventsTableState.pagination.number;
+
+          if ($scope.eventsTableState.sort.predicate) {
+            filtered = $filter('orderBy')(filtered, $scope.eventsTableState.sort.predicate, $scope.eventsTableState.sort.reverse);
+          }
+
+          $scope.displayed_events = filtered.slice(start, start + number);
+          $scope.eventsTableState.pagination.numberOfPages = Math.ceil(filtered.length / number);
+          if ($rootScope.eventActive) $rootScope.$broadcast('eventActive', $rootScope.eventActive);
+        });
+      // }
     }
 
-      if ($scope.filter.dateTo && !$scope.filter.dateFrom) {
-        $scope.query.date = { $lte: $scope.filter.dateTo };
-      } else if ($scope.filter.dateTo && $scope.filter.dateFrom) {
-        $scope.query.date = { $lte: $scope.filter.dateTo, $gte: $scope.filter.dateFrom };
-      } else if (!$scope.filter.dateTo && $scope.filter.dateFrom) {
-        $scope.query.date = { $gte: $scope.filter.dateFrom } ;
-      } else if (!$scope.filter.dateTo && !$scope.filter.dateFrom) {
-        delete $scope.query.date;
+    $scope.$watchGroup(['filter.dateFilter', 'filter.newEvents', 'filter.confirmedEvents'], () => {
+      let now = new Date();
+        $scope.start24 = Date.parse(now) - (24 * 60 * 60 * 1000);
+        $scope.start1 = Date.parse(now) - (60 * 60 * 1000);
+
+      if ($scope.query) {
+        if ($scope.filter.newEvents) {
+          if ($scope.filter.dateFilter == 'All') {
+            delete $scope.query.createDate;
+          } else if ($scope.filter.dateFilter == '24') {
+            $scope.query.createDate = $scope.start24;
+          } else if ($scope.filter.dateFilter == '1') {
+            $scope.query.createDate = $scope.start1;
+          }
+        } else {
+          delete $scope.query.createDate;
+        }
+
+        if ($scope.filter.confirmedEvents) {
+          if ($scope.filter.dateFilter == 'All') {
+            delete $scope.query.confirmedDate;
+            $scope.query.status = 'confirmed';
+          } else if ($scope.filter.dateFilter == '24') {
+            $scope.query.confirmedDate = $scope.start24;
+            $scope.query.status = 'confirmed';
+          } else if ($scope.filter.dateFilter == '1') {
+            $scope.query.confirmedDate = $scope.start1;
+            $scope.query.status = 'confirmed';
+          }
+        } else {
+          delete $scope.query.confirmedDate;
+          delete $scope.query.status;
+        }
+        root.eventsPipe();
       }
-
-
-      this.pipe();
     });
 
-    var sync = $interval(root.pipe, (1000 * 60));
+    var sync = $interval(root.eventsPipe, (1000 * 60));
 
     $scope.$on('eventUpdated', () => {
-      root.pipe();
+      root.eventsPipe();
     });
 
     $scope.$on('$destroy', function () {
@@ -241,6 +174,136 @@ if ($scope.eventActive) $scope.setActiveEvent($scope.eventActive);
       $interval.cancel(sync);
     });
   }
+
+  delete(event) {
+    let url = '/api/events/' + event._id;
+    _.each(this.$scope.adminEvents, (item, i) => {
+      if (item._id == event._id) {
+        this.$scope.adminEvents[i].drafted = true;
+      }
+    });
+    this.$http.delete(url, event)
+      .then(response => {
+        this.eventsPipe();
+      })
+    .catch(err => {
+        this.errors.other = err.message;
+    })
+  }
+
+  cancel(id) {
+    if (this.user.role = 'user') {
+      _.each(this.$scope.adminEvents, (item, i) => {
+        if (item._id == id) {
+          this.$scope.adminEvents[i].drafted = true;
+          this.$scope.adminEvents[i].status = 'cancelled';
+        }
+      });
+      this.$http.post('/api/events/' + id + '/cancel', {status: 'cancelled'}).then(response => {
+        this.eventsPipe();
+        this.socket.syncUpdates('offer', this.$scope.offers);
+      });
+    }
+  }
+
+  decline(id) {        //as caterer
+    if (this.user.role = 'caterer') {
+      this.$http.post('/api/events/' + id + '/decline', {rejectedBy: this.user._id}).then(response => {
+        _.each(this.$scope.adminEvents, (item, i) => {
+          if (item._id == id) {
+            this.$scope.adminEvents[i].drafted = true;
+          }
+        });
+        this.socket.syncUpdates('offer', this.$scope.offers);
+      });
+      this.$http.post('/api/offers/cancelAll', {eventId: id, catererId: this.user._id}).then(response => {
+       //all offers are cancelled
+      });
+    }
+  }
+
+  prepareCatererEvents() {
+    _.each(this.$scope.adminEvents, (event, i) => {
+      if (_.indexOf(event.rejectedBy, this.user._id) >= 0 || event.status == "cancelled") {
+        this.$scope.adminEvents[i].drafted = true;
+      }
+
+      this.$http.post('/api/offers', {eventId: event._id, catererId: this.user._id}).then(response => {
+        let offerUrl = (response.data.length ? '/offers/' + response.data[0]._id : '/offers/new'),
+            status = (response.data.length ? response.data[0].status : null),
+            offersNumber = response.data.length;
+        this.$scope.adminEvents[i].offerUrl = offerUrl;
+        this.$scope.adminEvents[i].offerStatus = status;
+        this.$scope.adminEvents[i].offersNumber = offersNumber;
+        this.socket.syncUpdates('offer', this.$scope.adminEvents);
+      });
+    });
+  }
+
+  prepareUserEvents() {
+    _.each(this.$scope.adminEvents, (event, i) => {
+      if (event.status == "cancelled") {
+        this.$scope.adminEvents[i].drafted = true;
+      }
+      this.$http.post('/api/offers', {eventId: event._id}).then(response => {
+        let offersNumber = response.data.length,
+          offersInfo = '';
+        _.each(response.data, (offer, j) => {
+          let status = offer.status;
+          this.$http.get('/api/users/' + offer.catererId).then(res => {
+            offersInfo += '<div>' + res.data.name + ' <span class="label label-info">' + status + '</span></div><hr class="popover-divider" />';
+            this.$scope.adminEvents[i].offersInfo = this.$sce.trustAsHtml(offersInfo);
+          });
+        });
+        this.$scope.adminEvents[i].offersNumber = offersNumber;
+        this.socket.syncUpdates('offer', this.$scope.adminEvents);
+      });
+    });
+  }
+
+  getEventsList() {
+    if (this.user.role == 'user') {
+      this.$http.post('/api/events', {userId: this.user._id}).then(response => {
+        this.$scope.adminEvents = response.data;
+        this.prepareUserEvents();
+        this.socket.syncUpdates('event', this.$scope.adminEvents);
+      });
+    } else if (this.user.role == 'caterer') {
+      this.$http.post('/api/events', {showToCaterers: true, sentTo: this.user._id}).then(response => {
+        this.$scope.adminEvents = response.data;
+        this.prepareCatererEvents();
+        this.socket.syncUpdates('event', this.$scope.adminEvents);
+      });
+    }
+  }
+
+  showInvoice($event, event) {
+    this.$scope.isInvoiceMode = true;
+    this.$scope.eventForInvoice = angular.copy(event);
+    this.$scope.eventForInvoice.offer = this.$scope.eventForInvoice.offers.filter((offer) => {
+      console.log('eventForInvoice', this.$scope.eventForInvoice);
+      return offer.paymentStatus === 'paid' || offer.status === 'completed';
+    })[0];
+    $event.stopPropagation();
+  }
+
+  setActiveEvent(event) {
+    this.$scope.isInvoiceMode = false;
+    this.$scope.eventForInvoice = null;
+    this.$scope.eventActive = event._id;
+    this.$rootScope.eventActive = event._id;
+    this.$cookies.put('eventActive', event._id);
+    this.$rootScope.$broadcast('eventActive', event._id);
+    if (this.user.role === 'admin') {
+      _.each(this.$scope.adminEvents, (item, i) => {
+        this.$scope.adminEvents[i].active = false;
+        if (item._id ==  event._id) {
+          this.$scope.adminEvents[i].active = true;
+        }
+      });
+    }
+  }
+
 }
 
 angular.module('cateringApp')
