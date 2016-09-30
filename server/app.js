@@ -16,7 +16,7 @@ var mailer = require('./api/mailer/mailer');
 var schedule = require('node-schedule');
 var fs = require('fs');
 var https = require('https');
-var http = require('http');
+//var http = require('http');
 
 const stripeController = require('./api/payments/stripe.controller');
 
