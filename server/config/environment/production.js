@@ -55,7 +55,7 @@ module.exports = {
 
   activeCampaign: {
     domain: 'https://cateringninja.api-us1.com',
-    api_key: '338d95021e19ec066b3dd319c1138e0606b34b8ed306ed2c7e2bd41625a206964ebf7aaa'
+    api_key: '338d95021e19ec066b3dd319c1138e0606b34b8ed306ed2c7e2bd41625a206964ebf7aaa',
     user_group: '2',
     catering_group: '1'
   }
