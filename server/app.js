@@ -61,7 +61,7 @@ var j = schedule.scheduleJob(rule, function(){
 });
 
 // Changed time of job running here
-var paymentJobs = schedule.scheduleJob('*/1 * * * *', function() {
+var paymentJobs = schedule.scheduleJob('*/5 * * * *', function() {
 
   var moment = +Date.now();
   var next72h = new Date(moment + 72 * 60 * 60 * 1000);
