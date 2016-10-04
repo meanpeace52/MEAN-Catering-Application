@@ -7,7 +7,7 @@
             <div class="row">
               <div class="col-sm-3">
                 <label tooltip-placement="top" uib-tooltip='Shows only events from the last 24hr or last hour. Once you select the filter you must check the box to the right to turn it on or off.'>Filter By</label>
-                <select class="input-sm form-control" ng-model="filter.dateFilter">
+                <select class="input-sm form-control" ng-model="eventAdminFilter.dateFilter">
                   <option value="All" selected >All</option>
                   <option value="24">Last 24 Hr</option>
                   <option value="1">Last Hr</option>
@@ -16,8 +16,8 @@
               <div class="col-sm-4">
                 <label tooltip-placement="top" uib-tooltip='Click the check box to turn on and off the filters'>Select to Filter</label>
                 <div class="form-group">
-                  <label tooltip-placement="top" uib-tooltip='If you select the filter on the left, a yellow box will show how many events fit that filter. Click the check box to filter only these results.'><input type="checkbox" name="role" ng-model="filter.newEvents" /> <span ng-if="newEventsCount > 0" class="label label-warning">{{newEventsCount}}</span> # New of events</label>
-                  <label tooltip-placement="top" uib-tooltip='The green box will quickly let you know how many confirmed events you have. To filter only those, click the check box.'><input type="checkbox" name="role" ng-model="filter.confirmedEvents" /> <span ng-if="confirmedEventsCount > 0" class="label label-success">{{confirmedEventsCount}}</span> # Confirmed events</label>
+                  <label tooltip-placement="top" uib-tooltip='If you select the filter on the left, a yellow box will show how many events fit that filter. Click the check box to filter only these results.'><input type="checkbox" name="role" ng-model="eventAdminFilter.newEvents" /> <span ng-if="newEventsCount > 0" class="label label-warning">{{newEventsCount}}</span> # New of events</label>
+                  <label tooltip-placement="top" uib-tooltip='The green box will quickly let you know how many confirmed events you have. To filter only those, click the check box.'><input type="checkbox" name="role" ng-model="eventAdminFilter.confirmedEvents" /> <span ng-if="confirmedEventsCount > 0" class="label label-success">{{confirmedEventsCount}}</span> # Confirmed events</label>
                 </div>
               </div>
             </div>
@@ -70,14 +70,14 @@
                 <td style="max-width: 180px;">{{event.description}}</td>
                 <td>
                   <span>
-                    <a class="btn btn-xs btn-default" ng-if="!query.showPast" href="/events/{{event._id}}">Edit Event</a>
+                    <a class="btn btn-xs btn-default" ng-if="!eventAdminQuery.showPast" href="/events/{{event._id}}">Edit Event</a>
                     <!--<a class="btn btn-xs btn-warning" ui-sref="offers" ng-click="eac.setActiveEvent(event)" >Offers ({{event.offersNumber}})</a>-->
                     <a class="btn btn-xs btn-warning" uib-popover-html="event.offersInfo" popover-trigger="mouseenter" popover-placement="right">Offers ({{event.offersNumber}})</a>
                   </span>
                 </td>
                 <td>
-                  <!-- <a class="btn btn-xs btn-danger" ng-click="eac.decline(event._id)" ng-if="event.status !== 'accepted' && event.status !== 'confirmed' && event.status !== 'completed' && !query.showPast">Decline Event</a> -->
-                  <div ng-if="event.status !== 'accepted' && event.status !== 'confirmed' && event.status !== 'completed' && !query.showPast">
+                  <!-- <a class="btn btn-xs btn-danger" ng-click="eac.decline(event._id)" ng-if="event.status !== 'accepted' && event.status !== 'confirmed' && event.status !== 'completed' && !eventAdminQuery.showPast">Decline Event</a> -->
+                  <div ng-if="event.status !== 'accepted' && event.status !== 'confirmed' && event.status !== 'completed' && !eventAdminQuery.showPast">
                     <a class="btn btn-xs btn-danger" ng-click="eac.cancel(event._id)">Cancel</a>
                     <a class="btn btn-xs btn-default delete-event" ng-click="eac.delete(event)" title="Delete event"><i class="fa fa-times"></i></a>
                   </div>
@@ -182,7 +182,7 @@
   </div>
   <div class="row" ng-if="!isInvoiceMode">
     <div class="col-sm-12">
-      <offerslist past="query.showPast"></offerslist>
+      <offerslist past="eventAdminQuery.showPast"></offerslist>
     </div>
   </div>
 </div>

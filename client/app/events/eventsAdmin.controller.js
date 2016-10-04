@@ -27,7 +27,7 @@ class EventsAdminController {
     this.$scope.isInvoiceMode = false;
     this.$scope.eventForInvoice = null;
 
-    this.$scope.filter = {
+    this.$scope.eventAdminFilter = {
       dateFilter: 'All',
       newEvents: false,
       confirmedEvents: false
@@ -40,15 +40,15 @@ class EventsAdminController {
     this.getCurrentUser().$promise.then((user) => {
       this.user = $scope.user = user;
       if (user.role == 'admin') {
-        $scope.query = { status: { $ne: 'completed'} };        
+        $scope.eventAdminQuery = { userId: user._id };
       }
     });
 
 
-    this.eventsPipe = function(eventsTableState) {
-      // if ($scope.query) {
+    this.eventsPipe = function(eventsTableState) {      
+      if ($scope.eventAdminQuery) {
         $scope.eventsTableState = (angular.isObject(eventsTableState) && eventsTableState ? eventsTableState : $scope.eventsTableState);
-        $http.post('/api/events/adminEvents', $scope.query)
+        $http.post('/api/events/adminEvents', $scope.eventAdminQuery)
         .then(response => {
           let events = response.data;
 
@@ -57,57 +57,50 @@ class EventsAdminController {
 
           // console.log('events1', events);
 
-          // _.each(events, (event, i) => {
-          //   if ($scope.user.role == 'caterer') {
-          //     if ((_.indexOf(event.rejectedBy, $scope.user._id) >= 0) ||
-          //       (event.status == 'confirmed' && event.confirmedBy !== $scope.user._id) ||
-          //       ($scope.user.minprice && event.pricePerPerson < $scope.user.minprice )) {
-          //       events[i].drafted = true;
-          //     }
-          //   }
-          //   let offers = _.filter(event.offers, (offer) => {
-          //     return (offer.status !== 'declined' && offer.status !== 'cancelled');
-          //   }),
-          //   offersNumber = offers ? offers.length : 0;
+          _.each(events, (event, i) => {
+            let offers = _.filter(event.offers, (offer) => {
+              return (offer.status !== 'declined' && offer.status !== 'cancelled');
+            }),
+            offersNumber = offers ? offers.length : 0;
 
-          //   if ($scope.user.role == 'caterer') {
-          //     let offerUrl = (offers.length ? '/offers/' + offers[0]._id : '/offers/new');
+            if ($scope.user.role == 'caterer') {
+              let offerUrl = (offers.length ? '/offers/' + offers[0]._id : '/offers/new');
 
-          //     events[i].offerUrl = offerUrl;
-          //     events[i].offerStatus = (offers.length ? offers[0].status : null);
-          //     events[i].offersNumber = offersNumber;
-          //   } else {
-          //     let offersInfo = '';
-          //     _.each(offers, (offer, j) => {
-          //       let status = offer.status;
-          //       offersInfo += '<div>' + offer.catererName + ' <span class="label label-info">' + status + '</span></div><hr class="popover-divider" />';
-          //       events[i].offersInfo = $sce.trustAsHtml(offersInfo);
-          //     });
-          //     events[i].offersNumber = offersNumber;
-          //   }
-          // });
+              events[i].offerUrl = offerUrl;
+              events[i].offerStatus = (offers.length ? offers[0].status : null);
+              events[i].offersNumber = offersNumber;
+            } else {
+              let offersInfo = '';
+              _.each(offers, (offer, j) => {
+                let status = offer.status;
+                offersInfo += '<div>' + offer.catererName + ' <span class="label label-info">' + status + '</span></div><hr class="popover-divider" />';
+                events[i].offersInfo = $sce.trustAsHtml(offersInfo);
+              });
+              events[i].offersNumber = offersNumber;
+            }
+          });
 
-          // //$scope.events = events;
+          //$scope.adminEvents = events;
 
-          // $scope.events = _.filter(events, (o) => {
-          //   if (!o.drafted) {
+          $scope.adminEvents = _.filter(events, (o) => {
+            if (!o.drafted) {
 
-          //     if (o.status == 'confirmed') $scope.confirmedEventsCount++;
+              if (o.status == 'confirmed') $scope.confirmedEventsCount++;
 
-          //     if ($scope.filter.dateFilter == '24') {
-          //       if (Date.parse(o.createDate) > $scope.start24) {
-          //         $scope.newEventsCount++;
-          //       }
-          //     } else if ($scope.filter.dateFilter == '1') {
-          //       if (Date.parse(o.createDate) > $scope.start1) {
-          //         $scope.newEventsCount++;
-          //       }
-          //     }
-          //     return o;
-          //   }
-          // });
+              if ($scope.eventAdminFilter.dateFilter == '24') {
+                if (Date.parse(o.createDate) > $scope.start24) {
+                  $scope.newEventsCount++;
+                }
+              } else if ($scope.eventAdminFilter.dateFilter == '1') {
+                if (Date.parse(o.createDate) > $scope.start1) {
+                  $scope.newEventsCount++;
+                }
+              }
+              return o;
+            }
+          });
           
-          $scope.adminEvents = events;
+          // $scope.adminEvents = events;
           // console.log('events2', $scope.adminEvents);
 
           let filtered = $scope.eventsTableState.search.predicateObject ? $filter('filter')($scope.adminEvents, $scope.eventsTableState.search.predicateObject) : $scope.adminEvents,
@@ -122,41 +115,41 @@ class EventsAdminController {
           $scope.eventsTableState.pagination.numberOfPages = Math.ceil(filtered.length / number);
           if ($rootScope.eventActive) $rootScope.$broadcast('eventActive', $rootScope.eventActive);
         });
-      // }
+      }
     }
 
-    $scope.$watchGroup(['filter.dateFilter', 'filter.newEvents', 'filter.confirmedEvents'], () => {
+    $scope.$watchGroup(['eventAdminFilter.dateFilter', 'eventAdminFilter.newEvents', 'eventAdminFilter.confirmedEvents'], () => {
       let now = new Date();
         $scope.start24 = Date.parse(now) - (24 * 60 * 60 * 1000);
         $scope.start1 = Date.parse(now) - (60 * 60 * 1000);
 
-      if ($scope.query) {
-        if ($scope.filter.newEvents) {
-          if ($scope.filter.dateFilter == 'All') {
-            delete $scope.query.createDate;
-          } else if ($scope.filter.dateFilter == '24') {
-            $scope.query.createDate = $scope.start24;
-          } else if ($scope.filter.dateFilter == '1') {
-            $scope.query.createDate = $scope.start1;
+      if ($scope.eventAdminQuery) {
+        if ($scope.eventAdminFilter.newEvents) {
+          if ($scope.eventAdminFilter.dateFilter == 'All') {
+            delete $scope.eventAdminQuery.createDate;
+          } else if ($scope.eventAdminFilter.dateFilter == '24') {
+            $scope.eventAdminQuery.createDate = $scope.start24;
+          } else if ($scope.eventAdminFilter.dateFilter == '1') {
+            $scope.eventAdminQuery.createDate = $scope.start1;
           }
         } else {
-          delete $scope.query.createDate;
+          delete $scope.eventAdminQuery.createDate;
         }
 
-        if ($scope.filter.confirmedEvents) {
-          if ($scope.filter.dateFilter == 'All') {
-            delete $scope.query.confirmedDate;
-            $scope.query.status = 'confirmed';
-          } else if ($scope.filter.dateFilter == '24') {
-            $scope.query.confirmedDate = $scope.start24;
-            $scope.query.status = 'confirmed';
-          } else if ($scope.filter.dateFilter == '1') {
-            $scope.query.confirmedDate = $scope.start1;
-            $scope.query.status = 'confirmed';
+        if ($scope.eventAdminFilter.confirmedEvents) {
+          if ($scope.eventAdminFilter.dateFilter == 'All') {
+            delete $scope.eventAdminQuery.confirmedDate;
+            $scope.eventAdminQuery.status = 'confirmed';
+          } else if ($scope.eventAdminFilter.dateFilter == '24') {
+            $scope.eventAdminQuery.confirmedDate = $scope.start24;
+            $scope.eventAdminQuery.status = 'confirmed';
+          } else if ($scope.eventAdminFilter.dateFilter == '1') {
+            $scope.eventAdminQuery.confirmedDate = $scope.start1;
+            $scope.eventAdminQuery.status = 'confirmed';
           }
         } else {
-          delete $scope.query.confirmedDate;
-          delete $scope.query.status;
+          delete $scope.eventAdminQuery.confirmedDate;
+          delete $scope.eventAdminQuery.status;
         }
         root.eventsPipe();
       }
