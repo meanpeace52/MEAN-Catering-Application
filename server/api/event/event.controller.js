@@ -97,7 +97,7 @@ export function adminEvents(req, res) {
 }
 
 export function dataset(req, res) {
-  console.log('req', req.body);
+  // console.log('req', req.body);
   let query = {},
     isUser = (req.body.userId ? true : false),
     isCaterer = (req.body.catererId ? true : false),
@@ -106,7 +106,7 @@ export function dataset(req, res) {
     eventPromises = [],
     today = new Date(new Date().setHours(0, 0, 0, 0)) /*.toISOString()*/;
 
-  console.log('isCaterer', isCaterer);
+  // console.log('isCaterer', isCaterer);
 
   if (isUser) {
     query = {
@@ -176,10 +176,10 @@ export function dataset(req, res) {
     }
   }
 
-  console.log('dataset', query);
+  // console.log('dataset', query);
 
   return Event.find(query).exec().then((events) => {
-      console.log('events', events);
+      // console.log('events', events);
     if (isCaterer && !req.body.paymentList) {
       events = _.filter(events, (event) => {
         let catererft = req.body.foodTypes || [],
@@ -228,7 +228,10 @@ export function dataset(req, res) {
             return User.findById(event.userId).exec();
           })
           .then((user) => {
-            events[i].customer = user.firstname + ' ' + user.lastname;
+            if(user)
+              events[i].customer = user.firstname + ' ' + user.lastname;
+            else
+              events[i].customer = '';
           })
           .then(() => {
             return Offer.find(catererQuery).exec();

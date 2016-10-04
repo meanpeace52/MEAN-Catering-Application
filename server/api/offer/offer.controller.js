@@ -27,17 +27,17 @@ function respondWithResult(res, statusCode) {
 
 function saveEventUpdates(eventUpdates) {
   return function(entity) {
-    for (let key in eventUpdates) {
-      entity[key] = eventUpdates[key];
-      delete eventUpdates[key];
-    }
-    var updated = _.mergeWith(entity, eventUpdates);
+      for (let key in eventUpdates) {
+        entity[key] = eventUpdates[key];
+        delete eventUpdates[key];
+      }
+      var updated = _.mergeWith(entity, eventUpdates);
 
-    return updated.save()
-        .then(updated => {
-        return updated;
-  });
-};
+      return updated.save()
+          .then(updated => {
+          return updated;
+      });
+  };
 }
 
 function saveUpdates(updates) {
