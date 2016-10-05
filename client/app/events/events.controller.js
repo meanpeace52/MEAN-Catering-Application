@@ -39,6 +39,7 @@ class EventsController {
 
     this.getCurrentUser().$promise.then((user) => {
       this.user = $scope.user = user;
+     
       if (user.role == 'caterer') {
         $scope.query = {
           showToCaterers: true,
@@ -46,8 +47,11 @@ class EventsController {
         }
         if (user.foodTypes) $scope.query.foodTypes = user.foodTypes;
         if (user.serviceTypes) $scope.query.serviceTypes = user.serviceTypes;
-        if (user.veganOffers) $scope.query.veganOffers = true;
-        else $scope.query.veganOffers = false;
+        
+        if (user.veganOffers) 
+          $scope.query.veganOffers = true;
+        else 
+          $scope.query.veganOffers = false;
       } else {
         $scope.query = {
           userId: user._id
