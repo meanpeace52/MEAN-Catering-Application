@@ -87,7 +87,7 @@ function _auth(offerId) {
   return _getData(offerId).then(data => {
     "use strict";
     let paymentData = {
-      amount: Math.ceil(data.offer.invoice.total * 100), // amount should be in cents
+      amount: Math.round(data.offer.invoice.total * 100), // amount should be in cents
       currency: "usd",
       customer: data.user.payableAccountId,
       description: data.event.name,
