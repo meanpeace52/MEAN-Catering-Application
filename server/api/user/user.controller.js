@@ -13,6 +13,8 @@ var ActiveCampaign = require('activecampaign');
 var ac = new ActiveCampaign(config.activeCampaign.domain, config.activeCampaign.api_key);
 ac.debug = true;
 
+var tempPass = 'ninja123';
+
 function validationError(res, statusCode) {
   statusCode = statusCode || 422;
   return function(err) {
@@ -169,10 +171,14 @@ export function verify(req, res, next) {
 /**
  * Updates user
  */
-export function update(req, res) {
+export function update(req, res) {  
   if (req.body._id) {
     delete req.body._id;
   }
+
+  if(!req.body.password)
+    req.body.password = tempPass;
+
   return User.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(saveUpdates(req.body))
