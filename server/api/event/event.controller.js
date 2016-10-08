@@ -249,7 +249,7 @@ export function dataset(req, res) {
     }
   }
 
-  console.log('dataset', query);
+  // console.log('dataset', query);
 
   return Event.find(query).exec().then((events) => {
       // console.log('events', events);

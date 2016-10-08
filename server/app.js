@@ -16,6 +16,14 @@ var mailer = require('./api/mailer/mailer');
 var schedule = require('node-schedule');
 var fs = require('fs');
 var https = require('https');
+var NodeSession = require('node-session');
+
+// init
+var session = new NodeSession({
+  secret: 'Q3UBzdH9GEfiRCTKbi5MTPyChpzXLsTD',
+  'driver': 'database',
+  'lifetime': 24 * 60 * 60 * 1000
+});
 
 const stripeController = require('./api/payments/stripe.controller');
 
@@ -43,9 +51,9 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 if(config.env == 'development'){
-  var server = http.createServer(app);  
+  var server = http.createServer(app);
 }else if( config.env == 'production'){
-  var server = https.createServer(credentials, app);  
+  var server = https.createServer(credentials, app);
 }
 
 var socketio = require('socket.io')(server, {
@@ -124,6 +132,10 @@ var paymentJobs = schedule.scheduleJob('*/5 * * * *', function() {
 });
 
 function startServer() {
+  // start session for an http request - response
+  // this will define a session property to the request object
+  // session.startSession(req, res, callback);
+
   app.angularFullstack = server.listen(config.port, config.ip, function() {
     console.log('Express server listening on %d, in %s mode', config.port, app.get('env'));
   });
