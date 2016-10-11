@@ -66,11 +66,19 @@
                   <span>{{vm.event.specialRequest}}</span>
                 </div>
               </div>
-              <div class="col-sm-6">
+              <div class="col-sm-2">
                 <label>Included in price</label>
                 <ul>
                   <li ng-repeat="iip in includedInPrice" ng-if="iip.checked">
                     {{iip.name}}
+                  </li>
+                </ul>
+              </div>
+              <div class="col-sm-2">
+                <label>Services Requested</label>
+                <ul>
+                  <li ng-repeat="st in serviceTypes" ng-if="st.checked">
+                    {{st.name}}
                   </li>
                 </ul>
               </div>
