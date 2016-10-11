@@ -1,7 +1,7 @@
 'use strict';
 
 class OffersNewController {
-  constructor($http, $scope, $rootScope, socket, Auth, $state, $cookies, EventsService, IncludedInPriceService, PaymentService) {
+  constructor($http, $scope, $rootScope, socket, Auth, $state, $cookies, EventsService, IncludedInPriceService, PaymentService, ServiceTypesService) {
     this.errors = {};
     this.submitted = false;
     this.saved = false;
@@ -18,6 +18,7 @@ class OffersNewController {
     this.isLoggedIn = Auth.isLoggedIn;
     this.user = this.getCurrentUser();   
     this.incService = IncludedInPriceService;
+    this.serService = ServiceTypesService;
     this.$scope.fm = {};
 
     this.$scope.isPast = false;
@@ -40,6 +41,19 @@ class OffersNewController {
       });
       this.$scope.fm.includedInPrice = this.event.includedInPrice;
       this.$scope.fm.pricePerPerson = this.event.pricePerPerson;
+
+      this.$scope.serviceTypes = this.serService.getServiceTypes().then((data)=> {
+        this.$scope.serviceTypes = _.map(data, (item, i) => {
+          if (_.indexOf(this.event.serviceTypes, item._id) < 0) {
+            item.checked = false;
+          } else {
+            item.checked = true;
+          }
+          return item;
+        });
+      });
+
+      this.$scope.fm.serviceTypes = this.event.serviceTypes;
     });
 
     this.$scope.fm.contactInfo = this.user.contactInfo;
