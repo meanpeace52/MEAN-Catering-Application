@@ -81,8 +81,13 @@
        * Delete access token and user info
        */
       logout() {
-        $cookies.remove('token');
-        currentUser = {};
+        return $http.post('/auth/local/logout', {
+          userId: currentUser._id
+        })
+        .then(res => {
+          $cookies.remove('token');
+          currentUser = {};
+        })
       },
 
       /**
