@@ -45,13 +45,13 @@
       
       var host_name = this.$location.host();
       if(host_name != 'app.cateringninja.com') {
-        // var modalInstance = this.$uibModal.open({
-        //   templateUrl: 'myModalContent.html',
-        //   backdrop: 'static',
-        //   controller: 'ModalInstanceCtrl',
-        //   controllerAs: '$ctrl',
-        //   size: 'sm'
-        // });
+        var modalInstance = this.$uibModal.open({
+          templateUrl: 'myModalContent.html',
+          backdrop: 'static',
+          controller: 'ModalInstanceCtrl',
+          controllerAs: '$ctrl',
+          size: 'sm'
+        });
       }else {
 
       }

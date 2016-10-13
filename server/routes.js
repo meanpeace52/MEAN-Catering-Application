@@ -25,6 +25,7 @@ export default function(app) {
   app.use('/api/includedInPrice', require('./api/includedInPrice'));
   app.use('/api/payments', require('./api/payments'));
   app.use('/api/comments', require('./api/comment'));
+  // app.use('/api/histories', require('./api/history'));
 
   app.use('/auth', require('./auth').default);
 
