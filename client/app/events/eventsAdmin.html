@@ -32,7 +32,7 @@
                 <th st-sort="name">Name</th>
                 <th st-sort="pricePerPerson">Price</th>
                 <th st-sort="people">People</th>                
-                <th style="width: 150px;">Description</th>
+                <th style="width: 150px;">User Name</th>
                 <th colspan="2"></th>
               </tr>
               <tr>
@@ -67,7 +67,7 @@
                 <td style="max-width: 100px;">{{event.name}}</td>
                 <td>{{event.pricePerPerson}}</td>
                 <td>{{event.people}}</td>
-                <td style="max-width: 180px;">{{event.description}}</td>
+                <td style="max-width: 180px;">{{event.userName}}</td>
                 <td>
                   <span>
                     <a class="btn btn-xs btn-default" ng-if="!eventAdminQuery.showPast" href="/events/{{event._id}}">Edit Event</a>
