@@ -112,6 +112,12 @@ class EventsAdminController {
           }
 
           $scope.displayed_events = filtered.slice(start, start + number);
+          _.each($scope.displayed_events, (event, i) => {
+            $http.get('/api/users/' + event.userId).then(res => {
+              $scope.displayed_events[i].userName = res.data.firstname+' '+res.data.lastname;
+            });
+          })
+
           $scope.eventsTableState.pagination.numberOfPages = Math.ceil(filtered.length / number);
           if ($rootScope.eventActive) $rootScope.$broadcast('eventActive', $rootScope.eventActive);
         });

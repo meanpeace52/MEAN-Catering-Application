@@ -14,7 +14,6 @@ class OffersController {
 
     this.EventsService = EventsService;
     this.incService = IncludedInPriceService;
-    this.serService = ServiceTypesService;
 
     this.$scope.includedInPrice = this.incService.getIncludedInPrice().then((data)=> {
       this.$scope.includedInPrice = data;
