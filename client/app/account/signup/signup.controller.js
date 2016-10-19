@@ -3,7 +3,7 @@
 class SignupController {
   //end-non-standard
 
-  constructor(Auth, $state, $scope, FoodTypesService, ServiceTypesService, PaymentService) {
+  constructor(Auth, $state, $scope, FoodTypesService, ServiceTypesService, PaymentService, $window) {
     this.Auth = Auth;
     this.payments = PaymentService;
     this.$state = $state;
@@ -87,6 +87,8 @@ function _register(request, form) {
       let root = this;
       this.$scope.signupProcess = false;
       this.$scope.signupSuccess = true;
+      //$window.location.href = 'cateringninja.com';
+      window.location.href = "http://www.cateringninja.com/thank-you";
     })
     .catch(err => {
       err = err.data;
