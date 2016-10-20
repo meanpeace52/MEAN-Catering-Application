@@ -17,6 +17,14 @@ var UserSchema = new Schema({
     type: String,
     default: 'user'
   },
+  commission: {
+    type: Number,
+    default: '10'
+  },
+  created_date : {
+    type : Date,
+    default: Date.now
+  },
   password: {
     type: String,
     required: true
@@ -69,6 +77,7 @@ UserSchema
       'companyName': this.companyName,
       'name': this.name,
       'minprice': this.minprice,
+      'commission': this.commission,
       'contact_email' : this.contact_email,
       'contact_phone' : this.contact_phone,
       'ninja_firstname' : this.ninja_firstname,

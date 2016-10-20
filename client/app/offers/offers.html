@@ -19,20 +19,20 @@
                   <small>Total price:</small> <b>${{offer.invoice.total}}</b> <span class="label label-info">{{offer.paymentStatus || offer.status}}</span>
                 </h3>
               </div>
-              <div class="col-sm-6" ng-if="!past">
+              <div class="col-sm-6" ng-if="!past && oc.user.role != 'admin'">
                 <div ng-if="offer.status == 'sent' && !offer.drafted">
                   <hr>
                   <button class="btn btn-success" ng-click="oc.accept(offer._id)">Accept</button>
                   <button class="btn btn-danger" ng-click="oc.decline(offer._id)">Decline</button>
                 </div>
-                <div ng-if="offer.paymentStatus === 'hold'">
+                <!-- <div ng-if="offer.paymentStatus === 'hold'">
                   <hr>
                   <a class="btn btn-success" ng-click="oc.capture(offer)">Pay</a>
                 </div>
                 <div ng-if="offer.status === 'confirmed' && !offer.paymentStatus">
                   <hr>
                   <a class="btn btn-success" ng-click="oc.auth(offer)">Hold</a>
-                </div>
+                </div> -->
                 <hr>
               </div>
             </div>
@@ -72,11 +72,11 @@
               </div>
             </div>
           </div>
-          <div class="row">
+          <div class="row" ng-if="oc.user.role != 'admin'">
             <div style="padding: 10px;" offercomments offer="offer"></div>
             <hr>
           </div>
-          <div class="row">
+          <div class="row" ng-if="oc.user.role != 'admin'">
             <div class="col-sm-6">
               <div ng-if="offer.caterer.logo" class="img-thumbnail" width="300" ng-draw="{file: offer.caterer.logo, width: 300}"></div>
             </div>
@@ -99,7 +99,7 @@
 <div class="container" ng-if="!eventId">
   <div class="row">
     <div class="col-sm-12">
-      <h3>No Events Selected, Select and Event to See Offers</h3>
+      <h3>No Events Selected, Select an Event to See Offers</h3>
     </div>
   </div>
 </div>

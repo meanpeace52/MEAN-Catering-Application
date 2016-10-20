@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "main": "server/app.js",
   "dependencies": {
+    "activecampaign": "^1.2.2",
     "async": "^2.0.0-rc.6",
     "babel-polyfill": "^6.7.2",
     "babel-runtime": "^6.6.1",
@@ -36,6 +37,7 @@
     "multer": "^1.1.0",
     "multiparty": "^4.1.2",
     "node-schedule": "^1.1.1",
+    "node-session": "^1.2.1",
     "nodemailer": "^2.4.2",
     "nodemailer-mailgun-transport": "^1.2.1",
     "passport": "~0.3.0",

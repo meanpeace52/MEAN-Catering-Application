@@ -4,10 +4,12 @@
 
   class MainController {
 
-    constructor($http, $scope, socket) {
+    constructor($http, $scope, socket, $location, $uibModal) {
       this.$http = $http;
       this.socket = socket;
       this.awesomeThings = [];
+      this.$location = $location;
+      this.$uibModal = $uibModal;
 
       $scope.slides = [
         {
@@ -40,6 +42,20 @@
     }
 
     $onInit() {
+      
+      var host_name = this.$location.host();
+      if(host_name != 'app.cateringninja.com') {
+        var modalInstance = this.$uibModal.open({
+          templateUrl: 'myModalContent.html',
+          backdrop: 'static',
+          controller: 'ModalInstanceCtrl',
+          controllerAs: '$ctrl',
+          size: 'sm'
+        });
+      }else {
+
+      }
+
       this.$http.get('/api/things')
         .then(response => {
           this.awesomeThings = response.data;
@@ -67,3 +83,19 @@
       controller: MainController
     });
 })();
+
+
+angular.module('cateringApp').controller('ModalInstanceCtrl', function ($uibModalInstance) {
+  var $ctrl = this;
+  $ctrl.alert = false;
+
+  $ctrl.ok = function () {
+    if($ctrl.pass == 'ninja3141')
+      $uibModalInstance.close();
+    else{
+      $ctrl.alert = true;
+      // return;
+    }
+
+  };
+});

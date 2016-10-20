@@ -120,7 +120,7 @@ class EventsController {
             }
           });
 
-          console.log('events2', $scope.events)
+          console.log('events2', $scope.events);
 
           let filtered = $scope.tableState.search.predicateObject ? $filter('filter')($scope.events, $scope.tableState.search.predicateObject) : $scope.events,
               start = $scope.tableState.pagination.start,
@@ -130,7 +130,7 @@ class EventsController {
             filtered = $filter('orderBy')(filtered, $scope.tableState.sort.predicate, $scope.tableState.sort.reverse);
           }
 
-          $scope.displayed = filtered.slice(start, start + number);
+          $scope.displayed = filtered.slice(start, start + number);                  
           $scope.tableState.pagination.numberOfPages = Math.ceil(filtered.length / number);
           if ($rootScope.eventActive) $rootScope.$broadcast('eventActive', $rootScope.eventActive);
         });

@@ -3,7 +3,7 @@
 class SignupController {
   //end-non-standard
 
-  constructor(Auth, $state, $scope, FoodTypesService, ServiceTypesService, PaymentService) {
+  constructor(Auth, $state, $scope, FoodTypesService, ServiceTypesService, PaymentService, $window) {
     this.Auth = Auth;
     this.payments = PaymentService;
     this.$state = $state;
@@ -56,6 +56,7 @@ class SignupController {
       request.ninja_email = this.user.ninja_email;
       request.ninja_phone = this.user.ninja_phone;
       request.serviceTypes = this.user.serviceTypes;
+      request.foodTypes = this.user.foodTypes;
       request.minprice = this.user.minprice;
       request.description = this.user.description;
       request.veganOffers = this.user.veganOffers;
@@ -86,6 +87,8 @@ function _register(request, form) {
       let root = this;
       this.$scope.signupProcess = false;
       this.$scope.signupSuccess = true;
+      //$window.location.href = 'cateringninja.com';
+      window.location.href = "http://www.cateringninja.com/thank-you";
     })
     .catch(err => {
       err = err.data;

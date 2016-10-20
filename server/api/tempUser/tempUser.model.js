@@ -21,6 +21,10 @@ var TempUserSchema = new Schema({
     type: String,
     required: true
   },
+  created_date : {
+    type : Date,
+    default: Date.now
+  },
   foodTypes: Array,
   serviceTypes: Array,
   contactInfo: String,

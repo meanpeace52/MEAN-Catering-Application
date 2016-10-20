@@ -21,7 +21,7 @@
                   <div class="col-sm-6">
                     <div class="form-group">
                       <label>Description</label>
-                      <input type="text" name="description" class="form-control" tooltip-placement="top" uib-tooltip='A short description about your business' ng-model="catererProfile.user.description"/>
+                      <textarea type="text" rows="10" name="description" class="form-control" tooltip-placement="top" uib-tooltip='A short description about your business' ng-model="catererProfile.user.description"></textarea>
                     </div>
                   </div>
                 </div>
@@ -51,7 +51,7 @@
 
                 <div class="row">
                   <div class="col-sm-6">
-                    <div class="form-group" ng-class="{ 'has-success': profileForm.location.$valid && catererProfile.profileSubmitted, 'has-error': profileForm.location.$invalid && catererProfile.profileSubmitted }">
+                    <div class="form-group" ng-class="{ 'has-success': profileForm.location.$valid && catererProfile.profileSubmitted, 'has-error': profileForm.location.$invalid && catererProfile.profileSubmitted }">                    
                       <label>Location</label>
                       <input type="text" name="location" class="form-control" data-location="location" tooltip-placement="top" uib-tooltip='Start to type in your address and google should autofill the rest.  If it does not find the correct one, call us so we can fix it.' ng-model="catererProfile.user.location" required/>
                       <p class="help-block" ng-show="profileForm.location.$error.required && catererProfile.profileSubmitted">Location is required</p>
@@ -64,6 +64,13 @@
                     <div class="form-group">
                       <label> Have Vegetarian offers</label>
                       <input tooltip-placement="top" uib-tooltip='Only select this option if you offer Vegetarian meals.' type="checkbox" name="veganOffers" ng-model="catererProfile.user.veganOffers"/>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <div class="form-group">
+                      <label tooltip-placement="top" uib-tooltip='This is the Commission Rate Catering Ninja takes on paid services' > Commission Rate</label>
+                      <input ng-if="catererProfile.loggedUser.role == 'caterer'" type="text" disabled name="commission" ng-model="catererProfile.user.commission"/>
+                      <input ng-if="catererProfile.loggedUser.role == 'admin'" type="text" name="commission" ng-model="catererProfile.user.commission"/>
                     </div>
                   </div>
                 </div>

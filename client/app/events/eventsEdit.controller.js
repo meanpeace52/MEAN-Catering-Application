@@ -7,7 +7,7 @@ class EventsEditController {
     this.saved = false;
     this.sent = false;
     this.verifyCard = false;
-
+    let _this = this;
     this.Auth = Auth;
     this.$state = $state;
     this.$scope = $scope;
@@ -18,6 +18,8 @@ class EventsEditController {
     this.incService = IncludedInPriceService;
     this.sService = ServiceTypesService;
     this.payments = PaymentService;
+
+    $scope.saveCustomer = this.saveCustomer.bind(this);
 
     this.isUser = Auth.isUser;
     this.getCurrentUser = Auth.getCurrentUser;
@@ -31,6 +33,7 @@ class EventsEditController {
     this.$scope.fm.serviceTypes = [];
     this.$scope.serviceTypes = [];
     this.$scope.caterers = [];
+    this.$scope.card = {};
     this.$scope.fm.includedInPrice = [];
     this.$scope.fm.selectedCaterers = [];
 
@@ -291,6 +294,49 @@ class EventsEditController {
       }
     }
 
+  }
+
+  saveCustomer(status, response) {
+    let token = response.id;
+
+    this.bindCard(token).then(result => {
+      this.user.payableAccountId = result.data.id;
+
+    this.$http.post(`/api/users/${this.user._id}`, {
+      payableAccountId: result.data.id
+    });
+
+    let eventModel = this.$scope.fm,
+      url = '/api/events/' + eventModel._id;
+
+    eventModel.showToCaterers = true;
+    eventModel.sentTo = eventModel.selectedCaterers;
+    eventModel.status = 'sent';
+    eventModel.userId = this.user._id;
+    eventModel.createDate = new Date();
+
+    if (eventModel.status == 'sent') eventModel.isUpdated = true;
+
+    if (eventModel) {
+      this.$http.post(url, eventModel)
+        .then(response => {
+        //this.$state.go('events');
+      })
+    .catch(err => {
+        this.errors.other = err.message;
+    });
+    }
+    this.$state.go('events', { time: 'active' });
+  });
+  }
+
+
+  bindCard(token) {
+    return this.$http.post('/api/payments/card/verify', {
+      card: token,
+      description: `Verified credit card for ${this.user.firstname} ${this.user.lastname} <${this.user.email}>`,
+      email: this.user.email
+    });
   }
 
   cancel() {

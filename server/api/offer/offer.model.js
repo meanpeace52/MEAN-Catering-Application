@@ -32,6 +32,10 @@ var OfferSchema = new mongoose.Schema({
       type: Number,
       default: 10
     },
+    created_date : {
+      type : Date,
+      default: Date.now
+    },
     refund: {
       type: Number,
       default: 0

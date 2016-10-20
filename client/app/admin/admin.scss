@@ -23,17 +23,17 @@
 }
 
 @media screen and (min-width: 768px) {
-	.modal-dialog {
+	.profile-edit-modal .modal-dialog {
 	    width: 750px;
 	}	
 }
 @media screen and (min-width: 992px) {
-	.modal-dialog {
+	.profile-edit-modal .modal-dialog {
 	    width: 970px;
 	}	
 }
 @media screen and (min-width: 1200px) {
-	.modal-dialog {
+	.profile-edit-modal .modal-dialog {
 	    width: 1170px;
 	}	
 }

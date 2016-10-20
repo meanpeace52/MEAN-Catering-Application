@@ -2,11 +2,11 @@
 
 angular.module('cateringApp', ['cateringApp.auth', 'cateringApp.admin', 'cateringApp.constants',
     'ngCookies', 'ngResource', 'ngSanitize', 'btford.socket-io', 'ui.router', 'ui.bootstrap',
-    'validation.match', "checklist-model", "rzModule", "angularFileUpload", 'smart-table', 
+    'validation.match', "checklist-model", "rzModule", "angularFileUpload", 'smart-table',
     // 'angularPayments',
     'ngAnimate', 'ui.comments.directive', 'angular-click-outside', 'stripe.checkout', 'credit-cards', 'stripe'
   ])
-  .config(function($urlRouterProvider, $locationProvider, commentsConfigProvider, StripeCheckoutProvider) {
+  .config(function($urlRouterProvider, $locationProvider, commentsConfigProvider) {
     $urlRouterProvider.otherwise('/');
 
     $locationProvider.html5Mode(true);
@@ -15,10 +15,11 @@ angular.module('cateringApp', ['cateringApp.auth', 'cateringApp.admin', 'caterin
       commentTemplate: 'assets/comments/template/comments/comment.html',
       commentController: 'OfferCommentController'
     });
+  })
+  .run(function($http){
 
-    StripeCheckoutProvider.defaults({
-      key: "pk_live_Zpopr6NDYNJ45SpUVLu2c5hq"
-    });
-
-    Stripe.setPublishableKey('pk_live_Zpopr6NDYNJ45SpUVLu2c5hq');
+    $http.get('/api/payments/card/token').then(response => {
+      Stripe.setPublishableKey(response.data.checkoutToken);
+    })
+    
   });

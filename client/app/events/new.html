@@ -2,15 +2,18 @@
   <div class="row">
     <div class="col-sm-12" ng-if="!vm.user.payableAccountId && vm.verifyCard">
       <form stripe:form="saveCustomer" name="ccForm" novalidate>
-        <div class="form-group">
+        <h1>Please Verify your Credit Card</h1>
+        <p>To send an event we need to have a valid credit card on file.  This credit card will be saved in your profile for payment.</p>
+        <p>You can always update your credit card information in the Account Info in the upper right.</p>
+        <div class="form-group"  style="width:25%">
           <label for="card-number">Card Number</label>
           <input type="text" class="form-control" id="cardNumber" cc-number cc-eager-type cc-format="card" cc-validate="card" maxlength="19" name="ccNumber" ng-model="card.number" data-stripe="number" ng-required="true">
         </div>
-        <div class="form-group">
+        <div class="form-group"  style="width:10%">
           <label for="cvc">CVC</label>
           <input type="text" class="form-control" id="cvc" cc-cvc cc-type="ccForm.ccNumber.$ccType" name="ccCvc" ng-model="card.cvc" data-stripe="cvc" ng-required="true">
         </div>
-        <div class="form-group">
+        <div class="form-group"  style="width:35%">
           <label for="card-number">Expiration</label>
           <div class="row" cc-exp>
             <div class="col-xs-3">
@@ -35,18 +38,18 @@
         You must enter a credit card number!
       </p>
     </div>
-    
+
 
     <!-- <div class="col-sm-12" ng-if="!vm.user.payableAccountId && vm.verifyCard">
       <h1>Please Verify your Credit Card</h1>
       <p>To send an event we need to have a valid credit card on file.  This credit card will be saved in your profile for payment.</p>
       <p>You can always update your credit card information in the Account Info in the upper right.</p>
-           
+
       <div class="row">
         <credit-card-form verifier="true" ccupdate="false" user="vm.user" event="fm"></credit-card-form>
       </div>
     </div> -->
-    
+
     <div class="col-sm-12" redirect="/events/new" ng-if="vm.user.payableAccountId || !vm.verifyCard">
       <h1>New event</h1>
       <form class="form-fluid" name="form" novalidate>
@@ -113,7 +116,10 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-10">
+          <div class="col-sm-5">
+            <img src="/assets/images/pricing.png" />
+          </div>
+          <div class="col-sm-5">
             <div class="form-group" ng-class="{'has-error': (form.$submitted || form.pricePerPerson.$touched) && form.pricePerPerson.$error.required}">
               <label>Price per person</label>
               <rzslider rz-slider-model="fm.pricePerPerson" rz-slider-options="{floor: 0.5, ceil: 200, showSelectionBar: true, step: 0.5, precision: 1}" ></rzslider>

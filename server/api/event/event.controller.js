@@ -88,8 +88,89 @@ export function index(req, res) {
     .catch(handleError(res));
 }
 
+// Gets a list of Events for Admin access.
+export function adminEvents(req, res) {
+  //console.log('req', req.body);
+  let query = {},
+    eventPromises = [],
+    today = new Date(new Date().setHours(0, 0, 0, 0)) /*.toISOString()*/;
+  
+  query.blocked = { $exists: false };
+
+  //if (!isAdmin) query.date = { $gte: today };
+  if (req.body.showFuture) query.date = { $gte: today };
+  if (req.body.showPast) query.date = { $lt: today };
+  if (req.body.date) {
+    if (req.body.paymentList && req.body.date instanceof Object) {
+      query.date = {};
+      for (let k in req.body.date) {
+        if (k === '$lt' || k === '$lte') {
+          query.date[k] = new Date(req.body.date[k]).setHours(23, 59, 59, 999);
+        } else if (k === '$gt' || k === '$gte') {
+          query.date[k] = new Date(req.body.date[k]).setHours(0, 0, 0, 0);
+        } else {
+          query.date[k] = req.body.date[k];
+        }
+      }
+    } else {
+      query.date = req.body.date;
+    }
+  }
+
+  if (req.body.paymentStatus) query.paymentStatus = req.body.paymentStatus;
+
+  if (req.body.confirmedDate && req.body.createDate && req.body.status) {
+    let newExpression = {},
+      confirmedExpression = {};
+
+    newExpression.createDate = { $gte: new Date(req.body.createDate)/*.toISOString()*/ };
+
+    confirmedExpression.confirmedDate = { $gte: new Date(req.body.confirmedDate)/*.toISOString()*/ };
+    confirmedExpression.status = req.body.status;
+
+    query = { $or: [ _.merge(newExpression, query), _.merge(confirmedExpression, query) ] };
+  } else{
+    if (req.body.confirmedDate) query.confirmedDate = { $gte: new Date(req.body.confirmedDate)/*.toISOString()*/ };
+    if (req.body.createDate) query.createDate = { $gte: new Date(req.body.createDate)/*.toISOString()*/ };
+    if (req.body.status) 
+      query.status = req.body.status;
+    else
+      query.$and = [ { status: { $ne: 'completed' } }, { status: { $ne: 'cancelled' } } ];
+  }
+
+console.log(query);
+  return Event.find(query).exec().then((events) => {
+      // console.log('events', events);
+
+    events.forEach((event, i) => {
+      events[i] = events[i].toObject();
+
+      let adminQuery = {eventId: '' + event._id};
+      // let adminQuery = {eventId: '' + event._id, status: {$nin: ['completed', 'cancelled']}};
+
+      eventPromises.push(Offer.find(adminQuery).exec().then((offers) => {
+        events[i].offers = offers;
+        //if (isAdmin) events[i].offer = offers[0];
+        return events[i];
+      }));      
+    });
+
+    return Promise.all(eventPromises).then(() => {
+      //return filterWithOffers ? events.filter(event => event.offers.length > 0) : events;
+      return events;
+    })
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+
+  });
+
+  // return Event.find({ $and: [{status: { $ne: 'completed'}}, {status: { $ne: 'cancelled' }}]}).exec()
+  //   .then(respondWithResult(res))
+  //   .catch(handleError(res));
+}
+
 export function dataset(req, res) {
-  console.log('req', req.body);
+  // console.log('req', req.body);
   let query = {},
     isUser = (req.body.userId ? true : false),
     isCaterer = (req.body.catererId ? true : false),
@@ -98,7 +179,7 @@ export function dataset(req, res) {
     eventPromises = [],
     today = new Date(new Date().setHours(0, 0, 0, 0)) /*.toISOString()*/;
 
-  console.log('isCaterer', isCaterer);
+  // console.log('isCaterer', isCaterer);
 
   if (isUser) {
     query = {
@@ -168,10 +249,10 @@ export function dataset(req, res) {
     }
   }
 
-  console.log('dataset', query);
+  // console.log('dataset', query);
 
   return Event.find(query).exec().then((events) => {
-      console.log('events', events);
+      // console.log('events', events);
     if (isCaterer && !req.body.paymentList) {
       events = _.filter(events, (event) => {
         let catererft = req.body.foodTypes || [],
@@ -220,7 +301,10 @@ export function dataset(req, res) {
             return User.findById(event.userId).exec();
           })
           .then((user) => {
-            events[i].customer = user.firstname + ' ' + user.lastname;
+            if(user)
+              events[i].customer = user.firstname + ' ' + user.lastname;
+            else
+              events[i].customer = '';
           })
           .then(() => {
             return Offer.find(catererQuery).exec();

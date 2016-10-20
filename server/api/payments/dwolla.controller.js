@@ -8,9 +8,9 @@ let dwollaOptions = {
   id: config.payments.DWOLLA.KEY,
   secret: config.payments.DWOLLA.SECRET
 };
-//if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production') {
   dwollaOptions.environment = 'sandbox';
-//}
+}
 let dwollaClient = new dwolla.Client(dwollaOptions);
 
 class DwollaController {
@@ -50,7 +50,7 @@ class DwollaController {
   pay(items, user) {
 
     return this.requestAccessToken(user).then((response) => {
-      
+
       var accountToken = new dwollaClient.Token({
         access_token: response.access_token,
         refresh_token: response.refresh_token
@@ -60,7 +60,7 @@ class DwollaController {
         return Promise.reject({});
       }
 
-      return accountToken.get(`https://api-uat.dwolla.com/accounts/${config.payments.DWOLLA.ACCOUNT_ID}/funding-sources`).then((response) => {
+      return accountToken.get(`https://api.dwolla.com/accounts/${config.payments.DWOLLA.ACCOUNT_ID}/funding-sources`).then((response) => {
         let fundingSources = response.body._embedded['funding-sources'];
         let balance = fundingSources.filter(item => item.type === 'balance')[0];
         var requestBody = {
@@ -82,7 +82,7 @@ class DwollaController {
       "client_secret": config.payments.DWOLLA.SECRET,
       "code": req.query.authCode,
       "grant_type": "authorization_code",
-      "redirect_uri": '//' + req.headers.host + req.query.redirect /*"redirect_uri": request.headers.protocol + '://' + req.headers.host + req.query.redirect*/
+      "redirect_uri": 'https://' + req.headers.host + req.query.redirect /*"redirect_uri": request.headers.protocol + '://' + req.headers.host + req.query.redirect*/
     };
 
     return request.post(dwollaClient.tokenUrl, {
@@ -99,7 +99,7 @@ class DwollaController {
   startAuth(req, res) {
     let authUrl = dwollaClient.authUrl;
     let clientId = config.payments.DWOLLA.KEY;
-    let redirectUrl = '//' + req.headers.host + req.query.redirect;
+    let redirectUrl = 'https://' + req.headers.host + req.query.redirect;
     let scope = 'Send|Funding'; //'Transactions|Send|Request|Funding|ManageCustomers|Email';
     let output = {
       authUrl: `${authUrl}?client_id=${clientId}&response_type=code&redirect_uri=${redirectUrl}&scope=${scope}`//&verified_account=true`
