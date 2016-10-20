@@ -21,13 +21,14 @@ class LoginController {
         })
         .then(() => {
           // Logged in, redirect to home
-          return this.Auth.getCurrentUser();
+          this.$state.go('events', { time: 'active' });
+          //return this.Auth.getCurrentUser();
         })
-        .then((user) => {
+        //.then((user) => {
           // Logged in, redirect to home
-          if (user.role === 'admin') this.$state.go('admin');
-          else this.$state.go('events', { time: 'active' });
-        })
+        //  if (user.role === 'admin') this.$state.go('admin');
+       //   else this.$state.go('events', { time: 'active' });
+       // })
         .catch(err => {
           this.errors.other = err.message;
         });
