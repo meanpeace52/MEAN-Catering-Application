@@ -14,21 +14,20 @@ class LoginController {
     this.submitted = true;
 
     if (form.$valid) {
-      
+
       this.Auth.login({
           email: this.user.email,
           password: this.user.password
         })
         .then(() => {
           // Logged in, redirect to home
-          this.$state.go('events', { time: 'active' });
-          //return this.Auth.getCurrentUser();
+          return this.Auth.getCurrentUser();
         })
-        //.then((user) => {
+        .then((user) => {
           // Logged in, redirect to home
-        //  if (user.role === 'admin') this.$state.go('admin');
-       //   else this.$state.go('events', { time: 'active' });
-       // })
+          if (user.role === 'admin') this.$state.go('admin');
+          else this.$state.go('events', { time: 'active' });
+          })
         .catch(err => {
           this.errors.other = err.message;
         });
