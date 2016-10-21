@@ -6,7 +6,8 @@ angular.module('cateringApp', ['cateringApp.auth', 'cateringApp.admin', 'caterin
     // 'angularPayments',
     'ngAnimate', 'ui.comments.directive', 'angular-click-outside', 'stripe.checkout', 'credit-cards', 'stripe'
   ])
-  .config(function($urlRouterProvider, $locationProvider, commentsConfigProvider) {
+  .config(function($urlRouterProvider, $locationProvider, $httpProvider, commentsConfigProvider) {  $httpProvider.interceptors.push('AuthInterceptor');
+    $httpProvider.defaults.useXDomain = true;
     $urlRouterProvider.otherwise('/');
 
     $locationProvider.html5Mode(true);
@@ -21,5 +22,5 @@ angular.module('cateringApp', ['cateringApp.auth', 'cateringApp.admin', 'caterin
     $http.get('/api/payments/card/token').then(response => {
       Stripe.setPublishableKey(response.data.checkoutToken);
     })
-    
+
   });
