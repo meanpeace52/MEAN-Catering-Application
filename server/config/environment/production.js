@@ -3,7 +3,7 @@
 // Production specific configuration
 // =================================
 module.exports = {
-  domain: 'https://app.cateringninja.com/',
+  domain: 'https://app.cateringninja.com:8443/',
 
   // Server IP
   ip:     process.env.OPENSHIFT_NODEJS_IP ||
@@ -13,7 +13,7 @@ module.exports = {
   // Server port
   port:   process.env.OPENSHIFT_NODEJS_PORT ||
           process.env.PORT ||
-          443,
+          8443,
 
   // MongoDB connection options
   mongo: {
