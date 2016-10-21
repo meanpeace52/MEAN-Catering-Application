@@ -6,7 +6,13 @@ angular.module('cateringApp', ['cateringApp.auth', 'cateringApp.admin', 'caterin
     // 'angularPayments',
     'ngAnimate', 'ui.comments.directive', 'angular-click-outside', 'stripe.checkout', 'credit-cards', 'stripe'
   ])
-  .config(function($urlRouterProvider, $locationProvider, commentsConfigProvider) {
+    .config(function($sceDelegateProvider, $urlRouterProvider, $locationProvider, commentsConfigProvider) {
+     $sceDelegateProvider.resourceUrlWhitelist([
+      'self',
+      'https://app.cateringninja.com/**'
+     ]);
+  
+  
     $urlRouterProvider.otherwise('/');
 
     $locationProvider.html5Mode(true);
