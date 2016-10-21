@@ -32,6 +32,7 @@
             $cookies.put('token', res.data.token);
 console.log('token:', res.data.token);                        
             currentUser = User.get();
+console.log('user:', currentUser);                                    
             return currentUser.$promise;
           })
           .then(user => {
