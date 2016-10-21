@@ -18,17 +18,13 @@ router.post('/', function(req, res, next) {
     }
 
     var token = signToken(user._id, user.role);
-console.log('token::', token);
-console.log('user::', user);
 
     History.findOneAndUpdate(
       {userId: user._id}, 
       {userId: user._id, isLoggedIn: true, lastLoginDate: new Date()},
       {upsert: true},
       function(err, result) {
-console.log('result::', result);
-console.log('err::', err);
-        
+
         if(err)
           return res.status(401).json(err);
     })
