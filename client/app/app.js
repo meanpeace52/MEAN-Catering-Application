@@ -7,8 +7,8 @@ angular.module('cateringApp', ['cateringApp.auth', 'cateringApp.admin', 'caterin
     'ngAnimate', 'ui.comments.directive', 'angular-click-outside', 'stripe.checkout', 'credit-cards', 'stripe'
   ])
   .config(function($urlRouterProvider, $locationProvider, commentsConfigProvider) {  
+    
     $urlRouterProvider.otherwise('/');
-
     $locationProvider.html5Mode(true);
     commentsConfigProvider.set({
       containerTemplate: 'assets/comments/template/comments/comments.html',
