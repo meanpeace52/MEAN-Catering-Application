@@ -165,8 +165,8 @@ function createSummary(user) {    //user is caterer
         html += '<p>Price per person: <strong>' + event.pricePerPerson + '</strong></p>';
         html += '<p>To change or stop email notifications, log into your account using this email address and click Profile and Email Options.</p>';
         html += '<p>If you have not registered or do not know your password, just click forgot my password at login, or the link below, and use this email.</p>';
-        html += '<a href="https://app.cateringninja.com/reset">Forgot My Password</a>';
-        html += '<a href="https://app.cateringninja.com/login">Login</a>';
+        html += '<p><a href="https://app.cateringninja.com/reset">Forgot My Password</a></p>';
+        html += '<p><a href="https://app.cateringninja.com/login">Login</a></p>';
         html += '<hr />';
       });
       summary.eventsTomorrowHtml = html;
@@ -343,8 +343,8 @@ var mailer = {
       message += '<p>Price per person: <strong>' + event.pricePerPerson + '</strong></p>';
       message += '<p>To change or stop email notifications, log into your account using this email address and click Profile and Email Options.</p>';
       message += '<p>If you have not registered or do not know your password, just click forgot my password at login and use this email.</p>';
-      message += '<a href="https://app.cateringninja.com/reset">Forgot My Password</a>';
-      message += '<a href="https://app.cateringninja.com/login">Login</a>';
+      message += '<p><a href="https://app.cateringninja.com/reset">Forgot My Password</a></p>';
+      message += '<p><a href="https://app.cateringninja.com/login">Login</a></p>';
 
     getEventMailList(event).then((users) => {
       _.each(users, (user) => {
@@ -405,8 +405,8 @@ var mailer = {
           message += '<p>Price per person: <strong>' + event.pricePerPerson + '</strong></p>';
           message += '<p>To change or stop email notifications, log into your account using this email address and click Profile and Email Options.</p>';
           message += '<p>If you have not registered or do not know your password, just click forgot my password at login and use this email.</p>';
-          message += '<a href="https://app.cateringninja.com/reset">Forgot My Password</a>';
-          message += '<a href="https://app.cateringninja.com/login">Login</a>';
+          message += '<p><a href="https://app.cateringninja.com/reset">Forgot My Password</a></p>';
+          message += '<p><a href="https://app.cateringninja.com/login">Login</a></p>';
           message += '<hr />';
           nodemailerMailgun.sendMail({
             from: config.mailgun.from,
