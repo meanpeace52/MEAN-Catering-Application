@@ -3,7 +3,7 @@
 // Production specific configuration
 // =================================
 module.exports = {
-  domain: 'https://app.cateringninja.com:443/',
+  domain: 'https://app.cateringninja.com/',
 
   // Server IP
   ip:     process.env.OPENSHIFT_NODEJS_IP ||
