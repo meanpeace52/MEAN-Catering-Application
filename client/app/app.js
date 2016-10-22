@@ -6,8 +6,7 @@ angular.module('cateringApp', ['cateringApp.auth', 'cateringApp.admin', 'caterin
     // 'angularPayments',
     'ngAnimate', 'ui.comments.directive', 'angular-click-outside', 'stripe.checkout', 'credit-cards', 'stripe'
   ])
-  .config(function($urlRouterProvider, $locationProvider, $httpProvider, commentsConfigProvider) {  $httpProvider.interceptors.push('AuthInterceptor');
-    $httpProvider.defaults.useXDomain = true;
+  .config(function($urlRouterProvider, $locationProvider, commentsConfigProvider) {  
     $urlRouterProvider.otherwise('/');
 
     $locationProvider.html5Mode(true);
