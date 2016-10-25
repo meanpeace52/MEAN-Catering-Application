@@ -1,10 +1,28 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-12">
-      <h1>Sign up</h1><h3>If you already have a free profile, click login, then click Forgot my password and use your email address to receive your new password.</h3>
+      <h1>Sign up</h1><h3>If you are a Caterer and were emailed about having a free profile, click login, then click Forgot my password and use your email address to receive your new password.</h3>
     </div>
     <div class="col-sm-12" ng-if="signupSuccess">
       <div class="alert alert-success">We sent you email to verify your address. Please check your email and junk mail or spam.</div>
+      <!-- Google Code for Register Conversion Page
+      <script type="text/javascript">
+        /* <![CDATA[ */
+        var google_conversion_id = 880536108;
+        var google_conversion_language = "en";
+        var google_conversion_format = "3";
+        var google_conversion_color = "ffffff";
+        var google_conversion_label = "k3O1CJqf7WoQrNTvowM";
+        var google_remarketing_only = false;
+        /* ]]> */
+      </script>
+      <script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
+      </script>
+      <noscript>
+        <div style="display:inline;">
+          <img height="1" width="1" style="border-style:none;" alt="" src="//www.googleadservices.com/pagead/conversion/880536108/?label=k3O1CJqf7WoQrNTvowM&amp;guid=ON&amp;script=0"/>
+        </div>
+      </noscript>-->
     </div>
     <form class="form" name="form" ng-submit="vm.register(form)" ng-if="signupProcess" novalidate>
       <div class="panel panel-default" style="padding: 10px; background-color: #e7e7e7 ">

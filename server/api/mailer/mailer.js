@@ -164,7 +164,9 @@ function createSummary(user) {    //user is caterer
         html += '<p>People: <strong>' + event.people + '</strong></p>';
         html += '<p>Price per person: <strong>' + event.pricePerPerson + '</strong></p>';
         html += '<p>To change or stop email notifications, log into your account using this email address and click Profile and Email Options.</p>';
-        html += '<p>If you have not registered or do not know your password, just click forgot my password at login and use this email.</p>';
+        html += '<p>If you have not registered or do not know your password, just click forgot my password at login, or the link below, and use this email.</p>';
+        html += '<p><a href="https://app.cateringninja.com/reset">Forgot My Password</a></p>';
+        html += '<p><a href="https://app.cateringninja.com/login">Login</a></p>';
         html += '<hr />';
       });
       summary.eventsTomorrowHtml = html;
@@ -192,7 +194,7 @@ var mailer = {
   notifyComment: function(comment) {
     getCommentOpponent(comment._id, comment.offerId, comment.userId).then((data) => {
       let date = new Date(comment.date),
-      message = '<h1>Hello,</h1><p>You\'ve got new comment</p>';
+      message = '<h3>Hello,</h3><p>You\'ve got new comment</p>';
       message += '<p>Event: ' + data.event.name + '</p>';
       message += '<p>From: ' + comment.name + '</p>';
       message += '<p>Date: ' + date.toDateString() + '</p>';
@@ -215,7 +217,7 @@ var mailer = {
     });
   },
   verifyUser: function(user) {
-    let message = '<h2>Hello,</h2><p>Please follow the link below to verify your email. If you did not sign up to Catering Ninja, just ignore this message.</p><p><a href="' + config.domain + 'verify/' + user._id + '">Please verify email address</a></p>';
+    let message = '<h3>Hello,</h3><p>Please follow the link below to verify your email. If you did not sign up to Catering Ninja, just ignore this message.</p><p><a href="' + config.domain + 'verify/' + user._id + '">Please verify email address</a></p>';
     nodemailerMailgun.sendMail({
       from: config.mailgun.from,
       to: user.email,
@@ -231,7 +233,7 @@ var mailer = {
     });
   },
   reset: function(user) {
-    let message = '<h1>Hello,</h1><p>Here is your new password. Please change it as soon as you log in</p><h3>' + user.password + '</h3>';
+    let message = '<h3>Hello,</h3><p>Here is your new password. Please change it as soon as you log in</p><h3>' + user.password + '</h3>';
     nodemailerMailgun.sendMail({
       from: config.mailgun.from,
       to: user.email,
@@ -341,6 +343,8 @@ var mailer = {
       message += '<p>Price per person: <strong>' + event.pricePerPerson + '</strong></p>';
       message += '<p>To change or stop email notifications, log into your account using this email address and click Profile and Email Options.</p>';
       message += '<p>If you have not registered or do not know your password, just click forgot my password at login and use this email.</p>';
+      message += '<p><a href="https://app.cateringninja.com/reset">Forgot My Password</a></p>';
+      message += '<p><a href="https://app.cateringninja.com/login">Login</a></p>';
 
     getEventMailList(event).then((users) => {
       _.each(users, (user) => {
@@ -401,6 +405,8 @@ var mailer = {
           message += '<p>Price per person: <strong>' + event.pricePerPerson + '</strong></p>';
           message += '<p>To change or stop email notifications, log into your account using this email address and click Profile and Email Options.</p>';
           message += '<p>If you have not registered or do not know your password, just click forgot my password at login and use this email.</p>';
+          message += '<p><a href="https://app.cateringninja.com/reset">Forgot My Password</a></p>';
+          message += '<p><a href="https://app.cateringninja.com/login">Login</a></p>';
           message += '<hr />';
           nodemailerMailgun.sendMail({
             from: config.mailgun.from,

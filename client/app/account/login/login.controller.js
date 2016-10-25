@@ -1,5 +1,6 @@
 'use strict';
 
+
 class LoginController {
   constructor(Auth, $state) {
     this.user = {};
@@ -14,7 +15,7 @@ class LoginController {
     this.submitted = true;
 
     if (form.$valid) {
-      
+
       this.Auth.login({
           email: this.user.email,
           password: this.user.password
@@ -27,7 +28,7 @@ class LoginController {
           // Logged in, redirect to home
           if (user.role === 'admin') this.$state.go('admin');
           else this.$state.go('events', { time: 'active' });
-        })
+          })
         .catch(err => {
           this.errors.other = err.message;
         });

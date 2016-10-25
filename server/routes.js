@@ -34,8 +34,7 @@ export default function(app) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
   });
-
-
+  
   // All undefined asset or api routes should return a 404
   app.route('/:url(api|auth|components|app)/*')
     .get(errors[404]);

@@ -8,7 +8,6 @@ angular.module('cateringApp', ['cateringApp.auth', 'cateringApp.admin', 'caterin
   ])
   .config(function($urlRouterProvider, $locationProvider, commentsConfigProvider) {
     $urlRouterProvider.otherwise('/');
-
     $locationProvider.html5Mode(true);
     commentsConfigProvider.set({
       containerTemplate: 'assets/comments/template/comments/comments.html',
@@ -21,5 +20,5 @@ angular.module('cateringApp', ['cateringApp.auth', 'cateringApp.admin', 'caterin
     $http.get('/api/payments/card/token').then(response => {
       Stripe.setPublishableKey(response.data.checkoutToken);
     })
-    
+
   });

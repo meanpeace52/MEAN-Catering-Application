@@ -299,10 +299,10 @@
         <div ng-if="vm.sent" class="alert alert-success">Event is successfully sent to caterers</div>
         <div>
           <button class="btn btn-default" type="submit" tooltip-placement="top" uib-tooltip='Allows you to save as Draft and return later to make changes and send' ng-click="vm.saveDraft(form)">
-            Save Event
+            Save Draft of Event
           </button>
           <button class="btn btn-primary" type="submit" uib-tooltip='When you are ready, click send and the event will be sent to all filtered or selected caterers. They will then review and send back offers.' ng-click="vm.sendRequest(form)">
-            Send Event
+            Send Event to Caters
           </button>
           <button class="btn btn-danger" ng-click="vm.cancel()">
             Cancel changes
