@@ -176,8 +176,8 @@ export function update(req, res) {
     delete req.body._id;
   }
 
-  if(!req.body.password)
-    req.body.password = tempPass;
+  // if(!req.body.password)
+  //   req.body.password = tempPass;
 
   return User.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))

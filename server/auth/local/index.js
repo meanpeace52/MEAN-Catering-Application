@@ -24,7 +24,6 @@ router.post('/', function(req, res, next) {
       {userId: user._id, isLoggedIn: true, lastLoginDate: new Date()},
       {upsert: true},
       function(err, result) {
-
         if(err)
           return res.status(401).json(err);
     })

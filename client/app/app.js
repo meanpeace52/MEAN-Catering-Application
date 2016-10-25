@@ -6,15 +6,8 @@ angular.module('cateringApp', ['cateringApp.auth', 'cateringApp.admin', 'caterin
     // 'angularPayments',
     'ngAnimate', 'ui.comments.directive', 'angular-click-outside', 'stripe.checkout', 'credit-cards', 'stripe'
   ])
-    .config(function($sceDelegateProvider, $urlRouterProvider, $locationProvider, commentsConfigProvider) {
-     $sceDelegateProvider.resourceUrlWhitelist([
-      'self',
-      'https://app.cateringninja.com/**'
-     ]);
-  
-  
+  .config(function($urlRouterProvider, $locationProvider, commentsConfigProvider) {
     $urlRouterProvider.otherwise('/');
-
     $locationProvider.html5Mode(true);
     commentsConfigProvider.set({
       containerTemplate: 'assets/comments/template/comments/comments.html',
@@ -27,5 +20,5 @@ angular.module('cateringApp', ['cateringApp.auth', 'cateringApp.admin', 'caterin
     $http.get('/api/payments/card/token').then(response => {
       Stripe.setPublishableKey(response.data.checkoutToken);
     })
-    
+
   });

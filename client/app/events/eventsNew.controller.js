@@ -317,7 +317,7 @@ class EventsNewController {
       eventModel.createDate = new Date();
 
       if (this.$scope.fm.status == 'sent') eventModel.isUpdated = true;
-
+console.log(eventModel);
       if (eventModel && form.$valid && !this.addressValidationError) {
         this.$http.post(url, eventModel)
           .then(response => {
@@ -390,7 +390,7 @@ class EventsNewController {
     if (eventModel && form.$valid && !this.addressValidationError) {
       //return this.payments.verifyAddress(eventModel.address).then(address => {
         //eventModel.address = address;
-
+console.log(eventModel);
         return this.$http.post('/api/events/new', eventModel)
           .then(response => {
             this.saved = true;
