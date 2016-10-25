@@ -85,7 +85,7 @@ function getEventMailList(event) {
       let fltUsers = _.filter(users, (user) => {
         let count = 0;
         if (!user.veganOffers && event.vegetarianMeals) count++;
-        if (user.minprice && +user.minprice > +event.pricePerPerson) count++;
+        if (user.minprice && +user.minprice < +event.pricePerPerson) count++;
         return count > 0;
       });
 
@@ -347,6 +347,7 @@ var mailer = {
       message += '<p><a href="https://app.cateringninja.com/login">Login</a></p>';
 
     getEventMailList(event).then((users) => {
+console.log(users);      
       _.each(users, (user) => {
         if (user.sendNotification) {
           nodemailerMailgun.sendMail({
