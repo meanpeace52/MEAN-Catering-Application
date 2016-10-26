@@ -7,6 +7,8 @@ class OffersController {
     this.$http = $http;
     this.$cookies = $cookies;
     this.socket = socket;
+    this.verifyCard = false;
+    this.offerId = '';
 
     this.isLoggedIn = Auth.isLoggedIn;
     this.getCurrentUser = Auth.getCurrentUser;
@@ -28,6 +30,8 @@ class OffersController {
     });
 
     this.isReadyForPayment = false;
+
+    $scope.saveCustomer = this.saveCustomer.bind(this);
 
   }
 
@@ -117,21 +121,50 @@ class OffersController {
     }
   }
 
-  accept(id) {  // by customer
+  accept(id) {  // by customer    
     if (this.user.role = 'user') {
-      this.$http.post('/api/offers/' + id + '/accept', {status: 'accepted', eventId: this.eventId, dateAccepted: new Date() }).then(response => {
-        //set visual state
-        _.each(this.$scope.offers, (item, i) => {
-          this.$scope.offers[i].drafted = true;
-          if (item._id == id) {
-            this.$scope.offers[i].drafted = false;
-            this.$scope.offers[i].status = 'accepted';
-            this.$rootScope.$broadcast('eventUpdated');
-          }
+      if (!this.user.payableAccountId) {
+        this.offerId = id;
+        this.verifyCard = true;
+      }else {
+        this.verifyCard = false;
+
+        this.$http.post('/api/offers/' + id + '/accept', {status: 'accepted', eventId: this.eventId, dateAccepted: new Date() }).then(response => {
+          //set visual state
+          _.each(this.$scope.offers, (item, i) => {
+            this.$scope.offers[i].drafted = true;
+            if (item._id == id) {
+              this.$scope.offers[i].drafted = false;
+              this.$scope.offers[i].status = 'accepted';
+              this.$rootScope.$broadcast('eventUpdated');
+            }
+          });
+          this.socket.syncUpdates('offer', this.$scope.offers);
         });
-        this.socket.syncUpdates('offer', this.$scope.offers);
-      });
+      }      
     }
+  }
+
+  saveCustomer(status, response) {
+    let token = response.id;
+
+    this.bindCard(token).then(result => {
+      this.user.payableAccountId = result.data.id;
+
+      this.$http.post(`/api/users/${this.user._id}`, {
+        payableAccountId: result.data.id
+      });
+
+      this.accept(this.offerId);
+    });
+  }
+
+  bindCard(token) {
+    return this.$http.post('/api/payments/card/verify', {
+      card: token,
+      description: `Verified credit card for ${this.user.firstname} ${this.user.lastname} <${this.user.email}>`,
+      email: this.user.email
+    });
   }
 
   getOffersList() {
