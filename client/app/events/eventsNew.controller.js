@@ -7,7 +7,6 @@ class EventsNewController {
     this.submitted = false;
     this.saved = false;
     this.sent = false;
-    this.verifyCard = false;
     let _this = this;
 
     this.Auth = Auth;
@@ -17,8 +16,6 @@ class EventsNewController {
     this.socket = socket;
     this.payments = PaymentService;
     this.stripeCheckout = StripeCheckout;
-
-    $scope.saveCustomer = this.saveCustomer.bind(this);
 
     this.isLoggedIn = Auth.isLoggedIn;
     this.isAdmin = Auth.isAdmin;
@@ -238,149 +235,35 @@ class EventsNewController {
   }
 
   sendRequest(form) {
+  
+    let eventModel = this.$scope.fm,
+      url = (this.saved ? '/api/events/' + this.$scope.fm._id : '/api/events/new');
 
-    if (!this.user.payableAccountId) {
-      let saving = this.saveDraft(form);
+    eventModel.showToCaterers = true;
+    eventModel.sentTo = eventModel.selectedCaterers;
+    eventModel.status = 'sent';
+    eventModel.userId = this.user._id;
+    eventModel.createDate = new Date();
 
-      if (saving) {
-        saving.then(() => {
-          this.verifyCard = true;
+    if (this.$scope.fm.status == 'sent') eventModel.isUpdated = true;
+    if (eventModel && form.$valid && !this.addressValidationError) {
+      this.$http.post(url, eventModel)
+        .then(response => {
+          this.sent = true;
+          this.$state.go('events', { time: 'active' });
+        })
+        .catch(err => {
+          this.errors.other = err.message;
         });
-      }
-      
-      // var handler = this.stripeCheckout.configure({
-      //   name: "Catering Ninja",
-      //   allowRememberMe: false
-      // });
-      
-      // var options = {
-      //   description: "Please Verify your Credit Card"
-      // };
-      
-      // let _this = this;
-
-      // handler.open(options)
-      //   .then(function(result) {
-      //     console.log("Got Stripe token: " + result[0].id);
-
-      //     // _this.bindCard(result.id).then(result => {
-      //     //   _this.user.payableAccountId = result.data.id;
-
-      //     //   _this.$http.post(`/api/users/${_this.user._id}`, {
-      //     //     payableAccountId: result.data.id
-      //     //   });
-
-      //     //   let eventModel = _this.$scope.fm,
-      //     //   url = '/api/events/' + eventModel._id;
-
-      //     //   eventModel.showToCaterers = true;
-      //     //   eventModel.sentTo = eventModel.selectedCaterers;
-      //     //   eventModel.status = 'sent';
-      //     //   eventModel.userId = _this.user._id;
-      //     //   eventModel.createDate = new Date();
-
-      //     //   if (eventModel.status == 'sent') eventModel.isUpdated = true;
-
-      //     //   if (eventModel) {
-      //     //       _this.$http.post(url, eventModel)
-      //     //         .then(response => {
-      //     //           //_this.$state.go('events');
-      //     //         })
-      //     //         .catch(err => {
-      //     //           _this.errors.other = err.message;
-      //     //         });
-      //     //   }
-      //     //   _this.$state.go('events', { time: 'active' });
-      //     // });
-          
-      //     let saving = _this.saveDraft(form);
-
-      //     if (saving) {
-      //       saving.then(() => {
-      //         // _this.verifyCard = true;
-      //       });
-      //     }
-
-      //   },function() {
-      //     console.log("Stripe Checkout closed without making a sale :(");
-      //   });
-      
-    } else {
-      this.verifyCard = false;
-      let eventModel = this.$scope.fm,
-        url = (this.saved ? '/api/events/' + this.$scope.fm._id : '/api/events/new');
-
-      eventModel.showToCaterers = true;
-      eventModel.sentTo = eventModel.selectedCaterers;
-      eventModel.status = 'sent';
-      eventModel.userId = this.user._id;
-      eventModel.createDate = new Date();
-
-      if (this.$scope.fm.status == 'sent') eventModel.isUpdated = true;
-console.log(eventModel);
-      if (eventModel && form.$valid && !this.addressValidationError) {
-        this.$http.post(url, eventModel)
-          .then(response => {
-            this.sent = true;
-            this.$state.go('events', { time: 'active' });
-          })
-          .catch(err => {
-            this.errors.other = err.message;
-          });
-      }
     }
 
-  }
-
-  saveCustomer(status, response) {
-    let token = response.id;
-
-    this.bindCard(token).then(result => {
-      this.user.payableAccountId = result.data.id;
-
-      this.$http.post(`/api/users/${this.user._id}`, {
-        payableAccountId: result.data.id
-      });
-
-      let eventModel = this.$scope.fm,
-      url = '/api/events/' + eventModel._id;
-
-      eventModel.showToCaterers = true;
-      eventModel.sentTo = eventModel.selectedCaterers;
-      eventModel.status = 'sent';
-      eventModel.userId = this.user._id;
-      eventModel.createDate = new Date();
-
-      if (eventModel.status == 'sent') eventModel.isUpdated = true;
-
-      if (eventModel) {
-          this.$http.post(url, eventModel)
-            .then(response => {
-              //this.$state.go('events');
-            })
-            .catch(err => {
-              this.errors.other = err.message;
-            });
-      }
-      this.$state.go('events', { time: 'active' });
-    });
-  }
-
-
-  bindCard(token) {
-    return this.$http.post('/api/payments/card/verify', {
-      card: token,
-      description: `Verified credit card for ${this.user.firstname} ${this.user.lastname} <${this.user.email}>`,
-      email: this.user.email
-    });
-  }
+  }  
 
   cancel() {
     this.$state.go('events', { time: 'active' });
   }
 
   saveDraft(form) {
-    this.verifyCard = false;
     let eventModel = this.$scope.fm;
 
     eventModel.userId = this.user._id;
@@ -390,11 +273,10 @@ console.log(eventModel);
     if (eventModel && form.$valid && !this.addressValidationError) {
       //return this.payments.verifyAddress(eventModel.address).then(address => {
         //eventModel.address = address;
-console.log(eventModel);
+
         return this.$http.post('/api/events/new', eventModel)
           .then(response => {
             this.saved = true;
-console.log(response);
 
             this.$scope.fm._id = response.data._id;
           })
