@@ -22,7 +22,7 @@ angular.module('cateringApp')
         return $http.post('/api/payments/taxes/lookup', {
           customerId: user._id,
           destination: event.address,
-          origin: user.address,
+          origin: event.address,
           cartItems: [
             {
               Index: 0,
