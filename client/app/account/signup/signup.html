@@ -129,7 +129,7 @@
             </div>
           </div>
           <div class="col-sm-6">
-            <div class="form-group" ng-if="vm.user.role">
+            <div class="form-group" ng-class="{ 'has-success': form.website.$valid && vm.submitted, 'has-error': form.website.$invalid && vm.submitted }" ng-if="vm.user.role">
               <label>Website</label>
               <input type="text" tabindex="9" name="website" class="form-control" ng-model="vm.user.website" required />
               <p class="help-block" ng-show="form.website.$error.required && vm.submitted">A company website is required</p>
@@ -153,7 +153,7 @@
             </div>
            </div>
           <div class="col-sm-6">
-            <div class="form-group" ng-if="vm.user.role">
+            <div class="form-group" ng-class="{ 'has-success': form.phone.$valid && vm.submitted, 'has-error': form.phone.$invalid && vm.submitted }" ng-if="vm.user.role">
               <label>Main Phone Number</label>
               <input type="text" name="phone" tabindex="12" class="form-control" ng-model="vm.user.phone" required />
               <p class="help-block" ng-show="form.phone.$error.required && vm.submitted">A company phone is required</p>
@@ -162,14 +162,14 @@
         </div>
         <div class="row">
           <div class="col-sm-6">
-            <div class="form-group" ng-if="vm.user.role">
+            <div class="form-group" ng-class="{ 'has-success': form.contact_email.$valid && vm.submitted, 'has-error': form.contact_email.$invalid && vm.submitted }" ng-if="vm.user.role">
               <label>Admin Email</label>
               <input tooltip-placement="top" tabindex="13" uib-tooltip='This is the email for the Administrator who will be the main contact for Catering Ninja to work with.  It can be the same as the user email to login.' type="text" name="contact_email" class="form-control" ng-model="vm.user.contact_email" required />
               <p class="help-block" ng-show="form.contact_email.$error.required && vm.submitted">A company Admin email is required</p>
             </div>
           </div>
           <div class="col-sm-6">
-            <div class="form-group" ng-if="vm.user.role">
+            <div class="form-group" ng-class="{ 'has-success': form.contact_phone.$valid && vm.submitted, 'has-error': form.contact_phone.$invalid && vm.submitted }" ng-if="vm.user.role">
               <label>Admin Phone</label>
               <input tooltip-placement="top" tabindex="14" uib-tooltip='The phone number Catering Ninja should use to contact you' type="text" name="contact_phone" class="form-control" ng-model="vm.user.contact_phone" required />
               <p class="help-block" ng-show="form.contact_phone.$error.required && vm.submitted">An Admin Phone is required</p>
@@ -178,7 +178,7 @@
         </div>
         <div class="row">
           <div class="col-sm-3">
-            <div class="form-group" ng-if="vm.user.role">
+            <div class="form-group" ng-class="{ 'has-success': form.minprice.$valid && vm.submitted, 'has-error': form.minprice.$invalid && vm.submitted }" ng-if="vm.user.role">
               <label>Min Price per person</label>
               <input tooltip-placement="top" tabindex="15" uib-tooltip='This is the minimum priced events that you want to view, this filters events you see.' type="text" name="minprice" class="form-control" ng-model="vm.user.minprice" required />
               <p class="help-block" ng-show="form.minprice.$error.required && vm.submitted">A minimum price is required</p>
