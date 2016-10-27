@@ -37,7 +37,8 @@
                   <div class="col-sm-4">
                     <div class="form-group">
                       <label>Website</label>
-                      <input type="text" name="website" class="form-control" ng-model="catererProfile.user.website"/>
+                      <input type="text" name="website" class="form-control" ng-model="catererProfile.user.website" required />
+                      <p class="help-block" ng-show="profileForm.website.$error.required && catererProfile.profileSubmitted">A website is required</p>
                     </div>
                   </div>
                   <div class="col-sm-3">
@@ -51,7 +52,7 @@
 
                 <div class="row">
                   <div class="col-sm-6">
-                    <div class="form-group" ng-class="{ 'has-success': profileForm.location.$valid && catererProfile.profileSubmitted, 'has-error': profileForm.location.$invalid && catererProfile.profileSubmitted }">                    
+                    <div class="form-group" ng-class="{ 'has-success': profileForm.location.$valid && catererProfile.profileSubmitted, 'has-error': profileForm.location.$invalid && catererProfile.profileSubmitted }">
                       <label>Location</label>
                       <input type="text" name="location" class="form-control" data-location="location" tooltip-placement="top" uib-tooltip='Start to type in your address and google should autofill the rest.  If it does not find the correct one, call us so we can fix it.' ng-model="catererProfile.user.location" required/>
                       <p class="help-block" ng-show="profileForm.location.$error.required && catererProfile.profileSubmitted">Location is required</p>
