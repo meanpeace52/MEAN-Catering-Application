@@ -131,13 +131,14 @@
           <div class="col-sm-6">
             <div class="form-group" ng-if="vm.user.role">
               <label>Website</label>
-              <input type="text" tabindex="9" name="website" class="form-control" ng-model="vm.user.website" />
+              <input type="text" tabindex="9" name="website" class="form-control" ng-model="vm.user.website" required />
+              <p class="help-block" ng-show="form.website.$error.required && vm.submitted">A company website is required</p>
             </div>
           </div>
           <div class="col-sm-12">
             <div class="form-group" ng-if="vm.user.role">
               <label>Description</label>
-              <input tooltip-placement="top" tabindex="10" uib-tooltip='A short description about your business' type="text" name="description" class="form-control" ng-model="vm.user.description"/>
+              <input tooltip-placement="top" tabindex="10" uib-tooltip='A short description about your business' type="text" name="description" class="form-control" ng-model="vm.user.description"  />
             </div>
           </div>
         </div>
@@ -154,7 +155,8 @@
           <div class="col-sm-6">
             <div class="form-group" ng-if="vm.user.role">
               <label>Main Phone Number</label>
-              <input type="text" name="phone" tabindex="12" class="form-control" ng-model="vm.user.phone" />
+              <input type="text" name="phone" tabindex="12" class="form-control" ng-model="vm.user.phone" required />
+              <p class="help-block" ng-show="form.phone.$error.required && vm.submitted">A company phone is required</p>
             </div>
           </div>
         </div>
@@ -162,13 +164,15 @@
           <div class="col-sm-6">
             <div class="form-group" ng-if="vm.user.role">
               <label>Admin Email</label>
-              <input tooltip-placement="top" tabindex="13" uib-tooltip='This is the email for the Administrator who will be the main contact for Catering Ninja to work with.  It can be the same as the user email to login.' type="text" name="contact_email" class="form-control" ng-model="vm.user.contact_email" />
+              <input tooltip-placement="top" tabindex="13" uib-tooltip='This is the email for the Administrator who will be the main contact for Catering Ninja to work with.  It can be the same as the user email to login.' type="text" name="contact_email" class="form-control" ng-model="vm.user.contact_email" required />
+              <p class="help-block" ng-show="form.contact_email.$error.required && vm.submitted">A company Admin email is required</p>
             </div>
           </div>
           <div class="col-sm-6">
             <div class="form-group" ng-if="vm.user.role">
               <label>Admin Phone</label>
-              <input tooltip-placement="top" tabindex="14" uib-tooltip='The phone number Catering Ninja should use to contact you' type="text" name="contact_phone" class="form-control" ng-model="vm.user.contact_phone" />
+              <input tooltip-placement="top" tabindex="14" uib-tooltip='The phone number Catering Ninja should use to contact you' type="text" name="contact_phone" class="form-control" ng-model="vm.user.contact_phone" required />
+              <p class="help-block" ng-show="form.contact_phone.$error.required && vm.submitted">An Admin Phone is required</p>
             </div>
           </div>
         </div>
@@ -176,7 +180,8 @@
           <div class="col-sm-3">
             <div class="form-group" ng-if="vm.user.role">
               <label>Min Price per person</label>
-              <input tooltip-placement="top" tabindex="15" uib-tooltip='This is the minimum priced events that you want to view, this filters events you see.' type="text" name="minprice" class="form-control" ng-model="vm.user.minprice"/>
+              <input tooltip-placement="top" tabindex="15" uib-tooltip='This is the minimum priced events that you want to view, this filters events you see.' type="text" name="minprice" class="form-control" ng-model="vm.user.minprice" required />
+              <p class="help-block" ng-show="form.minprice.$error.required && vm.submitted">A minimum price is required</p>
             </div>
           </div>
           <div class="col-sm-3">
@@ -193,11 +198,11 @@
           <div class="col-sm-6">
             <div class="form-group" ng-if="vm.user.role">
               <label tooltip-placement="top" uib-tooltip='Enter the contact that customers can reach out to with questions' >First Name</label>
-              <input type="text" tabindex="17" name="ninja_firstname" class="form-control" ng-model="vm.user.ninja_firstname" />
+              <input type="text" tabindex="17" name="ninja_firstname" class="form-control" ng-model="vm.user.ninja_firstname"  />
             </div>
             <div class="form-group" ng-if="vm.user.role">
               <label>Contact Email</label>
-              <input tooltip-placement="top" tabindex="19" uib-tooltip='Enter the email that customers can reach out to with questions'  type="text" name="ninja_email" class="form-control" ng-model="vm.user.ninja_email" />
+              <input tooltip-placement="top" tabindex="19" uib-tooltip='Enter the email that customers can reach out to with questions'  type="text" name="ninja_email" class="form-control" ng-model="vm.user.ninja_email"  />
             </div>
           </div>
           <div class="col-sm-6">
