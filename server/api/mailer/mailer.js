@@ -341,13 +341,16 @@ var mailer = {
       message += '<p>Location: <strong>' + event.location + '</strong></p>';
       message += '<p>People: <strong>' + event.people + '</strong></p>';
       message += '<p>Price per person: <strong>' + event.pricePerPerson + '</strong></p>';
+      message += '<p></p>';
+      message += '<p>If you would like to create and offer to respond to this event, please log in using the link below.</p>';
+      message += '<p></p>';
       message += '<p>To change or stop email notifications, log into your account using this email address and click Profile and Email Options.</p>';
       message += '<p>If you have not registered or do not know your password, just click forgot my password at login and use this email.</p>';
       message += '<p><a href="https://app.cateringninja.com/reset">Forgot My Password</a></p>';
       message += '<p><a href="https://app.cateringninja.com/login">Login</a></p>';
 
     getEventMailList(event).then((users) => {
-console.log(users);      
+console.log(users);
       _.each(users, (user) => {
         if (user.sendNotification) {
           nodemailerMailgun.sendMail({
