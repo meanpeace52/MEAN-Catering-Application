@@ -111,7 +111,7 @@ class OffersEditController {
         })
       }*/
 
-      let offerModel = this.$scope.fm,
+      /*let offerModel = this.$scope.fm,
       url = '/api/offers/' + this.$scope.fm._id;
 
       offerModel.date = new Date();
@@ -141,7 +141,37 @@ class OffersEditController {
             .catch(err => {
                 this.errors.other = err.message;
             });
+          });*/
+      let offerModel = this.$scope.fm;
+      offerModel.catererId = this.user._id;
+      // offerModel.catererName = this.user.companyName || this.user.name;
+      offerModel.date = new Date();
+      offerModel.status = 'sent';
+        if (offerModel) {
+          let total = offerModel.pricePerPerson * this.event.people;
+          if (offerModel.counter) {
+            total = offerModel.counter * this.event.people;
+          }
+          total = +total.toFixed(2);
+          this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
+            offerModel.invoice = {
+            pricePerPerson: this.event.pricePerPerson,
+            people: this.event.people,
+            counter: offerModel.counter || 0,
+            service: total,
+            tax: tax,
+            total: total + tax
+          };
+
+          this.$http.post('/api/offers/' + this.$scope.fm._id, offerModel).then(response => {
+            this.sent = true;
+          //this.$state.go('events');
+          //this.$scope.fm = {};
+          })
+          .catch(err => {
+              this.errors.other = err.message;
           });
+        });
       }
 
     } else {
