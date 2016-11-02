@@ -16,7 +16,7 @@ class OffersNewController {
 
     this.getCurrentUser = Auth.getCurrentUser;
     this.isLoggedIn = Auth.isLoggedIn;
-    this.user = this.getCurrentUser();   
+    this.user = this.getCurrentUser();
     this.incService = IncludedInPriceService;
     this.serService = ServiceTypesService;
     this.$scope.fm = {};
@@ -78,13 +78,14 @@ class OffersNewController {
           this.$state.go('dwolla');
         });
       }*/
+      /*
       let offerModel = this.$scope.fm;
       offerModel.catererId = this.user._id;
       offerModel.catererName = this.user.companyName || this.user.name;
       offerModel.date = new Date();
       offerModel.status = 'draft';
 
-      /* invoice is correct, but return is undefined */
+
       if (offerModel) {
           let total = this.event.pricePerPerson * this.event.people;
           if (offerModel.counter) {
@@ -109,7 +110,40 @@ class OffersNewController {
               .catch(err => {
                 this.errors.other = err.message;
               });
+          });*/
+        let offerModel = this.$scope.fm;
+        offerModel.catererId = this.user._id;
+        offerModel.catererName = this.user.companyName || this.user.name;
+        offerModel.date = new Date();
+        offerModel.status = 'sent';
+        if (offerModel) {
+          let total = this.event.pricePerPerson * this.event.people;
+          if (offerModel.counter) {
+            total = offerModel.counter * this.event.people;
+            //total -= offerModel.counter; changed to correctly add total of counter offer
+          }
+          total = +total.toFixed(2);
+          this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
+            offerModel.invoice = {
+            pricePerPerson: this.event.pricePerPerson,
+            people: this.event.people,
+            counter: offerModel.counter || 0,
+            service: total,
+            tax: tax,
+            total: total + tax,
+            commission: this.user.commission
+          };
+
+          this.$http.post('/api/offers/new', offerModel).then(response => {
+            this.sent = true;
+          //this.$state.go('events');
+          //this.$scope.fm = {};
+          })
+          .catch(err => {
+            this.errors.other = err.message;
           });
+        });
+
       }
 
     } else {
