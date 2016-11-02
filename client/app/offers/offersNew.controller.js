@@ -104,7 +104,7 @@ class OffersNewController {
 
             return this.$http.post('/api/offers/new', offerModel).then(response => {
               this.saved = true;
-              this.$state.go('dwolla',{offer: response.data});
+              // this.$state.go('dwolla',{offer: response.data});
             })
               .catch(err => {
                 this.errors.other = err.message;
