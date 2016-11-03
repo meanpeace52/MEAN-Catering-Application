@@ -339,7 +339,6 @@ var mailer = {
       message = '<h1>Event ' + event.name + ' was ' + fact + '!</h1>';
       message += '<p>Date:<strong>' + date.toDateString() + '</strong></p>';
       message += '<p>Time:<strong>' + time.toTimeString() + '</strong></p>';
-      message += '<p>Location: <strong>' + event.location + '</strong></p>';
       message += '<p>People: <strong>' + event.people + '</strong></p>';
       message += '<p>Price per person: <strong>' + event.pricePerPerson + '</strong></p>';
       message += '<p></p>';
