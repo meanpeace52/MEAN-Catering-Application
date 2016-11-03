@@ -333,6 +333,7 @@ var mailer = {
     });
   },
   notifyEvent: function(event, fact) {
+    
     let date = new Date(event.date),
       time = new Date(event.time),
       message = '<h1>Event ' + event.name + ' was ' + fact + '!</h1>';
@@ -347,10 +348,9 @@ var mailer = {
       message += '<p>To change or stop email notifications, log into your account using this email address and click Profile and Email Options.</p>';
       message += '<p>If you have not registered or do not know your password, just click forgot my password at login and use this email.</p>';
       message += '<p><a href="https://app.cateringninja.com/reset">Forgot My Password</a></p>';
-      message += '<p><a href="https://app.cateringninja.com/login">Login</a></p>';
+      message += '<p><a href="https://app.cateringninja.com/login">Login</a></p>';      
 
     getEventMailList(event).then((users) => {
-console.log(users);
       _.each(users, (user) => {
         if (user.sendNotification) {
           nodemailerMailgun.sendMail({
