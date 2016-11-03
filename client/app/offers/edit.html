@@ -55,7 +55,8 @@
               <div class="col-sm-6">
                 <div class="form-group">
                   <label>Location</label>
-                  <span>{{vm.event.location}}</span>
+                  <span ng-if="fm.status == 'accepted'">{{vm.event.location}}</span>
+                  <span ng-if="fm.status != 'accepted'">{{vm.event.address.City}}, {{vm.event.address.State}}, {{vm.event.address.Zip5}}</span>
                 </div>
                 <div class="form-group">
                   <label>Delivery Instructions</label>

@@ -74,7 +74,8 @@
                 <td style="max-width: 100px;">{{event.name}}</td>
                 <td>{{event.pricePerPerson}}</td>
                 <td>{{event.people}}</td>
-                <td ng-if="vm.user.role == 'caterer'" style="width: 180px;"><a target="_blank" href="http://maps.google.com/?q={{event.location}}">{{event.location}}</a></td>
+                <td ng-if="vm.user.role == 'caterer' && event.offerStatus == 'accepted'" style="width: 180px;"><a target="_blank" href="http://maps.google.com/?q={{event.location}}">{{event.location}}</a></td>
+                <td ng-if="vm.user.role == 'caterer' && event.offerStatus != 'accepted'" style="width: 180px;"><a target="_blank" href="http://maps.google.com/?q={{event.location}}">{{event.address.City}}, {{event.address.State}}, {{event.address.Zip5}}</a></td>
                 <td style="max-width: 180px;">{{event.description}}</td>
                 <td ng-if="vm.user.role == 'caterer'">
                   <span class="label label-default" uib-tooltip="Total amount of offers sent for this event">{{event.offersTotal}}</span>
