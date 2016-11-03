@@ -34,7 +34,7 @@ function saveUpdates(updates) {
       delete updates[key];
     }
     var updated = _.mergeWith(entity, updates);
-    if (updated.showToCaterers && !isBrandNew) mailer.notifyEvent(updated, 'updated');
+    // if (updated.showToCaterers && !isBrandNew) mailer.notifyEvent(updated, 'updated');
     if (isBrandNew) mailer.notifyEvent(updated, 'created');
     return updated.save()
       .then(updated => {

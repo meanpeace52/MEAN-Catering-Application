@@ -333,8 +333,6 @@ var mailer = {
     });
   },
   notifyEvent: function(event, fact) {
-    if(fact == 'updated')
-      return;
     
     let date = new Date(event.date),
       time = new Date(event.time),
