@@ -296,6 +296,18 @@ class EventsController {
       console.log('eventForInvoice', this.$scope.eventForInvoice);
       return offer.paymentStatus === 'paid' || offer.status === 'completed';
     })[0];
+
+    if(!this.$scope.eventForInvoice.tip) {
+      this.$scope.eventForInvoice.tip = 0;
+    }else {
+      if(this.$scope.eventForInvoice.tipType == '$'){
+        this.$scope.eventForInvoice.offer.invoice.total = this.$scope.eventForInvoice.offer.invoice.total + this.$scope.eventForInvoice.tip;
+      }else if(this.$scope.eventForInvoice.tipType == '%') {
+        this.$scope.eventForInvoice.offer.invoice.total = this.$scope.eventForInvoice.offer.invoice.total + this.$scope.eventForInvoice.tip/100 * this.$scope.eventForInvoice.offer.invoice.total;
+      }
+console.log(this.$scope.eventForInvoice.offer.invoice.total);      
+    }
+
     $event.stopPropagation();
   }
 
