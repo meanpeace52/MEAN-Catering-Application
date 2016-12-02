@@ -56,6 +56,7 @@
     <![endif]-->
     <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
     <!-- build:js({client,node_modules}) app/vendor.js -->
+      <script src="socket.io-client/socket.io.js"></script>
       <!-- bower:js -->
       <script src="bower_components/jquery/dist/jquery.js"></script>
       <script src="bower_components/angular/angular.js"></script>
@@ -81,7 +82,6 @@
       <script src="bower_components/angular-credit-cards/release/angular-credit-cards.js"></script>
       <script src="bower_components/stripe-angular/stripe-angular.js"></script>
       <!-- endbower -->
-      <script src="socket.io-client/socket.io.js"></script>
     <!-- endbuild -->
     <!-- build:js(.tmp) app/app.js -->
       <script src="app/app.js"></script>
