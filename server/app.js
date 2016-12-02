@@ -50,11 +50,12 @@ var app = express();
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
-if(config.env == 'development'){
-  var server = http.createServer(app);
-}else if( config.env == 'production'){
-  var server = https.createServer(credentials, app);
-}
+// if(config.env == 'development'){
+//   var server = http.createServer(app);
+// }else if( config.env == 'production'){
+//   var server = https.createServer(credentials, app);
+// }
+var server = https.createServer(credentials, app);
 
 var socketio = require('socket.io')(server, {
   serveClient: config.env !== 'production',
