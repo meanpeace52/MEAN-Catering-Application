@@ -44,7 +44,7 @@
     $onInit() {
       
       var host_name = this.$location.host();
-      if(host_name != 'app.cateringninja.com') {
+      if(host_name != 'app.cateringninja.com' || host_name != 'dev.cateringninja.com') {
         var modalInstance = this.$uibModal.open({
           templateUrl: 'myModalContent.html',
           backdrop: 'static',

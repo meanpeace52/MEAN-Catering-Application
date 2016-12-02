@@ -19,7 +19,8 @@ var all = {
   root: path.normalize(__dirname + '/../../..'),
 
   // Server port
-  port: process.env.PORT || 8080, //9000
+  // port: process.env.PORT || 8080, //9000
+  port: process.env.PORT || 443, //9000
 
   // Server IP
   ip: process.env.IP || '0.0.0.0',

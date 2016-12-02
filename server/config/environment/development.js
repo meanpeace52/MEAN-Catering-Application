@@ -3,13 +3,15 @@
 // Development specific configuration
 // ==================================
 module.exports = {
- domain: 'http://localhost:8080/',
+ // domain: 'http://localhost:8080/',
  // domain: 'http://dev.cateringninja.com:8080/',
+ domain: 'https://dev.cateringninja.com/'
 
   // MongoDB connection options
   mongo: {
     //uri: 'mongodb://localhost/catering'
-    uri: 'mongodb://ninja_root:ninja3141@104.198.67.10:27017/catering'
+    // uri: 'mongodb://ninja_root:ninja3141@104.198.67.10:27017/catering'
+    uri: 'mongodb://ninja_root:ninja3141@104.154.59.205:27017/catering'
   },
 
   // Seed database on startup
