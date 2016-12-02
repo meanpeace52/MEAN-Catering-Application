@@ -67,7 +67,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-sm-10">
+          <!-- <div class="col-sm-10">
             <div class="form-group" ng-class="{'has-error': (form.$submitted || form.pricePerPerson.$touched) && form.pricePerPerson.$error.required}">
               <label>Price per person</label>
               <span ng-if="!(fm.status == 'draft' || fm.status == 'sent')">
@@ -80,16 +80,48 @@
                 <div ng-show="form.pricePerPerson.$error.required">Please enter price per person</div>
               </div>
             </div>
-          </div>
-          <div class="col-sm-2">
+          </div> -->
+          <div class="col-sm-3">
             <div class="form-group" ng-class="{'has-error': (form.$submitted || form.pricePerPerson.$touched) && form.pricePerPerson.$error.required}">
               <label>Price per person</label>
               <div class="input-group">
                 <span class="input-group-addon">$</span>
-                <input ng-disabled="!(fm.status == 'draft' || fm.status == 'sent')" tooltip-placement="top" uib-tooltip='This is the price per person/meal excluding sales tax' type="text" name="pricePerPerson" class="form-control" required ng-model="fm.pricePerPerson">
+                <input ng-disabled="!(fm.status == 'draft' || fm.status == 'sent')" tooltip-placement="top" uib-tooltip='This is the price per person/meal excluding sales tax' type="number" name="pricePerPerson" class="form-control" required ng-model="fm.pricePerPerson">
               </div>
               <div ng-show="form.$submitted || form.pricePerPerson.$touched">
                 <div ng-show="form.pricePerPerson.$error.required">Please enter price per person</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group" ng-class="{'has-error': (form.$submitted || form.subTotal.$touched) && form.subTotal.$error.required}">
+              <label>Sub Total</label>
+              <div class="input-group">
+                <span class="input-group-addon">$</span>
+                <input readonly tooltip-placement="top" uib-tooltip='This is the subTotal Event excluding sales tax and tip' type="text" class="form-control" required ng-model="fm.subTotal">
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group" ng-class="{'has-error': (form.$submitted || form.tip.$touched) && form.tip.$error.required}">
+              <label>Tip Amount - % or $
+                <toggle class="tip-toggle-btn" ng-model="fm.toggleSymbol" on="%" off="$"></toggle>
+              </label>
+              <div class="input-group">
+                <span class="input-group-addon">{{fm.tipType}}</span>
+                <input  tooltip-placement="top" uib-tooltip='This is the tip excluding sales tax' type="number" name="tip" class="form-control" required ng-model="fm.tip">
+              </div>
+              <div ng-show="form.$submitted || form.tip.$touched">
+                <div ng-show="form.tip.$error.required">Please enter tip</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group" ng-class="{'has-error': (form.$submitted || form.totalEvent.$touched) && form.totalEvent.$error.required}">
+              <label class="totalEvent-label">Total w/t Tip</label>
+              <div class="input-group">
+                <span class="input-group-addon">$</span>
+                <input readonly tooltip-placement="top" uib-tooltip='This is the subTotal Event excluding sales tax and tip' type="text" class="form-control" required ng-model="fm.totalEvent">
               </div>
             </div>
           </div>

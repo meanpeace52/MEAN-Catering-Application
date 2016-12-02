@@ -38,6 +38,10 @@ class EventsNewController {
     this.$scope.fm.pricePerPerson = 0.5;
     this.$scope.fm.selectedCaterers = [];
     this.$scope.selectionOccured = true;
+    this.$scope.fm.subTotal = this.$scope.fm.pricePerPerson * this.$scope.fm.people;
+    this.$scope.fm.toggleSymbol = true;
+    this.$scope.fm.tipType = '%';
+    this.$scope.fm.totalEvent = '';
 
     this.$scope.fm.foodTypes = [];
     this.$scope.foodTypes = [];
@@ -81,12 +85,45 @@ class EventsNewController {
       opened: false
     };
 
+
+    // Update Vegetarian Meals, Standard Meals.
     $scope.$watch('fm.people', updateValue3);
     $scope.$watch('fm.vegetarianMeals', updateValue3);
 
-
     function updateValue3() {
       $scope.fm.totalMeals = +$scope.fm.people - +$scope.fm.vegetarianMeals;
+    }
+
+    // Watch & Update SubTotal
+    $scope.$watch('fm.people', updateSubTotal);
+    $scope.$watch('fm.pricePerPerson', updateSubTotal);
+
+    function updateSubTotal() {
+      $scope.fm.subTotal = $scope.fm.pricePerPerson * $scope.fm.people;
+    }
+
+    // Update Symbol
+    $scope.$watch('fm.toggleSymbol', updateSymbol);
+
+    function updateSymbol() {
+      if($scope.fm.toggleSymbol)
+        $scope.fm.tipType = '%';
+      else
+        $scope.fm.tipType = '$';
+    }
+
+    // Update Total Amount.
+    $scope.$watch('fm.people', updateTotalEvent);
+    $scope.$watch('fm.pricePerPerson', updateTotalEvent);
+    $scope.$watch('fm.tip', updateTotalEvent);
+    $scope.$watch('fm.toggleSymbol', updateTotalEvent);
+
+    function updateTotalEvent() {
+      if($scope.fm.tipType == '%'){
+        $scope.fm.totalEvent = $scope.fm.subTotal + $scope.fm.tip/100 * $scope.fm.subTotal;
+      }else if($scope.fm.tipType == '$'){
+        $scope.fm.totalEvent = $scope.fm.subTotal + $scope.fm.tip;
+      }
     }
 
     $scope.open1 = function() {
@@ -235,7 +272,6 @@ class EventsNewController {
   }
 
   sendRequest(form) {
-  
     let eventModel = this.$scope.fm,
       url = (this.saved ? '/api/events/' + this.$scope.fm._id : '/api/events/new');
 
@@ -246,6 +282,7 @@ class EventsNewController {
     eventModel.createDate = new Date();
 
     if (this.$scope.fm.status == 'sent') eventModel.isUpdated = true;
+console.log(eventModel);    
     if (eventModel && form.$valid && !this.addressValidationError) {
       this.$http.post(url, eventModel)
         .then(response => {

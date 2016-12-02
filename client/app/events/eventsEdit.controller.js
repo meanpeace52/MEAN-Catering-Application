@@ -33,6 +33,10 @@ class EventsEditController {
     this.$scope.card = {};
     this.$scope.fm.includedInPrice = [];
     this.$scope.fm.selectedCaterers = [];
+    this.$scope.fm.subTotal = this.$scope.fm.pricePerPerson * this.$scope.fm.people;
+    this.$scope.fm.toggleSymbol = true;
+    this.$scope.fm.tipType = '%';
+    this.$scope.fm.totalEvent = '';
 
     this.$scope.filter = {
       allFt: false,
@@ -110,11 +114,45 @@ class EventsEditController {
       opened: false
     };
 
+    // Update Vegetarian Meals, Standard Meals.
     $scope.$watch('fm.people', updateValue3);
     $scope.$watch('fm.vegetarianMeals', updateValue3);
 
     function updateValue3() {
       $scope.fm.totalMeals = +$scope.fm.people - +$scope.fm.vegetarianMeals;
+    }
+
+    // Watch & Update SubTotal
+    $scope.$watch('fm.people', updateSubTotal);
+    $scope.$watch('fm.pricePerPerson', updateSubTotal);
+
+    function updateSubTotal() {
+      $scope.fm.subTotal = $scope.fm.pricePerPerson * $scope.fm.people;
+    }
+
+    // Update Symbol
+    $scope.$watch('fm.toggleSymbol', updateSymbol);
+
+    function updateSymbol() {
+console.log($scope.fm.toggleSymbol);      
+      if($scope.fm.toggleSymbol)
+        $scope.fm.tipType = '%';
+      else
+        $scope.fm.tipType = '$';
+    }
+
+    // Update Total Amount.
+    $scope.$watch('fm.people', updateTotalEvent);
+    $scope.$watch('fm.pricePerPerson', updateTotalEvent);
+    $scope.$watch('fm.tip', updateTotalEvent);
+    $scope.$watch('fm.toggleSymbol', updateTotalEvent);
+
+    function updateTotalEvent() {
+      if($scope.fm.tipType == '%'){
+        $scope.fm.totalEvent = $scope.fm.subTotal + $scope.fm.tip/100 * $scope.fm.subTotal;        
+      }else if($scope.fm.tipType == '$'){
+        $scope.fm.totalEvent = $scope.fm.subTotal + $scope.fm.tip;
+      }
     }
 
     $scope.open1 = function() {
@@ -124,7 +162,7 @@ class EventsEditController {
     $scope.$on('$destroy', function () {
       socket.unsyncUpdates('event');
     });
-  }
+  }    
 
   //caterer
   //  showByFT

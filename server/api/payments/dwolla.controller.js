@@ -99,7 +99,10 @@ class DwollaController {
   startAuth(req, res) {
     let authUrl = dwollaClient.authUrl;
     let clientId = config.payments.DWOLLA.KEY;
-    let redirectUrl = 'https://' + req.headers.host + req.query.redirect;
+    let redirectUrl = 'http://' + req.headers.host + req.query.redirect;
+    //if (dwollaOptions.environment = 'sandbox') {
+    //  let redirectUrl = 'http://' + req.headers.host + req.query.redirect;
+    //}
     let scope = 'Send|Funding'; //'Transactions|Send|Request|Funding|ManageCustomers|Email';
     let output = {
       authUrl: `${authUrl}?client_id=${clientId}&response_type=code&redirect_uri=${redirectUrl}&scope=${scope}`//&verified_account=true`

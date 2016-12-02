@@ -293,9 +293,15 @@ class EventsController {
     this.$scope.isInvoiceMode = true;
     this.$scope.eventForInvoice = angular.copy(event);
     this.$scope.eventForInvoice.offer = this.$scope.eventForInvoice.offers.filter((offer) => {
+      offer.invoice.subtotal = offer.invoice.people * offer.invoice.pricePerPerson;
       console.log('eventForInvoice', this.$scope.eventForInvoice);
       return offer.paymentStatus === 'paid' || offer.status === 'completed';
     })[0];
+
+    if(!this.$scope.eventForInvoice.tip) {
+      this.$scope.eventForInvoice.tip = 0;
+    }
+
     $event.stopPropagation();
   }
 

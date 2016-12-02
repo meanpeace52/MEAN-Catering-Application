@@ -77,12 +77,21 @@ class OffersNewController {
       offerModel.date = new Date();
       offerModel.status = 'sent';
       if (offerModel) {
+
         let total = this.event.pricePerPerson * this.event.people;
         if (offerModel.counter) {
           total = offerModel.counter * this.event.people;
           //total -= offerModel.counter; changed to correctly add total of counter offer
         }
         total = +total.toFixed(2);
+
+        // Add Tip count - Marcin.
+        if(this.event.tipType == '%'){
+          total = total + this.event.tip/100 * total;        
+        }else if(this.event.tipType == '$'){
+          total = total + this.event.tip;
+        }
+
         this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
           offerModel.invoice = {
             pricePerPerson: this.event.pricePerPerson,
@@ -124,6 +133,14 @@ class OffersNewController {
           total = offerModel.counter * this.event.people;
         }
         total = +total.toFixed(2);
+
+        // Add Tip count - Marcin.
+        if(this.event.tipType == '%'){
+          total = total + this.event.tip/100 * total;        
+        }else if(this.event.tipType == '$'){
+          total = total + this.event.tip;
+        }
+
         this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
           offerModel.invoice = {
             pricePerPerson: this.event.pricePerPerson,

@@ -9,6 +9,8 @@ var EventSchema = new mongoose.Schema({
   status: String,
   pricePerPerson: Number,
   people: Number,
+  tip: Number,
+  tipType: String,
   vegetarianMeals: Number,
   specialRequest: String,
   includedInPrice: Object,

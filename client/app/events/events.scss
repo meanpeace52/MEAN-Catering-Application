@@ -135,3 +135,18 @@
   margin: 20px 0 0 0;
 }
 
+.toggle.btn {
+  min-width: 40px;
+  min-height: 25px;
+  height: 25px !important;
+  width: 40px !important;
+}
+.toggle-on.btn{ 
+  padding: 2px 10px 2px 0;
+}
+.toggle-off.btn {
+  padding: 2px 0px 2px 10px;
+}
+label.totalEvent-label{
+  margin-bottom: 10px;
+}
