@@ -140,6 +140,7 @@ class PaymentListController {
           };
 
           $scope.ok = () => {
+            $scope.updatedInvoice.service = $scope.updatedInvoice.pricePerPerson * $scope.updatedInvoice.people + $scope.updatedInvoice.tip;            
             angular.merge(root.$scope.eventActive.offers[0].invoice, $scope.updatedInvoice);
 
             $http.post('/api/offers/' + root.$scope.eventActive.offers[0]._id, root.$scope.eventActive.offers[0]).then(response => {

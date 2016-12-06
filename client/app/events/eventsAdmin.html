@@ -324,7 +324,7 @@
           </tr>
           <tr class="bg-info">
             <td><b>Sub Total</b></td>
-            <td><b>-</b></td>
+            <td><b>{{(subTotal + partialRefund.tax + partialRefund.tip).toFixed(2)}}</b></td>
           </tr>
           <tr>
             <td>Comission <input type="number" ng-model="partialRefund.commission">%</td>
