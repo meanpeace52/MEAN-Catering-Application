@@ -127,6 +127,8 @@ class PaymentListController {
           $scope.partialRefund = angular.copy(offer.invoice);
           $scope.partialRefund.refund = 0;
           $scope.updatedInvoice = $scope.totalRefund;
+          $scope.subTotal = $scope.totalRefund.pricePerPerson * $scope.totalRefund.people;
+          $scope.tip = $scope.totalRefund.service - $scope.subTotal;
 
           $scope.setAdjustment = (updatedInvoice) => {
             $scope.updatedInvoice = updatedInvoice

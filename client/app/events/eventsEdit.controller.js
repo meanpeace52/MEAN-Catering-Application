@@ -134,7 +134,6 @@ class EventsEditController {
     $scope.$watch('fm.toggleSymbol', updateSymbol);
 
     function updateSymbol() {
-console.log($scope.fm.toggleSymbol);      
       if($scope.fm.toggleSymbol)
         $scope.fm.tipType = '%';
       else
