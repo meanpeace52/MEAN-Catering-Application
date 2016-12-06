@@ -199,11 +199,13 @@ var mailer = {
       message += '<p>From: ' + comment.name + '</p>';
       message += '<p>Date: ' + date.toDateString() + '</p>';
       message += '<p>Comment: ' + comment.text + '</p>';
+      message += '<p></p>';
+      message += '<p>Do Not Reply to This Email. You have to log into Catering Ninja to respond to comments.</p>';
 
       nodemailerMailgun.sendMail({
         from: config.mailgun.from,
         to: data.user.email,
-        subject: 'New comment',
+        subject: 'New comment - Do Not Reply to This Email',
         html: message,
       }, function (err, info) {
         if (err) {
@@ -333,7 +335,7 @@ var mailer = {
     });
   },
   notifyEvent: function(event, fact) {
-    
+
     let date = new Date(event.date),
       time = new Date(event.time),
       message = '<h1>Event ' + event.name + ' was ' + fact + '!</h1>';
@@ -347,7 +349,7 @@ var mailer = {
       message += '<p>To change or stop email notifications, log into your account using this email address and click Profile and Email Options.</p>';
       message += '<p>If you have not registered or do not know your password, just click forgot my password at login and use this email.</p>';
       message += '<p><a href="https://app.cateringninja.com/reset">Forgot My Password</a></p>';
-      message += '<p><a href="https://app.cateringninja.com/login">Login</a></p>';      
+      message += '<p><a href="https://app.cateringninja.com/login">Login</a></p>';
 
     getEventMailList(event).then((users) => {
       _.each(users, (user) => {

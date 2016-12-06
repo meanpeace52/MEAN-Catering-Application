@@ -3,8 +3,9 @@
 // Development specific configuration
 // ==================================
 module.exports = {
- domain: 'http://localhost:8080/',
+ // domain: 'http://localhost:8080/',
  // domain: 'http://dev.cateringninja.com:8080/',
+ domain: 'http://dev.cateringninja.com:8080/',
 
   // MongoDB connection options
   mongo: {
@@ -29,10 +30,10 @@ module.exports = {
     DWOLLA: {
       //local
       /*KEY: 'uGQTHG1Yp1dvagz9yejNwGXMbzsQ0mfHfNpF7CPqY9QA7W48Ot',
-      SECRET: 'YxmlcmAXhCOn4utGrQMZMfK8X1SoxSVUBODDJWOTIuhtkIMV5a',
-      ACCOUNT_ID: 'f8615f27-0783-4078-97db-d8d7ce3ae368',
-      ACCESS_TOKEN: '0IDUpXJtXo21YYJueOd45HzZ2FvrVBF3xE1zyTmTRXP3nG4QkW',
-      REFRESH_TOKEN: 'BtL6PAAtC5v26KtYHMpOK9VSqdSYsSV5oL7awWmsiOVBcbZ7fD'  */
+       SECRET: 'YxmlcmAXhCOn4utGrQMZMfK8X1SoxSVUBODDJWOTIuhtkIMV5a',
+       ACCOUNT_ID: 'f8615f27-0783-4078-97db-d8d7ce3ae368',
+       ACCESS_TOKEN: '0IDUpXJtXo21YYJueOd45HzZ2FvrVBF3xE1zyTmTRXP3nG4QkW',
+       REFRESH_TOKEN: 'BtL6PAAtC5v26KtYHMpOK9VSqdSYsSV5oL7awWmsiOVBcbZ7fD'  */
       //dev
       KEY: '1HVGwWtBKv8amnhdmJvZ2wK4CS6xSVvVNSNvlDVbj3zlzWUVyh',
       SECRET: '8xPG4YytWNmeVtbt7UMCVDH5wT6UfBEZtqBE3tmRQ1nq7fle72',
@@ -46,9 +47,9 @@ module.exports = {
       PUBLIC_KEY: 'pk_test_0EFB2Y1WvIYGIIUsAQJ42DVD'
     }
     /*STRIPE: {
-      SECRET_KEY: 'sk_test_FgAfCdq6QKhuGwWsHuk0yz7h',
-      PUBLIC_KEY: 'pk_test_sPCubetxhsItqcr1nkZOHQfM'
-    } */
+     SECRET_KEY: 'sk_test_FgAfCdq6QKhuGwWsHuk0yz7h',
+     PUBLIC_KEY: 'pk_test_sPCubetxhsItqcr1nkZOHQfM'
+     } */
   },
 
   activeCampaign: {
