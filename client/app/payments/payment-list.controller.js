@@ -129,9 +129,14 @@ class PaymentListController {
           $scope.updatedInvoice = $scope.totalRefund;
           $scope.subTotal = $scope.totalRefund.pricePerPerson * $scope.totalRefund.people;
           $scope.tip = $scope.totalRefund.service - $scope.subTotal;
+          $scope.partialRefund.tip = $scope.partialRefund.service - $scope.subTotal;
+
+          $scope.$watch('partialRefund.tip', function(newVal, oldVal) {
+            $scope.partialRefund.total = $scope.subTotal + $scope.partialRefund.tax + newVal;
+          })
 
           $scope.setAdjustment = (updatedInvoice) => {
-            $scope.updatedInvoice = updatedInvoice
+            $scope.updatedInvoice = updatedInvoice;
           };
 
           $scope.ok = () => {
