@@ -264,9 +264,11 @@ class PaymentListController {
         if ($scope.tableState && $scope.tableState.sort.predicate) {
           filtered = $filter('orderBy')(filtered, $scope.tableState.sort.predicate, $scope.tableState.sort.reverse);
         }
+        if (root.user.role === 'caterer') {
+          filtered = $filter('filter')(filtered, {confirmedBy: root.user._id})
+        }
 
         $scope.displayed = filtered.slice(start, start + number);
-console.log($scope.displayed);        
         if ($scope.tableState) {
           $scope.tableState.pagination.numberOfPages = Math.ceil(filtered.length / number);
         }
