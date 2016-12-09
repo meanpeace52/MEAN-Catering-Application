@@ -188,176 +188,184 @@
 </div>
 
 <script type="text/ng-template" id="adjustPayment.html">
-  <div class="modal-header">
-    <h3 class="modal-title">Payment Adjustments</h3>
+  <div class="confirm-adjustment bg-info" ng-if="confirm">
+    <h4>Confirm Adjustment</h4>
+    <button class="btn btn-primary" ng-click="confirmAdjustment()">Yes</button>
+    <button class="btn btn-warning" ng-click="cancelConfirm()">No</button>
   </div>
-  <div class="modal-body">
-    <uib-tabset active="active">
-      <uib-tab index="0" heading="Complete Refund" ng-click="setAdjustment(totalRefund)">
-        <br />
-        <table class="table table-condensed">
-          <tr>
-            <th>Invoice</th>
-            <th>Refund, $</th>
-          </tr>
-          <tr>
-            <td>Service</td>
-            <td>{{subTotal.toFixed(2)}}</td>
-          </tr>
-          <tr>
-            <td>Tax</td>
-            <td>{{totalRefund.tax.toFixed(2)}}</td>
-          </tr>
-          <tr>
-            <td>Tip</td>
-            <td>{{tip.toFixed(2)}}</td>
-          </tr>
-          <tr class="bg-info">
-            <td><b>Total</b></td>
-            <td><b>{{totalRefund.total.toFixed(2)}}</b></td>
-          </tr>
-          <tr class="bg-warning">
-            <td><b>Adjustment</b></td>
-            <td><b>{{totalRefund.adjustment.client.toFixed(2)}}</b></td>
-          </tr>
-          <tr class="bg-success">
-            <td><b>New Total</b></td>
-            <td><b>{{(totalRefund.total - (totalRefund.adjustment.caterer + totalRefund.adjustment.chargeOff)).toFixed(2)}}</b></td>
-          </tr>
-          <tr><td colspan="2"></td></tr>
-          <tr><th colspan="2">Payable</th></tr>
-          <tr>
-            <td>Service</td>
-            <td>{{subTotal.toFixed(2)}}</td>
-          </tr>
-          <tr>
-            <td>Tax</td>
-            <td>{{totalRefund.tax.toFixed(2)}}</td>
-          </tr>
-          <tr>
-            <td>Tip</td>
-            <td>{{tip.toFixed(2)}}</td>
-          </tr>
-          <tr class="bg-warning">
-            <td><b>Refund Adjustment</b></td>
-            <td><b>{{totalRefund.refund.toFixed(2)}}</b></td>
-          </tr>
-          <tr class="bg-info">
-            <td><b>Sub Total</b></td>
-            <td><b>-</b></td>
-          </tr>
-          <tr>
-            <td>Comission {{totalRefund.commission}}%</td>
-            <td>-</td>
-          </tr>
-          <tr class="bg-warning">
-            <td><b>Caterer Adjustment</b></td>
-            <td><b>-</b></td>
-          </tr>
-          <tr class="bg-primary">
-            <td><b>Total Payment</b></td>
-            <td><b>-</b></td>
-          </tr>
-          <tr><td colspan="2"></td></tr>
-          <tr><th colspan="2">Home Account</th></tr>
-          <tr>
-            <td><b>Charge Off</b></td>
-            <td><b>-</b></td>
-          </tr>
-          <tr>
-            <td><b>Commission Income</b></td>
-            <td><b>-</b></td>
-          </tr>
-          <tr class="bg-success">
-            <td><b>Adjustment Balanced</b></td>
-            <td><b>{{(partialRefund.adjustment.client - (partialRefund.adjustment.caterer + partialRefund.adjustment.chargeOff)).toFixed(2)}}</b></td>
-          </tr>
-        </table>
-      </uib-tab>
-      <uib-tab index="1" heading="Partial Refund" ng-click="setAdjustment(partialRefund)">
-        <table class="table table-condensed">
-          <tr>
-            <th>Invoice</th>
-            <th>Refund, $</th>
-          </tr>
-          <tr>
-            <td>Service</td>
-            <td>{{subTotal.toFixed(2)}}</td>
-          </tr>
-          <tr>
-            <td>Tax</td>
-            <td>{{partialRefund.tax.toFixed(2)}}</td>
-          </tr>
-          <tr>
-            <td>Tip</td>
-            <td><input type="number" ng-model="partialRefund.tip"></td>
-          </tr>
-          <tr class="bg-info">
-            <td><b>Total</b></td>
-            <td><b>{{partialRefund.total.toFixed(2)}}</b></td>
-          </tr>
-          <tr class="bg-warning">
-            <td><b>Adjustment</b></td>
-            <td><input type="number" ng-model="partialRefund.adjustment.client"></td>
-          </tr>
-          <tr class="bg-success">
-            <td><b>New Total</b></td>
-            <td><b>{{(partialRefund.total - (partialRefund.adjustment.caterer + partialRefund.adjustment.chargeOff)).toFixed(2)}}</b></td>
-          </tr>
-          <tr><td colspan="2"></td></tr>
-          <tr><th colspan="2">Payable</th></tr>
-          <tr>
-            <td>Service</td>
-            <td>{{subTotal.toFixed(2)}}</td>
-          </tr>
-          <tr>
-            <td>Tax</td>
-            <td>{{partialRefund.tax.toFixed(2)}}</td>
-          </tr>
-          <tr>
-            <td>Tip</td>
-            <td><input type="number" ng-model="partialRefund.tip"></td>
-          </tr>
-          <tr class="bg-warning">
-            <td><b>Refund Adjustment</b></td>
-            <td><b>{{partialRefund.refund.toFixed(2)}}</b></td>
-          </tr>
-          <tr class="bg-info">
-            <td><b>Sub Total</b></td>
-            <td><b>{{(subTotal + partialRefund.tax + partialRefund.tip).toFixed(2)}}</b></td>
-          </tr>
-          <tr>
-            <td>Comission <input type="number" ng-model="partialRefund.commission">%</td>
-            <td>{{(partialRefund.total * (partialRefund.commission / 100)).toFixed(2)}}</td>
-          </tr>
-          <tr class="bg-warning">
-            <td><b>Caterer Adjustment</b></td>
-            <td><input type="number" ng-model="partialRefund.adjustment.caterer"></td>
-          </tr>
-          <tr class="bg-primary">
-            <td><b>Total Payment</b></td>
-            <td><b>{{((partialRefund.total * ((100 - partialRefund.commission) / 100)) - partialRefund.adjustment.caterer).toFixed(2)}}</b></td>
-          </tr>
-          <tr><td colspan="2"></td></tr>
-          <tr><th colspan="2">Home Account</th></tr>
-          <tr>
-            <td><b>Charge Off</b></td>
-            <td><input type="number" ng-model="partialRefund.adjustment.chargeOff"></td>
-          </tr>
-          <tr>
-            <td><b>Commission Income</b></td>
-            <td><b>{{(partialRefund.total * (partialRefund.commission / 100)).toFixed(2)}}</b></td>
-          </tr>
-          <tr class="bg-success">
-            <td><b>Adjustment Balanced</b></td>
-            <td><b>{{(partialRefund.adjustment.client - (partialRefund.adjustment.caterer + partialRefund.adjustment.chargeOff)).toFixed(2)}}</b></td>
-          </tr>
-        </table>
-      </uib-tab>
-    </uib-tabset>
+  <div ng-if="!confirm">
+    <div class="modal-header">
+      <h3 class="modal-title">Payment Adjustments</h3>
+    </div>  
+    <div class="modal-body">
+      <uib-tabset active="active">
+        <uib-tab index="0" heading="Complete Refund" ng-click="setAdjustment(totalRefund)">
+          <br />
+          <table class="table table-condensed">
+            <tr>
+              <th>Invoice</th>
+              <th>Refund, $</th>
+            </tr>
+            <tr>
+              <td>Service</td>
+              <td>{{subTotal.toFixed(2)}}</td>
+            </tr>
+            <tr>
+              <td>Tax</td>
+              <td>{{totalRefund.tax.toFixed(2)}}</td>
+            </tr>
+            <tr>
+              <td>Tip</td>
+              <td>{{tip.toFixed(2)}}</td>
+            </tr>
+            <tr class="bg-info">
+              <td><b>Total</b></td>
+              <td><b>{{totalRefund.total.toFixed(2)}}</b></td>
+            </tr>
+            <tr class="bg-warning">
+              <td><b>Adjustment</b></td>
+              <td><b>{{totalRefund.adjustment.client.toFixed(2)}}</b></td>
+            </tr>
+            <tr class="bg-success">
+              <td><b>New Total</b></td>
+              <td><b>{{(totalRefund.total - (totalRefund.adjustment.caterer + totalRefund.adjustment.chargeOff)).toFixed(2)}}</b></td>
+            </tr>
+            <tr><td colspan="2"></td></tr>
+            <tr><th colspan="2">Payable</th></tr>
+            <tr>
+              <td>Service</td>
+              <td>{{subTotal.toFixed(2)}}</td>
+            </tr>
+            <tr>
+              <td>Tax</td>
+              <td>{{totalRefund.tax.toFixed(2)}}</td>
+            </tr>
+            <tr>
+              <td>Tip</td>
+              <td>{{tip.toFixed(2)}}</td>
+            </tr>
+            <tr class="bg-warning">
+              <td><b>Refund Adjustment</b></td>
+              <td><b>{{totalRefund.refund.toFixed(2)}}</b></td>
+            </tr>
+            <tr class="bg-info">
+              <td><b>Sub Total</b></td>
+              <td><b>-</b></td>
+            </tr>
+            <tr>
+              <td>Comission {{totalRefund.commission}}%</td>
+              <td>-</td>
+            </tr>
+            <tr class="bg-warning">
+              <td><b>Caterer Adjustment</b></td>
+              <td><b>-</b></td>
+            </tr>
+            <tr class="bg-primary">
+              <td><b>Total Payment</b></td>
+              <td><b>-</b></td>
+            </tr>
+            <tr><td colspan="2"></td></tr>
+            <tr><th colspan="2">Home Account</th></tr>
+            <tr>
+              <td><b>Charge Off</b></td>
+              <td><b>-</b></td>
+            </tr>
+            <tr>
+              <td><b>Commission Income</b></td>
+              <td><b>-</b></td>
+            </tr>
+            <tr class="bg-success">
+              <td><b>Adjustment Balanced</b></td>
+              <td><b>{{(partialRefund.adjustment.client - (partialRefund.adjustment.caterer + partialRefund.adjustment.chargeOff)).toFixed(2)}}</b></td>
+            </tr>
+          </table>
+        </uib-tab>
+        <uib-tab index="1" heading="Partial Refund" ng-click="setAdjustment(partialRefund)">
+          <table class="table table-condensed">
+            <tr>
+              <th>Invoice</th>
+              <th>Refund, $</th>
+            </tr>
+            <tr>
+              <td>Service</td>
+              <td>{{subTotal.toFixed(2)}}</td>
+            </tr>
+            <tr>
+              <td>Tax</td>
+              <td>{{partialRefund.tax.toFixed(2)}}</td>
+            </tr>
+            <tr>
+              <td>Tip</td>
+              <td><input type="number" ng-model="partialRefund.tip"></td>
+            </tr>
+            <tr class="bg-info">
+              <td><b>Total</b></td>
+              <td><b>{{partialRefund.total.toFixed(2)}}</b></td>
+            </tr>
+            <tr class="bg-warning">
+              <td><b>Adjustment</b></td>
+              <td><input type="number" ng-model="partialRefund.adjustment.client"></td>
+            </tr>
+            <tr class="bg-success">
+              <td><b>New Total</b></td>
+              <td><b>{{(partialRefund.total - (partialRefund.adjustment.caterer + partialRefund.adjustment.chargeOff)).toFixed(2)}}</b></td>
+            </tr>
+            <tr><td colspan="2"></td></tr>
+            <tr><th colspan="2">Payable</th></tr>
+            <tr>
+              <td>Service</td>
+              <td>{{subTotal.toFixed(2)}}</td>
+            </tr>
+            <tr>
+              <td>Tax</td>
+              <td>{{partialRefund.tax.toFixed(2)}}</td>
+            </tr>
+            <tr>
+              <td>Tip</td>
+              <td><input type="number" ng-model="partialRefund.tip"></td>
+            </tr>
+            <tr class="bg-warning">
+              <td><b>Refund Adjustment</b></td>
+              <td><b>{{partialRefund.refund.toFixed(2)}}</b></td>
+            </tr>
+            <tr class="bg-info">
+              <td><b>Sub Total</b></td>
+              <td><b>{{(subTotal + partialRefund.tax + partialRefund.tip).toFixed(2)}}</b></td>
+            </tr>
+            <tr>
+              <td>Comission <input type="number" ng-model="partialRefund.commission">%</td>
+              <td>{{(partialRefund.total * (partialRefund.commission / 100)).toFixed(2)}}</td>
+            </tr>
+            <tr class="bg-warning">
+              <td><b>Caterer Adjustment</b></td>
+              <td><input type="number" ng-model="partialRefund.adjustment.caterer"></td>
+            </tr>
+            <tr class="bg-primary">
+              <td><b>Total Payment</b></td>
+              <td><b>{{((partialRefund.total * ((100 - partialRefund.commission) / 100)) - partialRefund.adjustment.caterer).toFixed(2)}}</b></td>
+            </tr>
+            <tr><td colspan="2"></td></tr>
+            <tr><th colspan="2">Home Account</th></tr>
+            <tr>
+              <td><b>Charge Off</b></td>
+              <td><input type="number" ng-model="partialRefund.adjustment.chargeOff"></td>
+            </tr>
+            <tr>
+              <td><b>Commission Income</b></td>
+              <td><b>{{(partialRefund.total * (partialRefund.commission / 100)).toFixed(2)}}</b></td>
+            </tr>
+            <tr class="bg-success">
+              <td><b>Adjustment Balanced</b></td>
+              <td><b>{{(partialRefund.adjustment.client - (partialRefund.adjustment.caterer + partialRefund.adjustment.chargeOff)).toFixed(2)}}</b></td>
+            </tr>
+          </table>
+        </uib-tab>
+      </uib-tabset>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="(updatedInvoice.adjustment.client - (updatedInvoice.adjustment.caterer + updatedInvoice.adjustment.chargeOff))">OK</button>
+      <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>    
   </div>
-  <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="(updatedInvoice.adjustment.client - (updatedInvoice.adjustment.caterer + updatedInvoice.adjustment.chargeOff))">OK</button>
-    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
-  </div>
+
 </script>

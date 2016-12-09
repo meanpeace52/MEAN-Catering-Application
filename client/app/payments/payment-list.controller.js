@@ -117,7 +117,8 @@ class PaymentListController {
       var modalInstance = $uibModal.open({
         animation: true,
         templateUrl: 'adjustPayment.html',
-        controller: ($scope, $uibModalInstance) => {
+        controller: ($scope, $uibModalInstance, $http, $rootScope) => {
+          $scope.confirm = false;
 
           $scope.totalRefund = angular.copy(offer.invoice);
           $scope.totalRefund.refund = $scope.totalRefund.total;
@@ -140,7 +141,15 @@ class PaymentListController {
           };
 
           $scope.ok = () => {
-            $scope.updatedInvoice.service = $scope.updatedInvoice.pricePerPerson * $scope.updatedInvoice.people + $scope.updatedInvoice.tip;            
+            $scope.confirm = true;
+          };
+
+          $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+          };
+
+          $scope.confirmAdjustment = function() {
+            $scope.updatedInvoice.service = $scope.updatedInvoice.pricePerPerson * $scope.updatedInvoice.people + $scope.tip;
             angular.merge(root.$scope.eventActive.offers[0].invoice, $scope.updatedInvoice);
 
             $http.post('/api/offers/' + root.$scope.eventActive.offers[0]._id, root.$scope.eventActive.offers[0]).then(response => {
@@ -148,10 +157,21 @@ class PaymentListController {
                 $uibModalInstance.close();
               })
             });
-          };
 
-          $scope.cancel = function () {
-            $uibModalInstance.dismiss('cancel');
+            pay(root.$scope.eventActive.offers[0]);
+          }
+
+          $scope.cancelConfirm = function() {
+            $scope.confirm = false;
+          }
+
+          function pay(offer){
+            // $scope.disabledEvents[offer.eventId] = true;
+            $http.post('/api/payments/pay', {
+              items: [offer._id]
+            }).then(response => {
+              $rootScope.$emit('eventUpdated');
+            }).catch(response => $state.go('dwolla'));
           };
         },
         size: 'lg'
@@ -246,6 +266,7 @@ class PaymentListController {
         }
 
         $scope.displayed = filtered.slice(start, start + number);
+console.log($scope.displayed);        
         if ($scope.tableState) {
           $scope.tableState.pagination.numberOfPages = Math.ceil(filtered.length / number);
         }

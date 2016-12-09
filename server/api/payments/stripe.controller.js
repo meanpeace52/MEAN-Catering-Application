@@ -50,7 +50,6 @@ class StripeController {
   }
 
   $refund(charge, amount) {
-
     let options = {
       charge: charge
     };
