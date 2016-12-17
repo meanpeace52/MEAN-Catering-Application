@@ -89,6 +89,10 @@ function getEventMailList(event) {
         return count > 0;
       });
 
+      fltUsers = _.filter(fltUsers, (user) => {
+        return user.status !== 'deleted';
+      })
+
       return _.map(fltUsers, (user) => {
           let emailOptions = {
             sendSummary: user.sendSummary,
