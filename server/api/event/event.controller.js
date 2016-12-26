@@ -14,7 +14,9 @@ import Event from './event.model';
 import Offer from '../offer/offer.model';
 import User from '../user/user.model';
 var Promise = require('bluebird');
-var  mailer = require('../mailer/mailer');
+var mailer = require('../mailer/mailer');
+var distance = require('google-distance');
+var async = require('async');
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -138,7 +140,7 @@ export function adminEvents(req, res) {
       query.$and = [ { status: { $ne: 'completed' } }, { status: { $ne: 'cancelled' } } ];
   }
 
-console.log(query);
+// console.log(query);
   return Event.find(query).exec().then((events) => {
       // console.log('events', events);
 
@@ -273,64 +275,73 @@ export function dataset(req, res) {
         }
 
         return !(
-            !req.body.veganOffers && event.vegetarianMeals ||
-            event.selectedCaterers.length && _.indexOf(event.selectedCaterers, req.body.catererId) === -1 ||
-            !predicate);
-      })
+          !req.body.veganOffers && event.vegetarianMeals ||
+          event.selectedCaterers.length && _.indexOf(event.selectedCaterers, req.body.catererId) === -1 ||
+          !predicate);
+      })     
     }
 
-    events.forEach((event, i) => {
-      events[i] = events[i].toObject();
+    async.forEachSeries(events, function (event, next) {
+      event = event.toObject();      
       let total = { eventId: '' + event._id, status: { $nin: ['cancelled', 'draft']} },
         catererQuery = { eventId: '' + event._id, catererId: req.body.catererId /*, status: {$in: ['confirmed', 'completed', 'sent']}*/ },
         adminQuery = {eventId: '' + event._id, status: {$in: ['confirmed', 'completed']}};
 
-
       if (isAdmin) {
-        eventPromises.push(Offer.find(adminQuery).exec().then((offers) => {
-          events[i].offers = offers;
-          //if (isAdmin) events[i].offer = offers[0];
-          return events[i];
-        }));
+          Offer.find(adminQuery).exec().then((offers) => {
+            event.offers = offers;
+            next();
+          });
       } else if (isCaterer) {
-        eventPromises.push(Offer.find(total).exec()
+        Offer.find(total).exec()
           .then((offersTotal) => {
-            events[i].offersTotal = offersTotal.length;
+            event.offersTotal = offersTotal.length;
           })
           .then(() => {
             return User.findById(event.userId).exec();
           })
           .then((user) => {
             if(user)
-              events[i].customer = user.firstname + ' ' + user.lastname;
+              event.customer = user.firstname + ' ' + user.lastname;
             else
-              events[i].customer = '';
+              event.customer = '';
           })
           .then(() => {
             return Offer.find(catererQuery).exec();
           })
           .then((offers) => {
-            events[i].offers = offers;
-            //console.log(events[i]);
-            return events[i];
-          }));
+            event.offers = offers;
 
-      } else {
-        eventPromises.push(Offer.find(total).exec().then((offers) => {
-          events[i].offers = offers;
-          return events[i];
-        }));
+            let catererAddress = req.body.catererAddress.City + ', ' + req.body.catererAddress.State;
+            let eventAddress = event.address.City + ', ' + event.address.State;
+
+            distance.get(
+            {
+              origin: catererAddress,
+              destination: eventAddress
+            },function(err, data) {
+              if (err) return console.log(err);
+
+              var mi = data.durationValue * 0.00062137;
+              event.distance = mi;
+              eventPromises.push(event);
+              next();
+            });
+          });
       }
-    });
-
-  return Promise.all(eventPromises).then(() => {
-    //return filterWithOffers ? events.filter(event => event.offers.length > 0) : events;
-    return events;
-  })
-  .then(respondWithResult(res))
-  .catch(handleError(res));
-
- });
+    }, function(err){
+      if(err)
+        return console.log(err);
+      else{
+          return Promise.all(eventPromises).then(() => {
+            //return filterWithOffers ? events.filter(event => event.offers.length > 0) : events;
+             return eventPromises;
+          })
+          .then(respondWithResult(res))
+          .catch(handleError(res));
+      }
+    })
+  });
 }
 
 export function payments(req, res) {

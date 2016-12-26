@@ -57,7 +57,8 @@ var UserSchema = new Schema({
   address: Object,
   dwollaTokens: Object, // admin only
   sendSummary: Boolean,
-  sendNotification: Boolean
+  sendNotification: Boolean,
+  radius: Number // for a caterer
 });
 
 /**
@@ -95,7 +96,8 @@ UserSchema
       'logo': this.logo,
       'address': this.address,
       'sendSummary': this.sendSummary,
-      'sendNotification': this.sendNotification
+      'sendNotification': this.sendNotification,
+      'radius': this.radius
     };
   });
 

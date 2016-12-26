@@ -56,7 +56,7 @@
                     <small>Offer from</small> <b>{{offer.catererName}}</b>
                   </h3>
                   <h3>
-                    <small>Total price:</small> <b>${{offer.invoice.total}}</b> <span class="label label-info">{{offer.paymentStatus || offer.status}}</span>
+                    <small>Total price:</small> <b>${{offer.invoice.total.toFixed(2)}}</b> <span class="label label-info">{{offer.paymentStatus || offer.status}}</span>
                   </h3>
                 </div>
                 <div class="col-sm-6" ng-if="!past && oc.user.role != 'admin'">
@@ -82,9 +82,9 @@
                     <div class="col-sm-6">
                       <p><b>Price per person:</b> ${{offer.pricePerPerson}}</p>
                       <p ng-if="offer.counter"><b>Counter:</b> ${{offer.counter}} </p>
-                      <p >Subtotal: <b>${{offer.invoice.service}}</b> </p>
-                      <p >Tax: <b>${{offer.invoice.tax}}</b> </p>
-                      <p>Total: <b>${{offer.invoice.total}}</b> </p>
+                      <p >Subtotal: <b>${{offer.invoice.service.toFixed(2)}}</b> </p>
+                      <p >Tax: <b>${{offer.invoice.tax.toFixed(2)}}</b> </p>
+                      <p>Total: <b>${{offer.invoice.total.toFixed(2)}}</b> </p>
                       <p ng-if="offer.counterReason"><b>Counter Reason:</b> {{offer.counterReason}}</p>
                     </div>
                     <div class="col-sm-3" ng-if="offer.includedInPrice.length">

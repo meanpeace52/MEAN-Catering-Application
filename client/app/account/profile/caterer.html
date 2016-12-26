@@ -75,6 +75,12 @@
                     </div>
                   </div>
                 </div>
+                <div class="row radius-control" ng-if="catererProfile.loggedUser.role == 'caterer'">
+                  <div class="col-sm-5">
+                    <label>Radius in Miles for Catering Events</label>
+                    <input type="number" class="form-control col-sm-8" name="radius" ng-model="catererProfile.user.radius">
+                  </div>
+                </div>
                 <label>Catering Ninja Administrative Contact</label>
                 <div class="panel panel-default" style="padding: 10px; background-color: #d3d3d3 ">
                   <div class="row">

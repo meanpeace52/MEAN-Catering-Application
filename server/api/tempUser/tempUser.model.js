@@ -52,7 +52,8 @@ var TempUserSchema = new Schema({
   payableAccountId: String, // for an user
   address: Object,
   sendSummary: Boolean,
-  sendNotification: Boolean
+  sendNotification: Boolean,
+  radius: Number // for a caterer
 });
 
 /**
@@ -89,7 +90,8 @@ TempUserSchema
       'logo': this.logo,
       'address': this.address,
       'sendSummary': this.sendSummary,
-      'sendNotification': this.sendNotification
+      'sendNotification': this.sendNotification,
+      'radius': this.radius
     };
   });
 

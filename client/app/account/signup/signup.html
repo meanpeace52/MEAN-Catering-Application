@@ -200,6 +200,12 @@
               <input tooltip-placement="top" tabindex="16" uib-tooltip='Only select this option if you offer Vegetarian meals.'  type="checkbox" name="veganOffers" class="form-control" ng-model="vm.user.veganOffers" />
             </div>
           </div>
+          <div class="col-sm-3">
+            <div class="form-group" ng-if="vm.user.role">
+              <label>Radius in Miles for Catering Events</label>
+              <input tooltip-placement="top" tabindex="17" uib-tooltip='This is available radius that you want to view, this filters events you see.'  type="number" name="radius" class="form-control" ng-model="vm.user.radius" />
+            </div>
+          </div>
         </div>
       </div>
       <label tooltip-placement="top" uib-tooltip='Enter the contact that customers can reach out to with questions'  ng-if="vm.user.role">Customer Contact Information</label>
