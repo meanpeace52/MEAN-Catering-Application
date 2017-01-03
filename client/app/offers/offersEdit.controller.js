@@ -31,8 +31,18 @@ class OffersEditController {
     this.eventId =  $rootScope.eventActive || $cookies.get('eventActive');
     this.event = EventsService.getEventById(this.eventId).then((data) => {
       this.event = data;
+      this.$scope.fm.people = this.event.people;
+      this.$scope.fm.priceTotal = this.$scope.fm.pricePerPerson * this.$scope.fm.people;
+      this.$scope.fm.counterTotal = this.$scope.fm.counter * this.$scope.fm.people;
       if (Date.parse(this.event.date) < Date.parse(new Date())) this.$scope.isPast = true;
     });
+
+    // Watch & Update SubTotal
+    $scope.$watch('fm.counter', updateSubTotal);
+
+    function updateSubTotal() {
+      $scope.fm.counterTotal = $scope.fm.counter * $scope.fm.people;
+    }
 
     $scope.$on('$destroy', function () {
       socket.unsyncUpdates('event');
@@ -49,6 +59,7 @@ class OffersEditController {
       });
     });
 
+
     this.$scope.serviceTypes = this.serService.getServiceTypes().then((data)=> {
       this.$scope.serviceTypes = _.map(data, (item, i) => {
         if (_.indexOf(this.event.serviceTypes, item._id) < 0) {
@@ -63,7 +74,7 @@ class OffersEditController {
 
   confirm(id) {  //by caterer
     if (this.user.role = 'caterer') {
-      
+
       if(!this.user.payableAccount) {
         /*let saving = this.saveDraft(form, false);
         if (saving) {
@@ -126,7 +137,7 @@ class OffersEditController {
           //this.$state.go('events');
           this.socket.syncUpdates('offer', this.$scope.offers);
         });
-      }    
+      }
     }
   }
   cancel(id) {
@@ -161,7 +172,7 @@ class OffersEditController {
 
         // Add Tip count - Marcin.
         if(this.event.tipType == '%'){
-          total = total + this.event.tip/100 * total;        
+          total = total + this.event.tip/100 * total;
         }else if(this.event.tipType == '$'){
           total = total + this.event.tip;
         }
@@ -208,11 +219,11 @@ class OffersEditController {
 
       // Add Tip count - Marcin.
       if(this.event.tipType == '%'){
-        total = total + this.event.tip/100 * total;        
+        total = total + this.event.tip/100 * total;
       }else if(this.event.tipType == '$'){
         total = total + this.event.tip;
       }
-      
+
       this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
         offerModel.invoice = {
           pricePerPerson: this.event.pricePerPerson,
