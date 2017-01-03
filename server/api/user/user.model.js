@@ -8,6 +8,7 @@ import {Schema} from 'mongoose';
 var UserSchema = new Schema({
   firstname: String,
   lastname: String,
+  userphone: String,
   email: {
     type: String,
     lowercase: true,
@@ -57,7 +58,8 @@ var UserSchema = new Schema({
   address: Object,
   dwollaTokens: Object, // admin only
   sendSummary: Boolean,
-  sendNotification: Boolean
+  sendNotification: Boolean,
+  radius: Number // for a caterer
 });
 
 /**
@@ -71,6 +73,7 @@ UserSchema
     return {
       'firstname': this.firstname,
       'lastname': this.lastname,
+      'userphone' : this.userphone,
       'foodTypes': this.foodTypes,
       'serviceTypes': this.serviceTypes,
       'contactInfo': this.contactInfo,
@@ -95,7 +98,8 @@ UserSchema
       'logo': this.logo,
       'address': this.address,
       'sendSummary': this.sendSummary,
-      'sendNotification': this.sendNotification
+      'sendNotification': this.sendNotification,
+      'radius': this.radius
     };
   });
 

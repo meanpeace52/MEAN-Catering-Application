@@ -17,6 +17,7 @@ class SignupController {
     this.ftService = FoodTypesService;
     this.stService = ServiceTypesService;
     this.user = {};
+    this.user.radius = 20;
     this.addressValidationError = null;
     this.$scope.foodTypes = [];
     this.$scope.serviceTypes = [];
@@ -39,6 +40,7 @@ class SignupController {
         lastname: this.user.lastname,
         email: this.user.email,
         password: this.user.password,
+        userphone: this.user.userphone,
         role: role
       };
     this.submitted = true;
@@ -64,6 +66,7 @@ class SignupController {
       request.phone = this.user.phone;
       request.sendSummary = true;
       request.sendNotification = true;
+      request.radius = this.user.radius;
     }
 
     if (/*this.user.role && */ form.$valid) {
@@ -74,6 +77,7 @@ class SignupController {
     //    this.addressValidationError = result.ErrDescription;
     //  });
     //} else if (!this.user.role && form.$valid) {
+
       _register.call(this, request, form);
     }
 
