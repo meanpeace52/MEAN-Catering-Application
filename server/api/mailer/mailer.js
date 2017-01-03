@@ -89,6 +89,10 @@ function getEventMailList(event) {
         return count > 0;
       });
 
+      fltUsers = _.filter(fltUsers, (user) => {
+        return user.status !== 'deleted';
+      })
+
       return _.map(fltUsers, (user) => {
           let emailOptions = {
             sendSummary: user.sendSummary,
@@ -398,34 +402,43 @@ var mailer = {
 
       Event.findById(offer.eventId).exec()
         .then((event) => {
-          let date = new Date(event.date),
-              time = new Date(event.time);
-          message += '<hr />';
-          message += '<p>Event details:</p>';
-          message += '<p>Name:<strong>' + event.name + '</strong></p>';
-          message += '<p>Date:<strong>' + date.toDateString() + '</strong></p>';
-          message += '<p>Time:<strong>' + time.toTimeString() + '</strong></p>';
-          message += '<p>Location: <strong>' + event.location + '</strong></p>';
-          message += '<p>People: <strong>' + event.people + '</strong></p>';
-          message += '<p>Price per person: <strong>' + event.pricePerPerson + '</strong></p>';
-          message += '<p>To change or stop email notifications, log into your account using this email address and click Profile and Email Options.</p>';
-          message += '<p>If you have not registered or do not know your password, just click forgot my password at login and use this email.</p>';
-          message += '<p><a href="https://app.cateringninja.com/reset">Forgot My Password</a></p>';
-          message += '<p><a href="https://app.cateringninja.com/login">Login</a></p>';
-          message += '<hr />';
-          nodemailerMailgun.sendMail({
-            from: config.mailgun.from,
-            to: sendTo, // An array if you have multiple recipients.
-            subject: 'Catering-ninja: offer has been ' + fact,
-            html: message,
-          }, function (err, info) {
-            if (err) {
-              console.log('Error: ' + err);
-            }
-            else {
-              console.log('Response: ' + info);
-            }
-          });
+
+          User.findById(event.userId).exec()
+            .then((user) => {
+                let date = new Date(event.date),
+                    time = new Date(event.time);
+                message += '<hr />';
+                message += '<p><b>Congratulations, your offer was accepted!! Now you need to confirm your offer to have a binding contract. If this is the first offer you have confirmed, you will be asked to set up a Dwolla account for payment. Since we do the invoicing and take payment, we need a way to pay you. We looked at all of the payment options, like PayPal etc, and Dwolla is the best solution we found for FREE direct ACH payments. If you have any questions please call us or send an email to support@cateringninja.com.</b></p>';
+                message += '<p>Event details:</p>';
+                message += '<p>Contact Name:<strong>' + user.firstname + ' ' + user.lastname + '</strong></p>';
+                message += '<p>Contact Phone:<strong>' + user.phone + '</strong></p>';
+                message += '<p>Contact Email:<strong>' + user.email + '</strong></p>';
+                message += '<p>Name:<strong>' + event.name + '</strong></p>';
+                message += '<p>Date:<strong>' + date.toDateString() + '</strong></p>';
+                message += '<p>Time:<strong>' + time.toTimeString() + '</strong></p>';
+                message += '<p>Location: <strong>' + event.location + '</strong></p>';
+                message += '<p>People: <strong>' + event.people + '</strong></p>';
+                message += '<p>Price per person: <strong>' + event.pricePerPerson + '</strong></p>';
+                // message += '<p>To change or stop email notifications, log into your account using this email address and click Profile and Email Options.</p>';
+                // message += '<p>If you have not registered or do not know your password, just click forgot my password at login and use this email.</p>';
+                // message += '<p><a href="https://app.cateringninja.com/reset">Forgot My Password</a></p>';
+                // message += '<p><a href="https://app.cateringninja.com/login">Login</a></p>';
+                message += '<hr />';
+
+                nodemailerMailgun.sendMail({
+                  from: config.mailgun.from,
+                  to: sendTo, // An array if you have multiple recipients.
+                  subject: 'Catering-ninja: offer has been ' + fact,
+                  html: message,
+                }, function (err, info) {
+                  if (err) {
+                    console.log('Error: ' + err);
+                  }
+                  else {
+                    console.log('Response: ' + info);
+                  }
+                });
+            });
         });
       });
   }

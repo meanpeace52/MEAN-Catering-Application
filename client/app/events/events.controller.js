@@ -38,11 +38,13 @@ class EventsController {
     $scope.start1 = Date.parse(now) - (60 * 60 * 1000);
 
     this.getCurrentUser().$promise.then((user) => {
-      this.user = $scope.user = user;
+      this.user = $scope.user = user;     
       if (user.role == 'caterer') {
         $scope.query = {
           showToCaterers: true,
-          catererId: user._id
+          catererId: user._id,
+          radius: user.radius,
+          catererAddress: user.address
         }
         if (user.foodTypes) $scope.query.foodTypes = user.foodTypes;
         if (user.serviceTypes) $scope.query.serviceTypes = user.serviceTypes;
@@ -68,7 +70,7 @@ class EventsController {
           $scope.newEventsCount = 0;
           $scope.confirmedEventsCount = 0;
 
-          console.log('events1', events);
+          // console.log('events1', events);
 
           _.each(events, (event, i) => {
             if ($scope.user.role == 'caterer') {
@@ -102,7 +104,7 @@ class EventsController {
 
           //$scope.events = events;
 
-          $scope.events = _.filter(events, (o) => {
+          $scope.events = _.filter(events, (o) => {           
             if (!o.drafted) {
 
               if (o.status == 'confirmed') $scope.confirmedEventsCount++;
@@ -120,7 +122,7 @@ class EventsController {
             }
           });
 
-          console.log('events2', $scope.events);
+          // console.log('events2', $scope.events);
 
           let filtered = $scope.tableState.search.predicateObject ? $filter('filter')($scope.events, $scope.tableState.search.predicateObject) : $scope.events,
               start = $scope.tableState.pagination.start,
@@ -130,7 +132,13 @@ class EventsController {
             filtered = $filter('orderBy')(filtered, $scope.tableState.sort.predicate, $scope.tableState.sort.reverse);
           }
 
-          $scope.displayed = filtered.slice(start, start + number);                  
+          if($scope.user.role == 'caterer') {
+            filtered = _.filter(filtered, (event) => {
+                return event.distance < $scope.user.radius;
+            })
+          }
+
+          $scope.displayed = filtered.slice(start, start + number);         
           $scope.tableState.pagination.numberOfPages = Math.ceil(filtered.length / number);
           if ($rootScope.eventActive) $rootScope.$broadcast('eventActive', $rootScope.eventActive);
         });

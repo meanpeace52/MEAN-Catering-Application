@@ -119,10 +119,14 @@ class EventsNewController {
     $scope.$watch('fm.toggleSymbol', updateTotalEvent);
 
     function updateTotalEvent() {
-      if($scope.fm.tipType == '%'){
-        $scope.fm.totalEvent = $scope.fm.subTotal + $scope.fm.tip/100 * $scope.fm.subTotal;
-      }else if($scope.fm.tipType == '$'){
-        $scope.fm.totalEvent = $scope.fm.subTotal + $scope.fm.tip;
+      if($scope.fm.tip) {
+        if($scope.fm.tipType == '%'){
+          $scope.fm.totalEvent = $scope.fm.subTotal + $scope.fm.tip/100 * $scope.fm.subTotal;
+        }else if($scope.fm.tipType == '$'){
+          $scope.fm.totalEvent = $scope.fm.subTotal + $scope.fm.tip;
+        }
+      }else {
+        $scope.fm.totalEvent = $scope.fm.subTotal;
       }
     }
 

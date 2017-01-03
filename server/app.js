@@ -89,7 +89,7 @@ var paymentJobs = schedule.scheduleJob('*/5 * * * *', function() {
       $lte: next72h
     }
   }).then(function(events) {
-    console.log('Auth', events);
+    // console.log('Auth', events);
     return events.map(event => {
       return mongoose.model('Offer').find({
         status: 'confirmed',

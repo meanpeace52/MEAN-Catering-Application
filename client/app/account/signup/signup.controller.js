@@ -28,7 +28,6 @@ class SignupController {
     this.stService.getServiceTypes().then((data)=> {
       this.$scope.serviceTypes = data;
     });
-
   }
     //start-non-standard
 

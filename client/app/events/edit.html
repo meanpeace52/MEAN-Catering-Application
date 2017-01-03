@@ -103,17 +103,14 @@
             </div>
           </div>
           <div class="col-sm-3">
-            <div class="form-group" ng-class="{'has-error': (form.$submitted || form.tip.$touched) && form.tip.$error.required}">
+            <div class="form-group" ng-class="{'has-error': (form.$submitted || form.tip.$touched)}">
               <label>Tip Amount - % or $
                 <toggle class="tip-toggle-btn" ng-model="fm.toggleSymbol" on="%" off="$"></toggle>
               </label>
               <div class="input-group">
                 <span class="input-group-addon">{{fm.tipType}}</span>
-                <input  tooltip-placement="top" uib-tooltip='This is the tip excluding sales tax' type="number" name="tip" class="form-control" required ng-model="fm.tip">
-              </div>
-              <div ng-show="form.$submitted || form.tip.$touched">
-                <div ng-show="form.tip.$error.required">Please enter tip</div>
-              </div>
+                <input  tooltip-placement="top" uib-tooltip='This is the tip excluding sales tax' type="number" name="tip" class="form-control" ng-model="fm.tip">
+              </div>              
             </div>
           </div>
           <div class="col-sm-3">
