@@ -108,7 +108,5 @@ function _register(request, form) {
 }
 
 
-
-
 angular.module('cateringApp')
   .controller('SignupController', SignupController);
