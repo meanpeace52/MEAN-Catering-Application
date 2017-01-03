@@ -90,7 +90,7 @@
 
       <div>
         <h2>Offer Details <span class="label label-info">{{fm.status}}</span></h2>
-        <div ng-if="fm.status !== 'confirmed'">
+        <div>
           <hr />
           <button class="btn btn-success" ng-if="fm.status == 'accepted'" ng-click="vm.confirm(fm._id)">Confirm</button>
           <button class="btn btn-danger" ng-if="fm.status !== 'cancelled'" ng-click="vm.cancel(fm._id)">Cancel Offer</button>

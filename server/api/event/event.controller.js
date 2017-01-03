@@ -290,6 +290,7 @@ export function dataset(req, res) {
       if (isAdmin) {
           Offer.find(adminQuery).exec().then((offers) => {
             event.offers = offers;
+            eventPromises.push(event);
             next();
           });
       } else if (isCaterer) {
@@ -311,7 +312,9 @@ export function dataset(req, res) {
           })
           .then((offers) => {
             event.offers = offers;
-
+            // eventPromises.push(event);
+            // next();
+            
             let catererAddress = req.body.catererAddress.City + ', ' + req.body.catererAddress.State;
             let eventAddress = event.address.City + ', ' + event.address.State;
 
@@ -328,6 +331,12 @@ export function dataset(req, res) {
               next();
             });
           });
+      } else {
+        Offer.find(total).exec().then((offers) => {
+          event.offers = offers;
+          eventPromises.push(event);
+          next();
+        });
       }
     }, function(err){
       if(err)

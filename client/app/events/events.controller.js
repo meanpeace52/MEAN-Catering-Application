@@ -38,7 +38,7 @@ class EventsController {
     $scope.start1 = Date.parse(now) - (60 * 60 * 1000);
 
     this.getCurrentUser().$promise.then((user) => {
-      this.user = $scope.user = user;
+      this.user = $scope.user = user;     
       if (user.role == 'caterer') {
         $scope.query = {
           showToCaterers: true,
