@@ -126,6 +126,17 @@
               </p>
             </div>
 
+            <div class="form-group" ng-class="{ 'has-success': profileForm.userphone.$valid && customerProfile.submitted,
+                                                'has-error': profileForm.userphone.$invalid && customerProfile.submitted }">
+              <label>Last Name</label>
+
+              <input type="text" name="userphone" class="form-control" ng-model="customerProfile.user.userphone"
+                     required/>
+              <p class="help-block" ng-show="profileForm.userphone.$error.required && customerProfile.submitted">
+                A phone number is required
+              </p>
+            </div>
+
             <div class="form-group" ng-class="{ 'has-success': profileForm.email.$valid && customerProfile.submitted,
                                                 'has-error': profileForm.email.$invalid && customerProfile.submitted }">
               <label>Email</label>
