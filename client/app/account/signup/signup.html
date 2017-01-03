@@ -119,7 +119,7 @@
                                                 'has-error': form.userphone.$invalid && vm.submitted }">
             <label>User Phone Number</label>
 
-            <input type="text" tabindex="2" uib-tooltip='We need a contact number in case there is a problem with your order' name="userphone" class="form-control" ng-model=phoneVal"
+            <input type="text" tabindex="2" uib-tooltip='We need a contact number in case there is a problem with your order' name="userphone" class="form-control" ng-model="vm.user.userphone"
                    required/>
             <p class="help-block" ng-show="form.userphone.$error.required && vm.submitted">
               A Contact Phone Number is required so we can contact you if there is a problem with your order
