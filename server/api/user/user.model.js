@@ -8,6 +8,7 @@ import {Schema} from 'mongoose';
 var UserSchema = new Schema({
   firstname: String,
   lastname: String,
+  userphone: String,
   email: {
     type: String,
     lowercase: true,
@@ -72,6 +73,7 @@ UserSchema
     return {
       'firstname': this.firstname,
       'lastname': this.lastname,
+      'userphone' : this.userphone,
       'foodTypes': this.foodTypes,
       'serviceTypes': this.serviceTypes,
       'contactInfo': this.contactInfo,

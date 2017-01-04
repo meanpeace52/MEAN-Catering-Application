@@ -106,8 +106,11 @@
           <div class="col-sm-3">
             <div class="form-group">
               <label tooltip-placement="top" uib-tooltip='All inclusive price per person.  Does not include tax.'>Price per person</label>
-              <input type="text" name="pricePerPerson" disabled class="form-control" ng-model="fm.pricePerPerson">
-              <div ng-show>{{vm.reqired.pricePerPerson}}</div>
+              <div class="input-group">
+                <input type="number" name="pricePerPerson" disabled class="form-control" ng-model="fm.pricePerPerson">
+                <span class="input-group-addon">$</span>
+                <div ng-show>{{vm.reqired.pricePerPerson}}</div>
+              </div>
             </div>
           </div>
           <div class="col-sm-3">
@@ -123,6 +126,26 @@
             <div class="form-group">
               <label tooltip-placement="top" uib-tooltip='It is suggested that you enter a reason for the higher price'>Counter Reason</label>
               <input type="text" name="counterReason" class="form-control" ng-model="fm.counterReason">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label tooltip-placement="top" uib-tooltip='Total Event Price.  Does not include tax.'>Total Event Price</label>
+              <div class="input-group">
+                <input type="number" name="priceTotal" disabled class="form-control" ng-model="fm.priceTotal">
+                <span class="input-group-addon">$</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label tooltip-placement="top" uib-tooltip='Total Counter Price. Does not include tax.'>Counter Total</label>
+              <div class="input-group">
+                <input type="number" name="counterTotal" disabled class="form-control" ng-model="fm.counterTotal">
+                <span class="input-group-addon">$</span>
+              </div>
             </div>
           </div>
         </div>

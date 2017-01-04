@@ -21,6 +21,7 @@ class OffersNewController {
     this.serService = ServiceTypesService;
     this.$scope.fm = {};
 
+
     this.$scope.isPast = false;
 
     this.eventId =  $rootScope.eventActive || $cookies.get('eventActive');
@@ -41,6 +42,8 @@ class OffersNewController {
       });
       this.$scope.fm.includedInPrice = this.event.includedInPrice;
       this.$scope.fm.pricePerPerson = this.event.pricePerPerson;
+      this.$scope.fm.people = this.event.people;
+      this.$scope.fm.priceTotal = this.$scope.fm.pricePerPerson * this.$scope.fm.people;
 
       this.$scope.serviceTypes = this.serService.getServiceTypes().then((data)=> {
         this.$scope.serviceTypes = _.map(data, (item, i) => {
@@ -59,11 +62,19 @@ class OffersNewController {
     this.$scope.fm.contactInfo = this.user.contactInfo;
     this.$scope.fm.eventId = this.eventId;
 
+    // Watch & Update SubTotal
+    $scope.$watch('fm.counter', updateSubTotal);
+
+    function updateSubTotal() {
+      $scope.fm.counterTotal = $scope.fm.counter * $scope.fm.people;
+    }
+
     $scope.$on('$destroy', function () {
       socket.unsyncUpdates('offer');
     });
 
   }
+
 
   cancelChanges() {
     this.$state.go('events', { time: 'active' });
@@ -138,7 +149,7 @@ class OffersNewController {
 
         // Add Tip count - Marcin.
         if(this.event.tipType == '%'){
-          total = total + this.event.tip/100 * total;        
+          total = total + this.event.tip/100 * total;
         }else if(this.event.tipType == '$'){
           total = total + this.event.tip;
         }

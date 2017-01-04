@@ -39,6 +39,7 @@ class SignupController {
         lastname: this.user.lastname,
         email: this.user.email,
         password: this.user.password,
+        userphone: this.user.userphone,
         role: role
       };
     this.submitted = true;
@@ -105,8 +106,6 @@ function _register(request, form) {
     });
 
 }
-
-
 
 
 angular.module('cateringApp')
