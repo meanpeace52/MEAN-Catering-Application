@@ -100,9 +100,9 @@ class OffersNewController {
 
           // Add Tip count - Marcin.
           if(this.event.tipType == '%'){
-            let tip = this.event.tip/100 * (total + tax);
+            var tip = this.event.tip/100 * (total + tax);
           }else if(this.event.tipType == '$'){
-            let tip = this.event.tip;
+            var tip = this.event.tip;
           }
 
           offerModel.invoice = {
@@ -112,7 +112,7 @@ class OffersNewController {
             service: total,
             tax: tax,
             tip: tip,
-            total: total + tax,
+            total: total + tax + tip,
             commission: this.user.commission
           };
 

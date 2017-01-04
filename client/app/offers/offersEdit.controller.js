@@ -174,9 +174,9 @@ class OffersEditController {
 
           // Add Tip count - Marcin.
           if(this.event.tipType == '%'){
-            let tip = this.event.tip/100 * (total + tax);
+            var tip = this.event.tip/100 * (total + tax);
           }else if(this.event.tipType == '$'){
-            let tip = this.event.tip;
+            var tip = this.event.tip;
           }
 
           offerModel.invoice = {
@@ -186,7 +186,7 @@ class OffersEditController {
             service: total,
             tax: tax,
             tip: tip,
-            total: total + tax
+            total: total + tax + tip
           };
 
           this.$http.post('/api/offers/' + this.$scope.fm._id, offerModel).then(response => {
