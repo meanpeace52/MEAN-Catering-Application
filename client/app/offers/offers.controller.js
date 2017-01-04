@@ -40,7 +40,7 @@ class OffersController {
     this.event = this.EventsService.getEventById(this.eventId).then((data) => {
       this.event = this.$scope.event = data;
       this.$scope.event.includedInPrice = this.convertIncludedInPrice(this.$scope.event.includedInPrice);
-      this.$scope.offers = this.getOffersList();
+      this.$scope.offers = this.getOffersList();      
     });
   }
 

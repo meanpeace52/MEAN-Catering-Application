@@ -84,6 +84,7 @@
                       <p ng-if="offer.counter"><b>Counter:</b> ${{offer.counter}} </p>
                       <p >Subtotal: <b>${{offer.invoice.service.toFixed(2)}}</b> </p>
                       <p >Tax: <b>${{offer.invoice.tax.toFixed(2)}}</b> </p>
+                      <p >Tip: <b>${{offer.invoice.tip.toFixed(2)}}</b> </p>
                       <p>Total: <b>${{offer.invoice.total.toFixed(2)}}</b> </p>
                       <p ng-if="offer.counterReason"><b>Counter Reason:</b> {{offer.counterReason}}</p>
                     </div>

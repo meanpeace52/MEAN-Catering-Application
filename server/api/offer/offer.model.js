@@ -23,6 +23,7 @@ var OfferSchema = new mongoose.Schema({
     people: Number,
     service: Number,
     tax: Number,
+    tip: Number,
     total: Number,
     stripeFee: {
       type: Number,

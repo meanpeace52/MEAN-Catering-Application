@@ -85,20 +85,22 @@ class OffersNewController {
         }
         total = +total.toFixed(2);
 
-        // Add Tip count - Marcin.
-        if(this.event.tipType == '%'){
-          total = total + this.event.tip/100 * total;        
-        }else if(this.event.tipType == '$'){
-          total = total + this.event.tip;
-        }
-
         this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
+
+          // Add Tip count - Marcin.
+          if(this.event.tipType == '%'){
+            let tip = this.event.tip/100 * (total + tax);
+          }else if(this.event.tipType == '$'){
+            let tip = this.event.tip;
+          }
+
           offerModel.invoice = {
             pricePerPerson: this.event.pricePerPerson,
             people: this.event.people,
             counter: offerModel.counter || 0,
             service: total,
             tax: tax,
+            tip: tip,
             total: total + tax,
             commission: this.user.commission
           };
