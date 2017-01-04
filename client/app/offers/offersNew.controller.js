@@ -99,10 +99,15 @@ class OffersNewController {
         this.payments.lookupTaxes(this.user, this.event, total).then(tax => {
 
           // Add Tip count - Marcin.
-          if(this.event.tipType == '%'){
-            var tip = this.event.tip/100 * (total + tax);
-          }else if(this.event.tipType == '$'){
-            var tip = this.event.tip;
+          var tip = 0;
+          if(this.event.tip){
+            if(this.event.tipType == '%'){
+              tip = this.event.tip/100 * (total + tax);
+            }else if(this.event.tipType == '$'){
+              tip = this.event.tip;
+            }
+          }else {
+            tip = 0;
           }
 
           offerModel.invoice = {
