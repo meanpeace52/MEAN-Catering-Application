@@ -46,11 +46,16 @@ class EventsEditController {
 
     this.eventId = this.$state.params.id;
 
-    EventsService.getEventById(this.eventId).then((data) => {
+    EventsService.getEventById(this.eventId).then((data) => {     
       this.$scope.fm = data;
       this.$scope.fm.date = this.$scope.date = new Date(this.$scope.fm.date);
       this.$scope.fm.time = this.$scope.time = new Date(this.$scope.fm.time);
       this.$scope.fm.pricePerPerson = +this.$scope.fm.pricePerPerson;
+
+      if(this.$scope.fm.tipType == '%')
+        this.$scope.fm.toggleSymbol = true;
+      else
+        this.$scope.fm.toggleSymbol = false;
     })
     .then(() => {
       return this.getCaterers();
@@ -295,7 +300,7 @@ class EventsEditController {
     });
   }
   sendRequest(form) {
-
+console.log(this.$scope.fm);
     let eventModel = this.$scope.fm,
       url = '/api/events/' + this.$scope.fm._id;
 
