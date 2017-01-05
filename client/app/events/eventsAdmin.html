@@ -31,7 +31,7 @@
                 <th>Time</th>
                 <th st-sort="name">Name</th>
                 <th st-sort="pricePerPerson">Price</th>
-                <th st-sort="people">People</th>                
+                <th st-sort="people">People</th>
                 <th style="width: 150px;">User Name</th>
                 <th colspan="2"></th>
               </tr>
@@ -138,6 +138,10 @@
                 <td>Sales Tax ({{((eventForInvoice.offer.invoice.tax/eventForInvoice.offer.invoice.service) * 100).toFixed(2)}}%)</td>
                 <td>{{eventForInvoice.offer.invoice.tax.toFixed(2)}}</td>
               </tr>
+              <tr ng-if="eventForInvoice.offer.invoice.tip">
+                <td>Tip</td>
+                <td>{{eventForInvoice.offer.invoice.tip.toFixed(2)}}</td>
+              </tr>
               <tr>
                 <td><b>Total</b></td>
                 <td><b>{{eventForInvoice.offer.invoice.total.toFixed(2)}}</b></td>
@@ -145,7 +149,7 @@
               <tr class="success">
                 <td>Charged to Credit Card</td>
                 <td>{{eventForInvoice.offer.invoice.total.toFixed(2)}}</td>
-              </tr>              
+              </tr>
               <tr class="info" ng-if="!eventForInvoice.offer.invoice.refund && eventForInvoice.offer.invoice.commission">
                 <td>Commission ({{eventForInvoice.offer.invoice.commission.toFixed(2)}}%)</td>
                 <td>{{(eventForInvoice.offer.invoice.total * (eventForInvoice.offer.invoice.commission / 100)).toFixed(2)}}</td>
@@ -196,7 +200,7 @@
   <div ng-if="!confirm">
     <div class="modal-header">
       <h3 class="modal-title">Payment Adjustments</h3>
-    </div>  
+    </div>
     <div class="modal-body">
       <uib-tabset active="active">
         <uib-tab index="0" heading="Complete Refund" ng-click="setAdjustment(totalRefund)">
@@ -365,7 +369,7 @@
     <div class="modal-footer">
       <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="(updatedInvoice.adjustment.client - (updatedInvoice.adjustment.caterer + updatedInvoice.adjustment.chargeOff))">OK</button>
       <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
-    </div>    
+    </div>
   </div>
 
 </script>
