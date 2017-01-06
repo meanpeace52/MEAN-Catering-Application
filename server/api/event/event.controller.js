@@ -321,11 +321,12 @@ export function dataset(req, res) {
             distance.get(
             {
               origin: catererAddress,
-              destination: eventAddress
+              destination: eventAddress,
+              units: 'imperial'
             },function(err, data) {
               if (err) return console.log(err);
 
-              var mi = data.durationValue * 0.00062137;
+              var mi = data.distanceValue * 0.00062137;
               event.distance = mi;
               eventPromises.push(event);
               next();
@@ -442,6 +443,45 @@ export function update(req, res) {
     .then(handleEntityNotFound(res))
     .then(saveUpdates(req.body))
     .then((res) => {
+      Offer.find({eventId: ''+req.params.id}).exec()
+        .then((offers) => {
+          offers.forEach((offer, i) => {
+            if(offer.status == 'sent'){
+
+              var total = res.pricePerPerson * res.people;
+              if (offer.counter) {
+                total = offer.counter * res.people;
+              }
+              total = +total.toFixed(2);
+              var tax = offer.invoice.tax;
+
+              // Add Tip count - Marcin.
+              var tip = 0;
+              if(res.tip){
+                if(res.tipType == '%'){
+                  tip = res.tip/100 * (total + tax);
+                }else if(res.tipType == '$'){
+                  tip = res.tip;
+                }            
+              }else{
+                tip = 0;
+              }
+
+              offer.invoice = {
+                pricePerPerson: res.pricePerPerson,
+                people: res.people,
+                counter: offer.counter || 0,
+                service: total,
+                tax: tax,
+                tip: tip,
+                total: total + tax + tip
+              };
+
+              Offer.update({_id: offer._id}, {invoice: offer.invoice}).exec();
+            }
+          })
+        })
+
       return res;
     })
     .then(respondWithResult(res))

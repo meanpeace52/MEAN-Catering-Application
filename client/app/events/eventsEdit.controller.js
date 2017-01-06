@@ -300,7 +300,6 @@ class EventsEditController {
     });
   }
   sendRequest(form) {
-console.log(this.$scope.fm);
     let eventModel = this.$scope.fm,
       url = '/api/events/' + this.$scope.fm._id;
 
