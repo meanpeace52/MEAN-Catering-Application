@@ -159,9 +159,9 @@
                 <td>Sales Tax ({{((eventForInvoice.offer.invoice.tax/eventForInvoice.offer.invoice.service) * 100).toFixed(2)}}%)</td>
                 <td>{{eventForInvoice.offer.invoice.tax.toFixed(2)}}</td>
               </tr>
-              <tr>
-                <td>Tip</td>                
-                <td>{{eventForInvoice.tip.toFixed(2)}}</td>
+              <tr ng-if="eventForInvoice.offer.invoice.tip">
+                <td>Tip</td>
+                <td>{{eventForInvoice.offer.invoice.tip.toFixed(2)}}</td>
               </tr>
               <tr ng-if="vm.user.role == 'user' || vm.user.role == 'admin'">
                 <td><b>Total</b></td>
