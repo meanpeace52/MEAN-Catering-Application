@@ -17,6 +17,30 @@ var Promise = require('bluebird');
 var mailer = require('../mailer/mailer');
 var distance = require('google-distance');
 var async = require('async');
+let config = require('../../config/environment');
+let request = require('request-promise');
+
+const BASE_URL = 'https://api.taxcloud.com';
+const API_VERSION = '1.0';
+
+function $getEndPoint(endPoint) {
+  "use strict";
+  return `${BASE_URL}/${API_VERSION}${endPoint}?apiKey=${config.payments.TAXCLOUD.API_KEY}`;
+}
+
+const endpoints = {
+  verifyAddress: $getEndPoint('/taxcloud/VerifyAddress'),
+  lookup: $getEndPoint('/TaxCloud/Lookup')
+};
+
+const TAX_CLOUD_CONFIG = {
+  apiLoginId: config.payments.TAXCLOUD.API_LOGIN_ID
+};
+
+function $getOptions(body) {
+  "use strict";
+  return Object.assign({}, TAX_CLOUD_CONFIG, body);
+}
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -453,31 +477,63 @@ export function update(req, res) {
                 total = offer.counter * res.people;
               }
               total = +total.toFixed(2);
-              var tax = offer.invoice.tax;
 
-              // Add Tip count - Marcin.
-              var tip = 0;
-              if(res.tip){
-                if(res.tipType == '%'){
-                  tip = res.tip/100 * (total + tax);
-                }else if(res.tipType == '$'){
-                  tip = res.tip;
-                }            
-              }else{
-                tip = 0;
+              var lookupParams = {
+                customerId: res.userId,
+                destination: res.address,
+                origin: res.address,
+                cartItems: [
+                  {
+                    Index: 0,
+                    ItemID: res._id,
+                    TIC: '00000',
+                    Price: total,
+                    Qty: 1
+                  }
+                ],
+                deliveredBySeller: true
               }
 
-              offer.invoice = {
-                pricePerPerson: res.pricePerPerson,
-                people: res.people,
-                counter: offer.counter || 0,
-                service: total,
-                tax: tax,
-                tip: tip,
-                total: total + tax + tip
-              };
+              request.post(endpoints.lookup, {
+                headers: {
+                  "accept": "application/json",
+                  "content-type": "application/json"
+                },
+                body: JSON.stringify($getOptions(lookupParams))
+              })
+              .then((result) => {
+                result = JSON.parse(result);
+                if (result.ResponseType === 3) {
+                  var tax = result.CartItemsResponse[0].TaxAmount;
+                }else{
+                  var tax = offer.invoice.tax;
+                }
 
-              Offer.update({_id: offer._id}, {invoice: offer.invoice}).exec();
+                // Add Tip count - Marcin.
+                var tip = 0;
+                if(res.tip){
+                  if(res.tipType == '%'){
+                    tip = res.tip/100 * (total + tax);
+                  }else if(res.tipType == '$'){
+                    tip = res.tip;
+                  }            
+                }else{
+                  tip = 0;
+                }
+
+                offer.invoice = {
+                  pricePerPerson: res.pricePerPerson,
+                  people: res.people,
+                  counter: offer.counter || 0,
+                  service: total,
+                  tax: tax,
+                  tip: tip,
+                  total: total + tax + tip
+                };
+
+                Offer.update({_id: offer._id}, {invoice: offer.invoice}).exec();
+
+              })            
             }
           })
         })
