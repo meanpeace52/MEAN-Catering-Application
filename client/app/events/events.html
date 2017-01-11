@@ -65,6 +65,19 @@
               </tr>
             </thead>
             <tbody>
+              <tr ng-if="loading">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                  <button class="spinner-btn btn btn-success">Loading...
+                    <i class="fa fa-spinner fa-spin"></i>
+                  </button>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
               <tr ng-repeat="event in displayed track by $index" ng-class="{'drafted': event.drafted, 'active': event.active, 'hidden': event.hide}" ng-click="vm.setActiveEvent(event)">
                 <td ng-if="vm.user.role == 'user'">
                   <!--<span class="label label-warning" ng-if="vm.user.role == 'caterer' && event.isUpdated">Updated!</span>-->

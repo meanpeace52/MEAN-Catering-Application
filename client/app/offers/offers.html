@@ -36,6 +36,7 @@
     <p ng-show="ccForm.ccNumber.$error.required">
       You must enter a credit card number!
     </p>
+    <div ng-if="stripe.error" class="alert alert-danger">{{stripe.error.message}}</div>
   </div>
   
   <div ng-if="oc.user.payableAccountId || !oc.verifyCard">

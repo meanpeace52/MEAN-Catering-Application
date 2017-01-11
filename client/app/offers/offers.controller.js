@@ -33,6 +33,7 @@ class OffersController {
 
     $scope.saveCustomer = this.saveCustomer.bind(this);
 
+    this.$scope.stripe = {};
   }
 
   init(eventId) {
@@ -145,9 +146,14 @@ class OffersController {
     }
   }
 
-  saveCustomer(status, response) {
-    let token = response.id;
+  saveCustomer(status, response) {    
+    if(response.error){
+      this.$scope.stripe.error = response.error;
+      return;
+    }
 
+    this.$scope.stripe.error = false;
+    let token = response.id;    
     this.bindCard(token).then(result => {
       this.user.payableAccountId = result.data.id;
 

@@ -26,6 +26,7 @@ class EventsController {
     this.$scope.displayed = [];
     this.$scope.isInvoiceMode = false;
     this.$scope.eventForInvoice = null;
+    this.$scope.loading = false;
 
     this.$scope.filter = {
       dateFilter: 'All',
@@ -62,6 +63,8 @@ class EventsController {
     });
 
     this.pipe = function(tableState) {
+      $scope.loading = true;
+
       if ($scope.query) {
         $scope.tableState = (angular.isObject(tableState) && tableState ? tableState : $scope.tableState);
         $http.post('/api/events/dataset', $scope.query)
@@ -141,6 +144,8 @@ class EventsController {
           $scope.displayed = filtered.slice(start, start + number);         
           $scope.tableState.pagination.numberOfPages = Math.ceil(filtered.length / number);
           if ($rootScope.eventActive) $rootScope.$broadcast('eventActive', $rootScope.eventActive);
+
+          $scope.loading = false;
         });
       }
     }
