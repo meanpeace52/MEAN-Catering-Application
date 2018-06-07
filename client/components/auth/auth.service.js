@@ -30,17 +30,14 @@
           })
           .then(res => {
             $cookies.put('token', res.data.token);
-console.log('token:', res.data.token);            
             currentUser = User.get();
             return currentUser.$promise;
           })
           .then(user => {
-console.log('loginUser:', user);            
             safeCb(callback)(null, user);
             return user;
           })
           .catch(err => {
-console.log('loginError:', err);            
             Auth.logout();
             safeCb(callback)(err.data);
             return $q.reject(err.data);
